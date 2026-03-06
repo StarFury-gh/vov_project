@@ -45,4 +45,6 @@ class AwardsRepository:
     async def get_hero_awards(self, hero_id: int):
         awards_ids = await self.db.fetch("SELECT award_id FROM hero_awards WHERE hero_id = $1", hero_id)
         awards = await self.db.fetch("SELECT name FROM awards WHERE id=ANY($1)", awards_ids)
-        return awards
+        result = [award["name"] for award in awards]
+
+        return result
