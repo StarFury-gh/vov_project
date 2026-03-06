@@ -7,15 +7,13 @@ from fastapi import (
 )
 
 from dependencies.postgres import get_pg
-from dependencies.heroes import (
-    HeroResponse, 
-)
 from schemas.hero import HeroCreate
 
 from repositories.heroes import HeroRepository
 from services.hero_service import HeroService
 
 from core.files import save_file
+from core.exceptions import BaseHeroException
 
 h_router = APIRouter(
     prefix="/heroes",
@@ -49,7 +47,7 @@ async def get_heroes(
         )
     except Exception as e:
         print("Error:", e)
-        return HTTPException(
+        raise HTTPException(
             status_code=500,
             detail="Internal server error"
         )
@@ -64,6 +62,11 @@ async def get_hero_by_id(
         service = HeroService(repository)
         result = await service.get_hero(hero_id)
         return result
+    except BaseHeroException as e:
+        raise HTTPException(
+            status_code=e.code,
+            detail=e.message
+        )
     except Exception as e:
         print("Error:", e)
         raise HTTPException(
@@ -101,13 +104,13 @@ async def add_hero_image(
             service = HeroService(repository)
             res = await service.save_image(hero_id, filename)
             return res
-        return HTTPException(
+        raise HTTPException(
             status_code=500,
             detail="Ошибка при загрузке изображения"
         )
     except Exception as e:
         print(e)
-        return HTTPException(
+        raise HTTPException(
             status_code=500,
             detail="Ошибка при загрузке изображения"
         )

@@ -2,6 +2,8 @@ from repositories.heroes import HeroRepository
 from schemas.hero import HeroCreate
 
 from fastapi import HTTPException
+from core.exceptions import HeroNotFound
+
 
 class HeroService:
     def __init__(
@@ -35,16 +37,20 @@ class HeroService:
         return result
 
     async def get_hero(self, hero_id):
-        hero = await self.repo.get_by_id(hero_id)
-        return hero
+        existance = await self.repo.check_hero_existance_by_id(hero_id)
+        if existance:
+            hero = await self.repo.get_by_id(hero_id)
+            return hero
+        else:
+            raise HeroNotFound(404)
 
     async def add_hero(self, hero_data: HeroCreate):
         hero_dict = hero_data.model_dump(exclude_unset=True)
         # Преобразуем строковые даты в формат, подходящий для PostgreSQL
         if 'birth_date' in hero_dict and hero_dict['birth_date']:
-            hero_dict['birth_date'] = hero_dict['birth_date']  # FastAPI уже валидирует формат даты
+            hero_dict['birth_date'] = hero_dict['birth_date']
         if 'death_date' in hero_dict and hero_dict['death_date']:
-            hero_dict['death_date'] = hero_dict['death_date']  # FastAPI уже валидирует формат даты
+            hero_dict['death_date'] = hero_dict['death_date']
         result = await self.repo.create(hero_dict)
         return result
     
