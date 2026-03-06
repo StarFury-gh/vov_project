@@ -1,0 +1,81 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  border-radius: 16px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.16);
+  cursor: pointer;
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out,
+    background-color 0.12s ease-out;
+  color: #2e7d32;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(46, 125, 50, 0.18);
+  background-color: #f1f8e9;
+}
+
+.photo {
+  width: 100%;
+  height: 220px;
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
+  background-color: #c8e6c9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 2rem;
+  color: #1b5e20;
+}
+
+.photoImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 18px 20px;
+  align-items: center;
+  overflow: hidden;
+  text-align: center;
+}
+
+.name {
+  margin: 4px 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.dates {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+  color: #558b2f;
+}
+
+.rank {
+  margin: 0;
+  font-size: 0.94rem;
+  color: #33691e;
+  max-height: 3.4em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: 0;
+  }
+
+  .photo {
+    height: 190px;
+  }
+}
+
