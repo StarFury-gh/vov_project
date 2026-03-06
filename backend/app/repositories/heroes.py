@@ -13,65 +13,91 @@ class HeroRepository:
         death_year_from: int = None,
         death_year_to: int = None
     ):
-        query = """SELECT h.id, h.full_name, h.birth_date, h.death_date, 
-                      h.photo_url, r.name as rank_name,
-                      COALESCE(h.biography, '') as summary_info
-               FROM heroes h
-               LEFT JOIN ranks r ON h.rank_id = r.id
-               WHERE 1=1
-               GROUP BY h.id, r.name"""
-        
+        # Базовая часть запроса без фильтров, группировки и пагинации
+        base_query = """
+            SELECT
+                h.id,
+                h.full_name,
+                h.birth_date,
+                h.death_date,
+                h.photo_url,
+                r.name AS rank_name,
+                COALESCE(h.biography, '') AS summary_info
+            FROM heroes h
+            LEFT JOIN ranks r ON h.rank_id = r.id
+        """
+
+        where_clauses = ["1=1"]
         parameters = []
-        
+
         if search:
-            query += " AND h.full_name ILIKE $1"
-            parameters.append(f'%{search}%')
-        
+            idx = len(parameters) + 1
+            where_clauses.append(f"h.full_name ILIKE ${idx}")
+            parameters.append(f"%{search}%")
+
         if rank_id:
-            rank_param_index = len(parameters) + 1
-            query += f" AND h.rank_id = ${rank_param_index}"
+            idx = len(parameters) + 1
+            where_clauses.append(f"h.rank_id = ${idx}")
             parameters.append(rank_id)
-        
+
         if birth_year_from:
-            birth_from_idx = len(parameters) + 1
-            query += f" AND EXTRACT(YEAR FROM h.birth_date) >= ${birth_from_idx}"
+            idx = len(parameters) + 1
+            where_clauses.append(f"EXTRACT(YEAR FROM h.birth_date) >= ${idx}")
             parameters.append(birth_year_from)
-        
+
         if birth_year_to:
-            birth_to_idx = len(parameters) + 1
-            query += f" AND EXTRACT(YEAR FROM h.birth_date) <= ${birth_to_idx}"
+            idx = len(parameters) + 1
+            where_clauses.append(f"EXTRACT(YEAR FROM h.birth_date) <= ${idx}")
             parameters.append(birth_year_to)
-        
+
         if death_year_from:
-            death_from_idx = len(parameters) + 1
-            query += f" AND EXTRACT(YEAR FROM h.death_date) >= ${death_from_idx}"
+            idx = len(parameters) + 1
+            where_clauses.append(f"EXTRACT(YEAR FROM h.death_date) >= ${idx}")
             parameters.append(death_year_from)
-        
+
         if death_year_to:
-            death_to_idx = len(parameters) + 1
-            query += f" AND EXTRACT(YEAR FROM h.death_date) <= ${death_to_idx}"
+            idx = len(parameters) + 1
+            where_clauses.append(f"EXTRACT(YEAR FROM h.death_date) <= ${idx}")
             parameters.append(death_year_to)
-        
-        # Добавляем пагинацию
+
+        where_sql = " WHERE " + " AND ".join(where_clauses)
+
+        group_by_sql = " GROUP BY h.id, r.name"
+
+        # Запрос для получения элементов с пагинацией
         limit_idx = len(parameters) + 1
         offset_idx = len(parameters) + 2
-        query += f" ORDER BY h.id LIMIT ${limit_idx} OFFSET ${offset_idx}"
-        parameters.extend([limit, skip])
-        
-        result = await self.db.fetch(query, *parameters)
-        
-        # Получаем общее количество записей с теми же фильтрами, но без пагинации
-        # Получаем общее количество записей с теми же фильтрами, но без пагинации
-        count_query = f"SELECT COUNT(*) FROM ({query.split('ORDER BY')[0]}) as count_subquery"
-        count_result = await self.db.fetchrow(count_query, *parameters[:-2])
-        total = count_result['count'] if count_result else 0
-        
+        items_query = (
+            base_query
+            + where_sql
+            + group_by_sql
+            + f" ORDER BY h.id LIMIT ${limit_idx} OFFSET ${offset_idx}"
+        )
+        items_params = parameters + [limit, skip]
+
+        result = await self.db.fetch(items_query, *items_params)
+
+        # Запрос для подсчёта общего количества без пагинации
+        count_query = (
+            "SELECT COUNT(*) FROM ("
+            + base_query
+            + where_sql
+            + group_by_sql
+            + ") AS count_subquery"
+        )
+        count_result = await self.db.fetchrow(count_query, *parameters)
+        total = count_result["count"] if count_result else 0
+
         return {
             "items": result,
             "total": total,
             "skip": skip,
-            "limit": limit
+            "limit": limit,
         }
+
+    async def get_by_id(self, id):
+        result = await self.db.fetchrow("SELECT * FROM heroes WHERE id = $1", id)
+        return result
 
     async def create(self, hero_data: dict):
         query = """
@@ -102,3 +128,17 @@ class HeroRepository:
         )
         
         return result
+    
+    async def set_hero_image(self, hero_id: int, image_url: str):
+        existance = await self.check_hero_existance_by_id(hero_id)
+        if existance:
+            await self.db.execute("UPDATE heroes SET photo_url = $1 WHERE id = $2", image_url, hero_id)
+            return True, "images/" + image_url
+        else:
+            return False, None
+
+    async def check_hero_existance_by_id(self, hero_id: int):
+        hero = await self.db.fetchrow("SELECT id FROM heroes WHERE id = $1", hero_id)
+        if hero:
+            return True
+        return False
