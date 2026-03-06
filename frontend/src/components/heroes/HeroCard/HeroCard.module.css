@@ -5,18 +5,18 @@
   gap: 0;
   padding: 0;
   border-radius: 16px;
-  background-color: #ffffff;
+  background-color: var(--color-card-bg);
   box-shadow: 0 4px 12px rgba(46, 125, 50, 0.16);
   cursor: pointer;
   transition: transform 0.12s ease-out, box-shadow 0.12s ease-out,
     background-color 0.12s ease-out;
-  color: #2e7d32;
+  color: var(--color-text-main);
 }
 
 .card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 14px rgba(46, 125, 50, 0.18);
-  background-color: #f1f8e9;
+  background-color: var(--color-bg-page);
 }
 
 .photo {
@@ -24,13 +24,13 @@
   height: 220px;
   border-radius: 16px 16px 0 0;
   overflow: hidden;
-  background-color: #c8e6c9;
+  background-color: var(--color-card-accent-light);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
   font-size: 2rem;
-  color: #1b5e20;
+  color: var(--color-card-accent-dark);
 }
 
 .photoImage {
@@ -57,13 +57,13 @@
 .dates {
   margin: 0 0 6px;
   font-size: 0.95rem;
-  color: #558b2f;
+  color: var(--color-accent-strong);
 }
 
 .rank {
   margin: 0;
   font-size: 0.94rem;
-  color: #33691e;
+  color: var(--color-text-muted);
   max-height: 3.4em;
   overflow: hidden;
   text-overflow: ellipsis;

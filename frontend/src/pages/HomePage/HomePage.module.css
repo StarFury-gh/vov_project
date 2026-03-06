@@ -1,8 +1,8 @@
 .page {
   min-height: 100vh;
   padding: 24px 12px 40px;
-  background-color: #e8f5e9;
-  color: #2e7d32;
+  background-color: var(--color-bg-page);
+  color: var(--color-text-main);
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -23,7 +23,7 @@
 .subtitle {
   margin: 0;
   font-size: 0.98rem;
-  color: #33691e;
+  color: var(--color-text-muted);
 }
 
 .listContainer {
@@ -47,7 +47,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #2e7d32;
+  color: var(--color-text-main);
   font-size: 0.95rem;
 }
 
@@ -56,7 +56,7 @@
   height: 16px;
   border-radius: 50%;
   border: 2px solid rgba(46, 125, 50, 0.2);
-  border-top-color: #2e7d32;
+  border-top-color: var(--color-text-main);
   animation: spin 0.8s linear infinite;
 }
 
@@ -64,8 +64,8 @@
   margin-top: 16px;
   padding: 12px 16px;
   border-radius: 8px;
-  background-color: #ffebee;
-  color: #b71c1c;
+  background-color: var(--color-error-bg);
+  color: var(--color-error-text);
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
@@ -79,21 +79,21 @@
 .retryButton {
   padding: 6px 12px;
   border-radius: 6px;
-  border: 1px solid #b71c1c;
-  background-color: #ffffff;
-  color: #b71c1c;
+  border: 1px solid var(--color-error-text);
+  background-color: var(--color-card-bg);
+  color: var(--color-error-text);
   cursor: pointer;
   font-size: 0.9rem;
 }
 
 .retryButton:hover {
-  background-color: #ffebee;
+  background-color: var(--color-error-bg);
 }
 
 .endMessage {
   margin-top: 16px;
   font-size: 0.95rem;
-  color: #33691e;
+  color: var(--color-text-muted);
 }
 
 @keyframes spin {

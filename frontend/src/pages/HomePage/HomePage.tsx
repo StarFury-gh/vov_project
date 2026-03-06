@@ -7,159 +7,159 @@ import { fetchHeroes } from '../../api'
 
 // Тип героя, который ожидаем от API
 export interface Hero {
-  id: number | string
-  name: string
-  lifeDates?: string
-  rank?: string
-  image?: string | null
+    id: number | string
+    name: string
+    lifeDates?: string
+    rank?: string
+    image?: string | null
 }
 
 type HeroesApiResponse =
-  | {
-      heroes: Hero[]
-      hasMore?: boolean
+    | {
+        heroes: Hero[]
+        hasMore?: boolean
     }
-  | Hero[]
+    | Hero[]
 
 const PAGE_LIMIT = 10
 
 const HomePage = () => {
-  const [heroes, setHeroes] = useState<Hero[]>([])
-  const [page, setPage] = useState(1)
-  const [hasMore, setHasMore] = useState(true)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+    const [heroes, setHeroes] = useState<Hero[]>([])
+    const [page, setPage] = useState(1)
+    const [hasMore, setHasMore] = useState(true)
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
 
-  const observerRef = useRef<IntersectionObserver | null>(null)
-  const sentinelRef = useRef<HTMLDivElement | null>(null)
+    const observerRef = useRef<IntersectionObserver | null>(null)
+    const sentinelRef = useRef<HTMLDivElement | null>(null)
 
-  const navigate = useNavigate()
+    const navigate = useNavigate()
 
-  const loadHeroes = useCallback(async () => {
-    if (isLoading || !hasMore) return
+    const loadHeroes = useCallback(async () => {
+        if (isLoading || !hasMore) return
 
-    setIsLoading(true)
-    setError(null)
+        setIsLoading(true)
+        setError(null)
 
-    try {
-      const data = (await fetchHeroes(page, PAGE_LIMIT)) as HeroesApiResponse
+        try {
+            const data = (await fetchHeroes(page, PAGE_LIMIT)) as HeroesApiResponse
 
-      let newHeroes: Hero[] = []
-      let nextHasMore = true
+            let newHeroes: Hero[] = []
+            let nextHasMore = true
 
-      if (Array.isArray(data)) {
-        // API вернул просто массив героев
-        newHeroes = data
-        nextHasMore = data.length === PAGE_LIMIT
-      } else if (data && Array.isArray(data.heroes)) {
-        // API вернул объект с полем heroes
-        newHeroes = data.heroes
-        nextHasMore =
-          typeof data.hasMore === 'boolean'
-            ? data.hasMore
-            : data.heroes.length === PAGE_LIMIT
-      }
+            if (Array.isArray(data)) {
+                // API вернул просто массив героев
+                newHeroes = data
+                nextHasMore = data.length === PAGE_LIMIT
+            } else if (data && Array.isArray(data.heroes)) {
+                // API вернул объект с полем heroes
+                newHeroes = data.heroes
+                nextHasMore =
+                    typeof data.hasMore === 'boolean'
+                        ? data.hasMore
+                        : data.heroes.length === PAGE_LIMIT
+            }
 
-      setHeroes((prev) => [...prev, ...newHeroes])
-      setHasMore(nextHasMore)
-    } catch (e) {
-      const message =
-        e instanceof Error ? e.message : 'Ошибка при загрузке героев'
-      setError(message)
-    } finally {
-      setIsLoading(false)
+            setHeroes((prev) => [...prev, ...newHeroes])
+            setHasMore(nextHasMore)
+        } catch (e) {
+            const message =
+                e instanceof Error ? e.message : 'Ошибка при загрузке героев'
+            setError(message)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [hasMore, isLoading, page])
+
+    // Первичная загрузка и загрузка при смене страницы
+    useEffect(() => {
+        void loadHeroes()
+    }, [loadHeroes])
+
+    // Настройка Intersection Observer для бесконечной прокрутки
+    useEffect(() => {
+        if (!hasMore || isLoading) return
+
+        const node = sentinelRef.current
+        if (!node) return
+
+        if (observerRef.current) {
+            observerRef.current.disconnect()
+        }
+
+        observerRef.current = new IntersectionObserver((entries) => {
+            const firstEntry = entries[0]
+            if (firstEntry.isIntersecting && hasMore && !isLoading) {
+                setPage((prev) => prev + 1)
+            }
+        })
+
+        observerRef.current.observe(node)
+
+        return () => {
+            if (observerRef.current) {
+                observerRef.current.disconnect()
+            }
+        }
+    }, [hasMore, isLoading])
+
+    const handleRetry = () => {
+        void loadHeroes()
     }
-  }, [hasMore, isLoading, page])
 
-  // Первичная загрузка и загрузка при смене страницы
-  useEffect(() => {
-    void loadHeroes()
-  }, [loadHeroes])
-
-  // Настройка Intersection Observer для бесконечной прокрутки
-  useEffect(() => {
-    if (!hasMore || isLoading) return
-
-    const node = sentinelRef.current
-    if (!node) return
-
-    if (observerRef.current) {
-      observerRef.current.disconnect()
+    const handleHeroClick = (id: Hero['id']) => {
+        navigate(`/heroes/${id}`)
     }
 
-    observerRef.current = new IntersectionObserver((entries) => {
-      const firstEntry = entries[0]
-      if (firstEntry.isIntersecting && hasMore && !isLoading) {
-        setPage((prev) => prev + 1)
-      }
-    })
+    return (
+        <main className={styles.page}>
+            <header className={styles.header}>
+                <h1 className={styles.title}>Герои Великой Отечественной войны</h1>
+                <p className={styles.subtitle}>
+                    Памяти тех, кто защищал Родину. Пролистывайте список, чтобы увидеть
+                    больше героев.
+                </p>
+            </header>
 
-    observerRef.current.observe(node)
+            <section className={styles.listContainer}>
+                <div className={styles.heroList}>
+                    {heroes.map((hero) => (
+                        <HeroCard
+                            key={hero.id}
+                            id={hero.id}
+                            name={hero.name}
+                            lifeDates={hero.lifeDates}
+                            rank={hero.rank}
+                            image={hero.image ?? undefined}
+                            onClick={() => handleHeroClick(hero.id)}
+                        />
+                    ))}
+                </div>
 
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect()
-      }
-    }
-  }, [hasMore, isLoading])
+                <div ref={sentinelRef} className={styles.sentinel} />
 
-  const handleRetry = () => {
-    void loadHeroes()
-  }
+                {isLoading && (
+                    <div className={styles.loader}>
+                        <div className={styles.spinner} />
+                        <span>Загрузка героев...</span>
+                    </div>
+                )}
 
-  const handleHeroClick = (id: Hero['id']) => {
-    navigate(`/heroes/${id}`)
-  }
+                {error && (
+                    <div className={styles.errorBox}>
+                        <p className={styles.errorText}>{error}</p>
+                        <button type="button" className={styles.retryButton} onClick={handleRetry}>
+                            Повторить попытку
+                        </button>
+                    </div>
+                )}
 
-  return (
-    <main className={styles.page}>
-      <header className={styles.header}>
-        <h1 className={styles.title}>Герои Великой Отечественной войны</h1>
-        <p className={styles.subtitle}>
-          Памяти тех, кто защищал Родину. Пролистывайте список, чтобы увидеть
-          больше героев.
-        </p>
-      </header>
-
-      <section className={styles.listContainer}>
-        <div className={styles.heroList}>
-          {heroes.map((hero) => (
-            <HeroCard
-              key={hero.id}
-              id={hero.id}
-              name={hero.name}
-              lifeDates={hero.lifeDates}
-              rank={hero.rank}
-              image={hero.image ?? undefined}
-              onClick={() => handleHeroClick(hero.id)}
-            />
-          ))}
-        </div>
-
-        <div ref={sentinelRef} className={styles.sentinel} />
-
-        {isLoading && (
-          <div className={styles.loader}>
-            <div className={styles.spinner} />
-            <span>Загрузка героев...</span>
-          </div>
-        )}
-
-        {error && (
-          <div className={styles.errorBox}>
-            <p className={styles.errorText}>{error}</p>
-            <button type="button" className={styles.retryButton} onClick={handleRetry}>
-              Повторить попытку
-            </button>
-          </div>
-        )}
-
-        {!hasMore && !isLoading && heroes.length > 0 && (
-          <p className={styles.endMessage}>Больше героев нет.</p>
-        )}
-      </section>
-    </main>
-  )
+                {!hasMore && !isLoading && heroes.length > 0 && (
+                    <p className={styles.endMessage}>Больше героев нет.</p>
+                )}
+            </section>
+        </main>
+    )
 }
 
 export default HomePage
