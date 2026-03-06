@@ -2,24 +2,38 @@ import styles from './HeroCard.module.css'
 
 interface HeroCardProps {
   id: number | string
-  name: string
-  lifeDates?: string
-  rank?: string
-  image?: string
+  fullName: string
+  birthDate: string
+  deathDate: string
+  photoUrl: string
+  rankName?: string
+  summaryInfo?: string
   onClick?: () => void
 }
 
 // Карточка героя: крупная фотография, ФИО, даты жизни и звание.
-const HeroCard = ({ name, lifeDates, rank, image, onClick }: HeroCardProps) => {
-  const firstLetter = name.trim().charAt(0).toUpperCase()
+const HeroCard = ({
+  fullName,
+  birthDate,
+  deathDate,
+  photoUrl,
+  rankName,
+  onClick,
+}: HeroCardProps) => {
+  const firstLetter = fullName.trim().charAt(0).toUpperCase()
+
+  const lifeDates =
+    birthDate || deathDate
+      ? `${birthDate || '—'} — ${deathDate || 'н/д'}`
+      : undefined
 
   return (
     <article className={styles.card} onClick={onClick}>
       <div className={styles.photo}>
-        {image ? (
+        {photoUrl ? (
           <img
-            src={image}
-            alt={name}
+            src={photoUrl}
+            alt={fullName}
             className={styles.photoImage}
             loading="lazy"
           />
@@ -29,9 +43,9 @@ const HeroCard = ({ name, lifeDates, rank, image, onClick }: HeroCardProps) => {
       </div>
 
       <div className={styles.content}>
-        <h2 className={styles.name}>{name}</h2>
+        <h2 className={styles.name}>{fullName}</h2>
         {lifeDates && <p className={styles.dates}>{lifeDates}</p>}
-        {rank && <p className={styles.rank}>{rank}</p>}
+        {rankName && <p className={styles.rank}>{rankName}</p>}
       </div>
     </article>
   )

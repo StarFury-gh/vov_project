@@ -1,110 +1,152 @@
 // Temporary mock API for heroes.
 // Stores basic in-memory data to test the UI without a real server.
 
+// This shape mimics the backend response:
+// hero: { id, full_name, birth_date, death_date, photo_url, rank_name, summary_info }
 const MOCK_HEROES = [
   {
     id: 1,
-    name: 'Алексей Маресьев',
-    lifeDates: '1916–2001',
-    rank: 'Герой Советского Союза, лётчик-истребитель',
-    image: 'https://via.placeholder.com/400x300?text=AM',
+    full_name: 'Алексей Маресьев',
+    birth_date: '1916-05-20',
+    death_date: '2001-05-18',
+    photo_url: 'https://via.placeholder.com/400x300?text=AM',
+    rank_name: 'Герой Советского Союза, лётчик-истребитель',
+    summary_info:
+      'Советский лётчик-истребитель, ставший символом силы духа и стойкости.',
   },
   {
     id: 2,
-    name: 'Зоя Космодемьянская',
-    lifeDates: '1923–1941',
-    rank: 'Герой Советского Союза, партизанка',
-    image: 'https://via.placeholder.com/400x300?text=ZK',
+    full_name: 'Зоя Космодемьянская',
+    birth_date: '1923-09-13',
+    death_date: '1941-11-29',
+    photo_url: 'https://via.placeholder.com/400x300?text=ZK',
+    rank_name: 'Герой Советского Союза, партизанка',
+    summary_info:
+      'Одна из первых женщин, удостоенных звания Героя Советского Союза в годы войны.',
   },
   {
     id: 3,
-    name: 'Александр Матросов',
-    lifeDates: '1924–1943',
-    rank: 'Герой Советского Союза, красноармеец',
-    image: 'https://via.placeholder.com/400x300?text=AM',
+    full_name: 'Александр Матросов',
+    birth_date: '1924-02-05',
+    death_date: '1943-02-27',
+    photo_url: 'https://via.placeholder.com/400x300?text=AM',
+    rank_name: 'Герой Советского Союза, красноармеец',
+    summary_info:
+      'Закрыл своим телом амбразуру вражеского дзота, обеспечив успех наступления.',
   },
   {
     id: 4,
-    name: 'Мария Октябрьская',
-    lifeDates: '1905–1944',
-    rank: 'Герой Советского Союза, танкистка',
-    image: 'https://via.placeholder.com/400x300?text=MO',
+    full_name: 'Мария Октябрьская',
+    birth_date: '1905-08-16',
+    death_date: '1944-03-15',
+    photo_url: 'https://via.placeholder.com/400x300?text=MO',
+    rank_name: 'Герой Советского Союза, танкистка',
+    summary_info:
+      'На личные средства купила танк «Боевая подруга» и воевавшая на нём на фронте.',
   },
   {
     id: 5,
-    name: 'Рихард Зорге',
-    lifeDates: '1895–1944',
-    rank: 'Разведчик, Герой Советского Союза',
-    image: 'https://via.placeholder.com/400x300?text=RZ',
+    full_name: 'Рихард Зорге',
+    birth_date: '1895-10-04',
+    death_date: '1944-11-07',
+    photo_url: 'https://via.placeholder.com/400x300?text=RZ',
+    rank_name: 'Разведчик, Герой Советского Союза',
+    summary_info:
+      'Легендарный разведчик, сыгравший важную роль в обеспечении обороны СССР.',
   },
   {
     id: 6,
-    name: 'Николай Гастелло',
-    lifeDates: '1907–1941',
-    rank: 'Герой Советского Союза, лётчик',
-    image: 'https://via.placeholder.com/400x300?text=NG',
+    full_name: 'Николай Гастелло',
+    birth_date: '1907-05-26',
+    death_date: '1941-06-26',
+    photo_url: 'https://via.placeholder.com/400x300?text=NG',
+    rank_name: 'Герой Советского Союза, лётчик',
+    summary_info:
+      'Направил горящий самолёт на скопление вражеской техники, совершив подвиг.',
   },
   {
     id: 7,
-    name: 'Лидия Литвяк',
-    lifeDates: '1921–1943',
-    rank: 'Лётчица-истребитель, Герой Советского Союза',
-    image: 'https://via.placeholder.com/400x300?text=LL',
+    full_name: 'Лидия Литвяк',
+    birth_date: '1921-08-18',
+    death_date: '1943-08-01',
+    photo_url: 'https://via.placeholder.com/400x300?text=LL',
+    rank_name: 'Лётчица-истребитель, Герой Советского Союза',
+    summary_info:
+      'Одна из самых результативных женщин-истребителей Второй мировой войны.',
   },
   {
     id: 8,
-    name: 'Василий Зайцев',
-    lifeDates: '1915–1991',
-    rank: 'Снайпер, Герой Советского Союза',
-    image: 'https://via.placeholder.com/400x300?text=VZ',
+    full_name: 'Василий Зайцев',
+    birth_date: '1915-03-23',
+    death_date: '1991-12-15',
+    photo_url: 'https://via.placeholder.com/400x300?text=VZ',
+    rank_name: 'Снайпер, Герой Советского Союза',
+    summary_info:
+      'Знаменитый снайпер Сталинградской битвы, ставший символом меткости и выдержки.',
   },
   {
     id: 9,
-    name: 'Кузьма Крючков',
-    lifeDates: '1888–1919',
-    rank: 'Кавалерист, Георгиевский кавалер',
-    image: 'https://via.placeholder.com/400x300?text=KK',
+    full_name: 'Кузьма Крючков',
+    birth_date: '1888-10-21',
+    death_date: '1919-08-13',
+    photo_url: 'https://via.placeholder.com/400x300?text=KK',
+    rank_name: 'Кавалерист, Георгиевский кавалер',
+    summary_info:
+      'Кавалерист, ставший одним из символов героизма русского солдата.',
   },
   {
     id: 10,
-    name: 'Панфиловцы',
-    lifeDates: '1941',
-    rank: 'Бойцы 316-й стрелковой дивизии генерала Панфилова',
-    image: 'https://via.placeholder.com/400x300?text=28',
+    full_name: 'Панфиловцы',
+    birth_date: '1941-11-16',
+    death_date: '1941-11-16',
+    photo_url: 'https://via.placeholder.com/400x300?text=28',
+    rank_name: 'Бойцы 316-й стрелковой дивизии генерала Панфилова',
+    summary_info:
+      'Группа бойцов, прославившихся в боях под Москвой и ставших символом стойкости.',
   },
   {
     id: 11,
-    name: 'Яков Павлов',
-    lifeDates: '1917–1981',
-    rank: 'Герой Советского Союза, сержант',
-    image: 'https://via.placeholder.com/400x300?text=YP',
+    full_name: 'Яков Павлов',
+    birth_date: '1917-10-17',
+    death_date: '1981-09-28',
+    photo_url: 'https://via.placeholder.com/400x300?text=YP',
+    rank_name: 'Герой Советского Союза, сержант',
+    summary_info:
+      'Командир группы бойцов, оборонявших знаменитый дом Павлова в Сталинграде.',
   },
   {
     id: 12,
-    name: 'Молодая гвардия',
-    lifeDates: '1942–1943',
-    rank: 'Подпольная комсомольская организация',
-    image: 'https://via.placeholder.com/400x300?text=MG',
+    full_name: 'Молодая гвардия',
+    birth_date: '1942-09-01',
+    death_date: '1943-02-01',
+    photo_url: 'https://via.placeholder.com/400x300?text=MG',
+    rank_name: 'Подпольная комсомольская организация',
+    summary_info:
+      'Подпольная организация, воевавшая с оккупантами в Краснодоне и окрестностях.',
   },
 ]
 
 /**
  * Mocked heroes list for infinite scroll.
  * Simulates pagination over an in-memory array.
- * Returns object: { heroes: [...], hasMore: boolean }.
+ * Returns object: { heroes: [...], total, skip, limit }.
  */
 export async function fetchHeroes(page = 1, limit = 10) {
   const start = (page - 1) * limit
   const end = start + limit
-  const slice = MOCK_HEROES.slice(start, end)
-  const hasMore = end < MOCK_HEROES.length
+  const heroes = MOCK_HEROES.slice(start, end)
+  const total = MOCK_HEROES.length
+  const skip = start
 
   // Small delay to imitate network latency
   await new Promise((resolve) => setTimeout(resolve, 300))
 
   return {
-    heroes: slice,
-    hasMore,
+    heroes,
+    total,
+    skip,
+    limit,
   }
 }
+
 
