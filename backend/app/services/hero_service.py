@@ -2,7 +2,7 @@ from repositories.heroes import HeroRepository
 from schemas.hero import HeroCreate
 
 from fastapi import HTTPException
-from core.exceptions import HeroNotFound
+from core.hero_exceptions import HeroNotFound
 
 
 class HeroService:

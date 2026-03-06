@@ -13,7 +13,7 @@ from repositories.heroes import HeroRepository
 from services.hero_service import HeroService
 
 from core.files import save_file
-from core.exceptions import BaseHeroException
+from core.hero_exceptions import BaseHeroException
 
 h_router = APIRouter(
     prefix="/heroes",
