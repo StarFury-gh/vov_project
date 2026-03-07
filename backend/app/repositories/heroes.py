@@ -18,7 +18,8 @@ class HeroRepository:
                 h.id,
                 h.full_name,
                 h.birth_date,
-                h.death_date
+                h.death_date,
+                h.photo_url
             FROM heroes h
         """
         # COALESCE(h.biography, '') AS summary_info

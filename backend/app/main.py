@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles 
 from uvicorn import run
 
@@ -11,6 +12,16 @@ app = FastAPI()
 app.include_router(h_router)
 app.include_router(a_router)
 app.include_router(r_router)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173"
+    ],
+    allow_headers=["*"],
+    allow_methods=["*"]
+)
 
 app.mount("/images", StaticFiles(directory="images"), name="images")
 
