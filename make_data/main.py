@@ -10,18 +10,24 @@ async def main():
         if hero_id:
             if hero.get("awards"):
                 for award in hero["awards"]:
-                    # получить id награды
-                    # назначить награду
                     award_id = await requests.reqs.get_award_id(award)
-                    if award_id:
-                        await requests.reqs.add_hero_award(hero_id, award_id)
+                    print(f"{award_id=}")
+
+                    if award_id is None:
+                        id = await requests.reqs.add_award(award)
+
+                        await requests.reqs.assign_hero_award(hero_id, id)
+
+                    else:
+                        await requests.reqs.assign_hero_award(hero_id, award_id)
 
             if hero.get("rank"):
-                rank_id = await requests.reqs.get_award_id(hero["rank"])
+                rank_id = await requests.reqs.get_rank_id(hero["rank"])
                 if rank_id:
                     await requests.reqs.assign_rank(hero_id, rank_id)
                 else:
-                    await requests.reqs.add_rank(hero["rank"], 10)
+                    r_id = await requests.reqs.add_rank(hero["rank"], 1)
+                    await requests.reqs.assign_rank(hero_id, r_id)
 
 if __name__ == "__main__":
     asyncio.run(main())

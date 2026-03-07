@@ -65,8 +65,14 @@ async def get_rank_by_name(
         result = await service.get_by_name(rank_name)
         return result
     
+    except BaseRankException as e:
+        raise HTTPException(
+            status_code=e.code,
+            detail=e.message
+        )
+
     except Exception as e:
-        print(e)
+        print(f"{e} Type: {type(e).__name__}")
         raise HTTPException(
             status_code=500,
             detail=str(e)

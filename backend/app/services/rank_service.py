@@ -5,7 +5,8 @@ from asyncpg.exceptions import UniqueViolationError
 from core.rank_exceptions import (
     BaseRankException,
     RankAlreadyExists,
-    HeroAlreadyHasRank
+    HeroAlreadyHasRank,
+    RankNotFound
 )
 
 class RanksService:
@@ -21,25 +22,21 @@ class RanksService:
             return None
 
     async def get_by_name(self, rank_name: str):
-        try:
-            result = await self.repo.get_by_name(rank_name)
-            return result
-        except Exception as e:
-            print(e)
-            return None
+        result = await self.repo.get_by_name(rank_name)
+        if result is None:
+            raise RankNotFound
+        return result
 
     async def get_rank_by_id(self, rank_id: int):
-        try:
-            result = await self.repo.get(rank_id)
-            return result
-        except Exception as e:
-            print(e)
-            return None
+        result = await self.repo.get(rank_id)
+        return result
 
     async def create_rank(self, rank):
         try:
-            await self.repo.add(rank.name, rank.sort_order)
-            return True
+            id = await self.repo.add(rank.name, rank.sort_order)
+            return {
+                "id": id
+            }
         
         except UniqueViolationError:
             raise RankAlreadyExists()
