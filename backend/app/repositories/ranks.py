@@ -5,7 +5,7 @@ class RanksRepository:
     async def get_all(self):
         return await self.db.fetch("SELECT * FROM ranks")
     
-    async def get_by_id(self, id):
+    async def get(self, id):
         return await self.db.fetchrow("SELECT * FROM ranks WHERE id = $1", id)
 
     async def add(self, name: str, sort_order: int):

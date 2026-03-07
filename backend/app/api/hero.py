@@ -62,6 +62,7 @@ async def get_hero_by_id(
         service = HeroService(repository)
         result = await service.get_hero(hero_id)
         return result
+    
     except BaseHeroException as e:
         raise HTTPException(
             status_code=e.code,
