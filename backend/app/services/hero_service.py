@@ -25,10 +25,15 @@ class HeroService:
             awards = await award_service.get_hero_awards(hero_id)
             rank = await rank_service.get_hero_rank(hero_id)
 
+            print(f"{awards=}\n{rank=}")
+
             hero = await self.get_hero(hero_id)
+
+            print(f"1{hero=}")
 
             hero = dict(hero)
 
+            print(f"{hero=}")
             hero["awards"] = awards["awards"]
             hero["rank"] = rank
 
@@ -36,14 +41,12 @@ class HeroService:
 
         except Exception as e:
             print(f"{e}\tType: {type(e).__name__}")
-        
 
     async def get_heroes(
             self,
             skip: int,
             limit: int,
             search: str,
-            rank_id: int,
             birth_year_from: int,
             birth_year_to: int,
             death_year_from: int,
@@ -53,7 +56,6 @@ class HeroService:
             skip=skip,
             limit=limit,
             search=search,
-            rank_id=rank_id,
             birth_year_from=birth_year_from,
             birth_year_to=birth_year_to,        
             death_year_to=death_year_to,

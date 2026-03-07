@@ -61,14 +61,13 @@ class AwardService:
             self, 
             hero_id: int, 
             award_id: int, 
-            date_awarded: str
         ):
 
         award_existance = await self.repo.check(award_id)
 
         if award_existance:
             try:
-                await self.repo.assign_award(hero_id, award_id, date_awarded)
+                await self.repo.assign_award(hero_id, award_id)
                 return {
                     "status": True
                 }

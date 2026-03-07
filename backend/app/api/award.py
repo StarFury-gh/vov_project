@@ -131,7 +131,6 @@ async def assign_award(
         result = await service.assign_award(
             body.hero_id,
             body.award_id,
-            body.date_awarded
         )
 
         return result

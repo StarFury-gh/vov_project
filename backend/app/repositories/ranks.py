@@ -10,6 +10,8 @@ class RanksRepository:
 
     async def get_hero_rank(self, hero_id):
         rank_id = await self.db.fetchrow("SELECT rank_id FROM hero_ranks WHERE hero_id = $1", hero_id)
+        if not rank_id:
+            return "Мы не нашли информацию о звании этого героя..."
         rank_id = dict(rank_id).get("rank_id")
         rank = await self.db.fetchrow("SELECT name FROM ranks WHERE id=$1", rank_id)
         return rank

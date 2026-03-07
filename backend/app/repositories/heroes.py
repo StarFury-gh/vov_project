@@ -7,7 +7,6 @@ class HeroRepository:
         skip: int = 0,
         limit: int = 20,
         search: str = None,
-        rank_id: int = None,
         birth_year_from: int = None,
         birth_year_to: int = None,
         death_year_from: int = None,
@@ -19,13 +18,10 @@ class HeroRepository:
                 h.id,
                 h.full_name,
                 h.birth_date,
-                h.death_date,
-                h.photo_url,
-                r.name AS rank_name,
-                COALESCE(h.biography, '') AS summary_info
+                h.death_date
             FROM heroes h
-            LEFT JOIN ranks r ON h.rank_id = r.id
         """
+        # COALESCE(h.biography, '') AS summary_info
 
         where_clauses = ["1=1"]
         parameters = []
@@ -34,11 +30,6 @@ class HeroRepository:
             idx = len(parameters) + 1
             where_clauses.append(f"h.full_name ILIKE ${idx}")
             parameters.append(f"%{search}%")
-
-        if rank_id:
-            idx = len(parameters) + 1
-            where_clauses.append(f"h.rank_id = ${idx}")
-            parameters.append(rank_id)
 
         if birth_year_from:
             idx = len(parameters) + 1
@@ -62,7 +53,7 @@ class HeroRepository:
 
         where_sql = " WHERE " + " AND ".join(where_clauses)
 
-        group_by_sql = " GROUP BY h.id, r.name"
+        group_by_sql = " GROUP BY h.id"
 
         # Запрос для получения элементов с пагинацией
         limit_idx = len(parameters) + 1
@@ -97,13 +88,14 @@ class HeroRepository:
 
     async def get_by_id(self, id):
         result = await self.db.fetchrow("SELECT * FROM heroes WHERE id = $1", id)
+        print(f"{result=}")
         return result
 
     async def create(self, hero_data: dict):
         query = """
-        INSERT INTO heroes (full_name, birth_date, death_date, rank_id, biography, photo_url)
-        VALUES ($1, $2::date, $3::date, $4, $5, $6)
-        RETURNING id, full_name, birth_date, death_date, rank_id, biography, photo_url
+        INSERT INTO heroes (full_name, birth_date, death_date, biography, photo_url)
+        VALUES ($1, $2::date, $3::date, $4, $5)
+        RETURNING id, full_name, birth_date, death_date, biography, photo_url
         """
         
         # Преобразуем строковые даты в объекты date, если они строки
@@ -122,9 +114,9 @@ class HeroRepository:
             hero_data['full_name'],
             birth_date,
             death_date,
-            hero_data.get('rank_id') if hero_data.get('rank_id') not in [0, None] else None,
             hero_data.get('biography'),
-            hero_data.get('photo_url')
+            # photo_url - default.webp - если картинка не будет загружена
+            "default.webp"
         )
         
         return result

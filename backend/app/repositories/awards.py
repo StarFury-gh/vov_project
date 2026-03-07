@@ -30,21 +30,15 @@ class AwardsRepository:
         self, 
         hero_id: int, 
         award_id: int, 
-        date_awarded: str
     ):
-        from datetime import datetime
-        awarded_on = datetime.strptime(date_awarded, r'%Y-%m-%d').date()
-
         await self.db.execute(
-            "INSERT INTO hero_awards (hero_id, award_id, date_awarded) VALUES ($1, $2, $3::date)", 
+            "INSERT INTO hero_awards (hero_id, award_id) VALUES ($1, $2)", 
             hero_id, 
             award_id, 
-            awarded_on
         )
 
     async def get_hero_awards(self, hero_id: int):
         awards_ids = await self.db.fetch("SELECT award_id FROM hero_awards WHERE hero_id = $1", hero_id)
         awards = await self.db.fetch("SELECT name FROM awards WHERE id=ANY($1)", awards_ids)
         result = [award["name"] for award in awards]
-
         return result

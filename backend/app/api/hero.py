@@ -25,7 +25,6 @@ async def get_heroes(
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
     search: str = Query(None),
-    rank_id: int = Query(None),
     birth_year_from: int = Query(None, ge=1),
     birth_year_to: int = Query(None, ge=1),
     death_year_from: int = Query(None, ge=1),
@@ -39,7 +38,6 @@ async def get_heroes(
             skip=skip,
             limit=limit,
             search=search,
-            rank_id=rank_id,
             birth_year_from=birth_year_from,
             birth_year_to=birth_year_to,        
             death_year_to=death_year_to,
@@ -65,8 +63,8 @@ async def get_hero_by_id(
         award_repo = AwardsRepository(pg)
         award_service = AwardService(award_repo)
 
-        rank_reop = RanksRepository(pg)
-        rank_service = RanksService(rank_reop)
+        rank_repo = RanksRepository(pg)
+        rank_service = RanksService(rank_repo)
 
         repository = HeroRepository(pg)
         service = HeroService(repository)
@@ -77,7 +75,6 @@ async def get_hero_by_id(
             rank_service=rank_service
         )
 
-        # result = await service.get_hero(hero_id)
         return result
     
     except BaseHeroException as e:
