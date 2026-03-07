@@ -27,7 +27,7 @@ const PAGE_LIMIT = 10
 
 const HomePage = () => {
     const [heroes, setHeroes] = useState<HeroFromApi[]>([])
-    const [page, setPage] = useState(1)
+    const [page, setPage] = useState(0)
     const [hasMore, setHasMore] = useState(true)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -36,11 +36,16 @@ const HomePage = () => {
     const observerRef = useRef<IntersectionObserver | null>(null)
     const sentinelRef = useRef<HTMLDivElement | null>(null)
 
+    // Флаг для предотвращения множественных запросов при изменении page
+    const isLoadingRef = useRef(false)
+
     const navigate = useNavigate()
 
     const loadHeroes = useCallback(async () => {
-        if (requestsBlocked || isLoading || !hasMore) return
+        // Проверяем requestsBlocked и hasMore через ref для актуальности
+        if (requestsBlocked || isLoadingRef.current || !hasMore) return
 
+        isLoadingRef.current = true
         setIsLoading(true)
         setError(null)
 
@@ -83,16 +88,20 @@ const HomePage = () => {
             setHasMore(false)
         } finally {
             setIsLoading(false)
+            isLoadingRef.current = false
         }
-    }, [hasMore, isLoading, page, requestsBlocked])
+    }, [page, hasMore, requestsBlocked]) // Убраны лишние зависимости
 
+    // Загрузка при изменении page
     useEffect(() => {
-        loadHeroes()
-    }, [loadHeroes])
+        if (page > 0) { // Не загружаем при первом рендере (page=1)
+            loadHeroes()
+        }
+    }, [page, loadHeroes])
 
     // Настройка Intersection Observer для бесконечной прокрутки
     useEffect(() => {
-        if (requestsBlocked || !hasMore || isLoading) return
+        if (requestsBlocked || !hasMore || isLoadingRef.current) return
 
         const node = sentinelRef.current
         if (!node) return
@@ -103,9 +112,15 @@ const HomePage = () => {
 
         observerRef.current = new IntersectionObserver((entries) => {
             const firstEntry = entries[0]
-            if (firstEntry.isIntersecting && hasMore && !isLoading) {
+            // Добавляем дополнительные проверки перед увеличением page
+            if (firstEntry.isIntersecting &&
+                hasMore &&
+                !isLoadingRef.current &&
+                !requestsBlocked) {
                 setPage((prev) => prev + 1)
             }
+        }, {
+            threshold: 0.1, // Добавляем порог видимости
         })
 
         observerRef.current.observe(node)
@@ -115,7 +130,7 @@ const HomePage = () => {
                 observerRef.current.disconnect()
             }
         }
-    }, [hasMore, isLoading, requestsBlocked])
+    }, [hasMore, requestsBlocked]) // Убираем isLoading из зависимостей, используем ref
 
     const handleReload = () => {
         window.location.reload()
@@ -180,4 +195,3 @@ const HomePage = () => {
 }
 
 export default HomePage
-
