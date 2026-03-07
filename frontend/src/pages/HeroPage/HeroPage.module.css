@@ -1,56 +1,59 @@
 .page {
-  min-height: 100vh;
-  padding: 32px 16px;
-  background-color: var(--color-bg-page);
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
+    min-height: 100vh;
+    padding: 32px 16px;
+    background-color: var(--color-bg-page);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
 
 .card {
-  max-width: 720px;
-  width: 100%;
-  background-color: var(--color-card-bg);
-  border-radius: 16px;
-  padding: 24px 20px;
-  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.12);
-  color: var(--color-text-main);
+    max-width: 720px;
+    width: 100%;
+    background-color: var(--color-card-bg);
+    border-radius: 16px;
+    padding: 24px 20px;
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.12);
+    color: var(--color-text-main);
 }
 
 .title {
-  margin: 0 0 16px;
-  font-size: 1.8rem;
+    margin: 0 0 16px;
+    font-size: 1.8rem;
 }
 
 .text {
-  margin: 0 0 24px;
-  font-size: 1rem;
-  line-height: 1.6;
-  color: var(--color-text-muted);
+    margin: 0 0 24px;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
 }
 
 .backLink {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: var(--color-text-main);
-  text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--color-text-main);
+    text-decoration: none;
 }
 
 .backLink:hover {
-  text-decoration: underline;
+    text-decoration: underline;
+}
+
+.portrait {
+    width: 100%;
 }
 
 @media (max-width: 600px) {
-  .page {
-    padding: 20px 12px;
-  }
+    .page {
+        padding: 20px 12px;
+    }
 
-  .card {
-    padding: 20px 16px;
-  }
+    .card {
+        padding: 20px 16px;
+    }
 
-  .title {
-    font-size: 1.6rem;
-  }
+    .title {
+        font-size: 1.6rem;
+    }
 }
-

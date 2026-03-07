@@ -154,4 +154,16 @@ export async function fetchHeroes(page = 1, limit = 10) {
     }
 }
 
+export async function fetchHero(id) {
+    const url = `${API_URL}/heroes/${id}`
 
+    const response = await fetch(url)
+
+    if (!response.ok) {
+        throw new Error('Не удалось загрузить информацию о герое')
+    }
+
+    const data = await response.json()
+
+    return data
+}
