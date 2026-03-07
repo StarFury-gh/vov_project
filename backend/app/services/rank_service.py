@@ -63,3 +63,12 @@ class RanksService:
         except Exception as e:
             print(e, f"Type: {type(e).__name__}")
             raise BaseRankException()
+        
+    async def get_hero_rank(self, hero_id: int):
+        try:
+            result = await self.repo.get_hero_rank(hero_id)
+            return result
+        
+        except Exception as e:
+            print(e, f"Type: {type(e).__name__}")
+            raise BaseRankException()

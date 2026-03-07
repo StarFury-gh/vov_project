@@ -58,9 +58,26 @@ async def get_hero_by_id(
     pg = Depends(get_pg)
 ):
     try:
+
+        from services.award_service import AwardService, AwardsRepository
+        from services.rank_service import RanksService, RanksRepository
+
+        award_repo = AwardsRepository(pg)
+        award_service = AwardService(award_repo)
+
+        rank_reop = RanksRepository(pg)
+        rank_service = RanksService(rank_reop)
+
         repository = HeroRepository(pg)
         service = HeroService(repository)
-        result = await service.get_hero(hero_id)
+
+        result = await service.get_full_hero_info(
+            hero_id=hero_id,
+            award_service=award_service,
+            rank_service=rank_service
+        )
+
+        # result = await service.get_hero(hero_id)
         return result
     
     except BaseHeroException as e:

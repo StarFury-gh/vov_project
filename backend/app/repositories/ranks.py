@@ -8,6 +8,12 @@ class RanksRepository:
     async def get(self, id):
         return await self.db.fetchrow("SELECT * FROM ranks WHERE id = $1", id)
 
+    async def get_hero_rank(self, hero_id):
+        rank_id = await self.db.fetchrow("SELECT rank_id FROM hero_ranks WHERE hero_id = $1", hero_id)
+        rank_id = dict(rank_id).get("rank_id")
+        rank = await self.db.fetchrow("SELECT name FROM ranks WHERE id=$1", rank_id)
+        return rank
+
     async def add(self, name: str, sort_order: int):
         return await self.db.fetchval("INSERT INTO ranks (name, sort_order) VALUES ($1, $2) RETURNING id", name, sort_order)
 

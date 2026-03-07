@@ -4,6 +4,8 @@ from schemas.hero import HeroCreate
 from fastapi import HTTPException
 from core.hero_exceptions import HeroNotFound
 
+from services.award_service import AwardService
+from services.rank_service import RanksService
 
 class HeroService:
     def __init__(
@@ -12,6 +14,29 @@ class HeroService:
         ) -> None:
         self.name = "HeroService"
         self.repo = repository
+
+    async def get_full_hero_info(
+            self, 
+            hero_id: int, 
+            award_service: AwardService, 
+            rank_service: RanksService
+        ):
+        try:
+            awards = await award_service.get_hero_awards(hero_id)
+            rank = await rank_service.get_hero_rank(hero_id)
+
+            hero = await self.get_hero(hero_id)
+
+            hero = dict(hero)
+
+            hero["awards"] = awards["awards"]
+            hero["rank"] = rank
+
+            return hero
+
+        except Exception as e:
+            print(f"{e}\tType: {type(e).__name__}")
+        
 
     async def get_heroes(
             self,
