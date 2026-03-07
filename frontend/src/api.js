@@ -1,9 +1,7 @@
 // API для работы с героями.
-// Запросы отправляются на API_URL из constants.
 
 import { API_URL } from "./constants"
 
-// Заглушка для локальной разработки (не используется при реальных запросах)
 const _MOCK_HEROES = [
     {
         id: 1,
@@ -135,7 +133,7 @@ const _MOCK_HEROES = [
 export async function fetchHeroes(page = 1, limit = 10) {
     const skip = (page - 1) * limit
     const params = new URLSearchParams({ limit: String(limit), skip: String(skip) })
-    const url = `${API_URL}/heroes?${params.toString()}`
+    const url = `${API_URL}/heroes/?${params.toString()}`
 
     const response = await fetch(url)
     if (!response.ok) {

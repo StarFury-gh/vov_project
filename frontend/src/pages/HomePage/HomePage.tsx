@@ -76,7 +76,8 @@ const HomePage = () => {
         } catch (e) {
             const message =
                 e instanceof Error ? e.message : 'Ошибка при загрузке героев'
-            setError(message)
+            console.log(message)
+            setError("Ошибка при загрузке героев")
             // Если сервер недоступен/ошибка запроса — блокируем дальнейшие запросы.
             setRequestsBlocked(true)
             setHasMore(false)
@@ -85,7 +86,6 @@ const HomePage = () => {
         }
     }, [hasMore, isLoading, page, requestsBlocked])
 
-    // Первичная загрузка и загрузка при смене страницы
     useEffect(() => {
         loadHeroes()
     }, [loadHeroes])
@@ -163,7 +163,7 @@ const HomePage = () => {
                     <div className={styles.errorBox}>
                         <p className={styles.errorText}>
                             {error}
-                            {requestsBlocked ? ' (автоподгрузка остановлена)' : null}
+                            {requestsBlocked ? ' (сервер недоступен)' : null}
                         </p>
                         <button type="button" className={styles.retryButton} onClick={handleReload}>
                             Перезагрузить страницу
