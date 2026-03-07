@@ -10,6 +10,10 @@ class AwardsRepository:
         res = await self.db.fetch("SELECT * FROM awards")
         return res
 
+    async def get_by_name(self, name: str):
+        res = await self.db.fetchrow("SELECT id FROM awards WHERE name = $1", name)
+        return res
+
     async def add(self, award_name: str, desciption: str):
         award_id = await self.db.fetchval(
             "INSERT INTO awards (name, description) VALUES ($1, $2) RETURNING id",

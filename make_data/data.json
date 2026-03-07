@@ -1,0 +1,24 @@
+[
+    {
+        "full_name": "string",
+        "birth_date": "1922-01-14",
+        "death_date": "1960-02-1",
+        "biography": "Biography heroe's string",
+        "awards": [
+            "Награда 5",
+            "Награда 2"
+        ],
+        "rank": "Герой"
+    },
+    {
+        "full_name": "string1",
+        "birth_date": "1922-01-14",
+        "death_date": "1960-02-1",
+        "biography": "Biography heroe's string1",
+        "awards": [
+            "Награда 3",
+            "Награда 4"
+        ],
+        "rank": "Спаситель"
+    }
+]

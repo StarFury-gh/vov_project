@@ -20,6 +20,14 @@ class RanksService:
             print(e)
             return None
 
+    async def get_by_name(self, rank_name: str):
+        try:
+            result = await self.repo.get_by_name(rank_name)
+            return result
+        except Exception as e:
+            print(e)
+            return None
+
     async def get_rank_by_id(self, rank_id: int):
         try:
             result = await self.repo.get(rank_id)

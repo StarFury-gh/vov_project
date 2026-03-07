@@ -37,6 +37,33 @@ async def get_awards(
             detail="Internal server error"
         )
 
+@a_router.get("/name/{name}")
+async def get_by_name(
+    name: str,
+    pg = Depends(get_pg)
+):
+    try:
+        repository = AwardsRepository(pg)
+        service = AwardService(repository)
+
+        result = await service.get_by_name(name)
+
+        return result
+
+    except BaseAwardExcpetion as e:
+        raise HTTPException(
+            status_code=e.code,
+            detail=e.message
+        )
+
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=500,
+            detail="Internal server error"
+        )
+
+
 @a_router.get("/{award_id}")
 async def get_award_by_id(
     award_id: int,

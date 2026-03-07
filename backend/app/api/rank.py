@@ -54,6 +54,24 @@ async def get_rank_by_id(
             detail=str(e)
         )
 
+@r_router.get("/name/{rank_name}")
+async def get_rank_by_name(
+    rank_name: str,
+    pg = Depends(get_pg)
+):
+    try:
+        repository = RanksRepository(pg)
+        service = RanksService(repository)
+        result = await service.get_by_name(rank_name)
+        return result
+    
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
+
 @r_router.post("/")
 async def create_rank(
     rank: RankCreate,

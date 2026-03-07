@@ -32,6 +32,9 @@ class AwardService:
             return result
         raise AwardNotFound
     
+    async def get_by_name(self, name: str):
+        return await self.repo.get_by_name(name)
+
     async def add_award(self, award: AwardCreate):
         try:
             result = await self.repo.add(
