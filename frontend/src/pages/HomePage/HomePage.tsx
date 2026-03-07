@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './HomePage.module.css'
-import HeroCard from '../../components/heroes/HeroCard/HeroCard'
+import HeroCard from '../../components/heroes/HeroCard'
 // @ts-expect-error JS module without types
 import { fetchHeroes } from '../../api'
 
@@ -19,11 +19,11 @@ export interface HeroFromApi {
 type HeroesApiResponse =
     | HeroFromApi[]
     | {
-          heroes: HeroFromApi[]
-          total: number
-          skip: number
-          limit: number
-      }
+        heroes: HeroFromApi[]
+        total: number
+        skip: number
+        limit: number
+    }
 
 const PAGE_LIMIT = 10
 

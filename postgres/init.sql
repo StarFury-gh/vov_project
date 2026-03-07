@@ -56,13 +56,23 @@ CREATE TABLE hero_awards (
 CREATE INDEX idx_hero_awards_hero_id ON hero_awards(hero_id);
 CREATE INDEX idx_hero_awards_award_id ON hero_awards(award_id);
 
--- Таблица дополнительных фотографий
-CREATE TABLE photos (
-    id SERIAL PRIMARY KEY,
-    hero_id INTEGER NOT NULL REFERENCES heroes(id) ON DELETE CASCADE,
-    url VARCHAR(500) NOT NULL,
-    caption VARCHAR(255),
-    sort_order INTEGER DEFAULT 0
+-- Таблица связи героев и званий (многие ко многим)
+CREATE TABLE hero_ranks (
+    hero_id INTEGER REFERENCES heroes(id) ON DELETE CASCADE,
+    rank_id INTEGER REFERENCES ranks(id) ON DELETE CASCADE,
+    PRIMARY KEY (hero_id, rank_id)
 );
 
-CREATE INDEX idx_photos_hero_id ON photos(hero_id);
+CREATE INDEX idx_hero_ranks_hero_id ON hero_ranks(hero_id);
+CREATE INDEX idx_hero_ranks_award_id ON hero_ranks(rank_id);
+
+-- Таблица дополнительных фотографий
+-- CREATE TABLE photos (
+--     id SERIAL PRIMARY KEY,
+--     hero_id INTEGER NOT NULL REFERENCES heroes(id) ON DELETE CASCADE,
+--     url VARCHAR(500) NOT NULL,
+--     caption VARCHAR(255),
+--     sort_order INTEGER DEFAULT 0
+-- );
+
+-- CREATE INDEX idx_photos_hero_id ON photos(hero_id);
