@@ -33,7 +33,6 @@ CREATE TABLE heroes (
     full_name VARCHAR(200) NOT NULL,
     birth_date DATE,
     death_date DATE,
-    rank_id INTEGER REFERENCES ranks(id) ON DELETE SET NULL,
     biography TEXT,
     photo_url VARCHAR(500),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -43,13 +42,11 @@ CREATE TABLE heroes (
 CREATE INDEX idx_heroes_full_name ON heroes(full_name);
 CREATE INDEX idx_heroes_birth_date ON heroes(birth_date);
 CREATE INDEX idx_heroes_death_date ON heroes(death_date);
-CREATE INDEX idx_heroes_rank_id ON heroes(rank_id);
 
 -- Таблица связи героев и наград (многие ко многим)
 CREATE TABLE hero_awards (
     hero_id INTEGER REFERENCES heroes(id) ON DELETE CASCADE,
     award_id INTEGER REFERENCES awards(id) ON DELETE CASCADE,
-    date_awarded DATE,
     PRIMARY KEY (hero_id, award_id)
 );
 
