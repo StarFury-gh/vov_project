@@ -4,7 +4,10 @@ from fastapi import (
     HTTPException
 )
 
-from schemas.rank import RankCreate
+from schemas.rank import (
+    RankCreate,
+    RankAssign
+)
 from repositories.ranks import RanksRepository
 from services.rank_service import RanksService
 from dependencies.postgres import get_pg
@@ -86,5 +89,30 @@ async def delete_rank():
     return {"message": "Rank deleted"}
 
 @r_router.post("/assign")
-async def assign_rank():
-    ...
+async def assign_rank(
+    body: RankAssign,
+    pg = Depends(get_pg)
+):
+    try:
+        repository = RanksRepository(pg)
+        service = RanksService(repository)
+
+        result = await service.assgin_rank(
+            rank_id=body.rank_id,
+            hero_id=body.hero_id
+        )
+
+        return result
+    
+    except BaseRankException as e:
+        raise HTTPException(
+            status_code=e.code,
+            detail=e.message
+        )
+    
+    except Exception as e:
+        print(e, f"Type: {type(e).__name__}")
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )

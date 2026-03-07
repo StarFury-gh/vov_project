@@ -19,4 +19,5 @@ class RanksRepository:
     async def delete(self, id: int):
         await self.db.execute("DELETE FROM ranks WHERE id = $1", id)
 
-    
+    async def assign_rank(self, hero_id: int, rank_id: int):
+        await self.db.execute("INSERT INTO hero_ranks (hero_id, rank_id) VALUES ($1, $2)", hero_id, rank_id)

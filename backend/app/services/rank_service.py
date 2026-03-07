@@ -3,7 +3,9 @@ from repositories.ranks import RanksRepository
 from asyncpg.exceptions import UniqueViolationError
 
 from core.rank_exceptions import (
-    RankAlreadyExists
+    BaseRankException,
+    RankAlreadyExists,
+    HeroAlreadyHasRank
 )
 
 class RanksService:
@@ -47,3 +49,17 @@ class RanksService:
         except Exception as e:
             print(e)
             return None
+        
+    async def assgin_rank(self, hero_id: int, rank_id: int):
+        try:
+            await self.repo.assign_rank(hero_id, rank_id)
+            return {
+                "status": True
+            }
+        
+        except UniqueViolationError as e:
+            raise HeroAlreadyHasRank
+
+        except Exception as e:
+            print(e, f"Type: {type(e).__name__}")
+            raise BaseRankException()
