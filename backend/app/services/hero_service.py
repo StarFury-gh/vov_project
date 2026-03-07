@@ -29,8 +29,15 @@ class HeroService:
 
             hero = dict(hero)
 
-            hero["awards"] = awards["awards"]
-            hero["rank"] = rank["name"]
+            if isinstance(awards, dict):
+                hero["awards"] = awards.get("awards", [])
+            else:
+                hero["awards"] = []
+
+            if isinstance(rank, dict):
+                hero["rank"] = rank.get("name", "Нам не удалось найти информацию об этом герое...")
+            else:
+                hero["rank"] = "Unknown"
 
             return hero
 
