@@ -12,8 +12,6 @@ export interface HeroFromApi {
     birth_date: string
     death_date: string
     photo_url: string
-    rank_name: string | null
-    summary_info: string
 }
 
 type HeroesApiResponse =
@@ -33,6 +31,7 @@ const HomePage = () => {
     const [hasMore, setHasMore] = useState(true)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [requestsBlocked, setRequestsBlocked] = useState(false)
 
     const observerRef = useRef<IntersectionObserver | null>(null)
     const sentinelRef = useRef<HTMLDivElement | null>(null)
@@ -40,7 +39,7 @@ const HomePage = () => {
     const navigate = useNavigate()
 
     const loadHeroes = useCallback(async () => {
-        if (isLoading || !hasMore) return
+        if (requestsBlocked || isLoading || !hasMore) return
 
         setIsLoading(true)
         setError(null)
@@ -78,19 +77,22 @@ const HomePage = () => {
             const message =
                 e instanceof Error ? e.message : 'Ошибка при загрузке героев'
             setError(message)
+            // Если сервер недоступен/ошибка запроса — блокируем дальнейшие запросы.
+            setRequestsBlocked(true)
+            setHasMore(false)
         } finally {
             setIsLoading(false)
         }
-    }, [hasMore, isLoading, page])
+    }, [hasMore, isLoading, page, requestsBlocked])
 
     // Первичная загрузка и загрузка при смене страницы
     useEffect(() => {
-        void loadHeroes()
+        loadHeroes()
     }, [loadHeroes])
 
     // Настройка Intersection Observer для бесконечной прокрутки
     useEffect(() => {
-        if (!hasMore || isLoading) return
+        if (requestsBlocked || !hasMore || isLoading) return
 
         const node = sentinelRef.current
         if (!node) return
@@ -113,10 +115,10 @@ const HomePage = () => {
                 observerRef.current.disconnect()
             }
         }
-    }, [hasMore, isLoading])
+    }, [hasMore, isLoading, requestsBlocked])
 
-    const handleRetry = () => {
-        void loadHeroes()
+    const handleReload = () => {
+        window.location.reload()
     }
 
     const handleHeroClick = (id: HeroFromApi['id']) => {
@@ -143,8 +145,6 @@ const HomePage = () => {
                             birthDate={hero.birth_date}
                             deathDate={hero.death_date}
                             photoUrl={hero.photo_url}
-                            rankName={hero.rank_name ?? undefined}
-                            summaryInfo={hero.summary_info}
                             onClick={() => handleHeroClick(hero.id)}
                         />
                     ))}
@@ -161,9 +161,12 @@ const HomePage = () => {
 
                 {error && (
                     <div className={styles.errorBox}>
-                        <p className={styles.errorText}>{error}</p>
-                        <button type="button" className={styles.retryButton} onClick={handleRetry}>
-                            Повторить попытку
+                        <p className={styles.errorText}>
+                            {error}
+                            {requestsBlocked ? ' (автоподгрузка остановлена)' : null}
+                        </p>
+                        <button type="button" className={styles.retryButton} onClick={handleReload}>
+                            Перезагрузить страницу
                         </button>
                     </div>
                 )}
