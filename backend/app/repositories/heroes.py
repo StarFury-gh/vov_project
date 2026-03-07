@@ -89,7 +89,6 @@ class HeroRepository:
 
     async def get_by_id(self, id):
         result = await self.db.fetchrow("SELECT * FROM heroes WHERE id = $1", id)
-        print(f"{result=}")
         return result
 
     async def create(self, hero_data: dict):
