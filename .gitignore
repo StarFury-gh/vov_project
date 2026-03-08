@@ -30,3 +30,5 @@ __pycache__
 *.jpg
 # Secrets
 .env
+
+run_db.sh
