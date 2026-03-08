@@ -50,6 +50,8 @@ class HeroService:
             birth_year_to: int,
             death_year_from: int,
             death_year_to: int,
+            award_filter: str,
+            rank_filter: str
         ):
         result = await self.repo.get(
             skip=skip,
@@ -58,7 +60,9 @@ class HeroService:
             birth_year_from=birth_year_from,
             birth_year_to=birth_year_to,        
             death_year_to=death_year_to,
-            death_year_from=death_year_from
+            death_year_from=death_year_from,
+            award_filter=award_filter,
+            rank_filter=rank_filter
         )
         return result
 

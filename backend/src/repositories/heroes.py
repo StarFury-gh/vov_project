@@ -10,7 +10,9 @@ class HeroRepository:
         birth_year_from: int = None,
         birth_year_to: int = None,
         death_year_from: int = None,
-        death_year_to: int = None
+        death_year_to: int = None,
+        award_filter: str = None,
+        rank_filter: str = None
     ):
         # Базовая часть запроса без фильтров, группировки и пагинации
         base_query = """
@@ -26,6 +28,22 @@ class HeroRepository:
 
         where_clauses = ["1=1"]
         parameters = []
+
+        if award_filter:
+            idx = len(parameters) + 1
+            where_clauses.append(
+                f"EXISTS (SELECT 1 FROM hero_awards ha JOIN awards a ON ha.award_id = a.id "
+                f"WHERE ha.hero_id = h.id AND a.name ILIKE ${idx})"
+            )
+            parameters.append(f"%{award_filter}%")
+
+        if rank_filter:
+            idx = len(parameters) + 1
+            where_clauses.append(
+                f"EXISTS (SELECT 1 FROM hero_ranks hr JOIN ranks r ON hr.rank_id = r.id "
+                f"WHERE hr.hero_id = h.id AND r.name ILIKE ${idx})"
+            )
+            parameters.append(f"%{rank_filter}%")
 
         if search:
             idx = len(parameters) + 1
@@ -51,6 +69,9 @@ class HeroRepository:
             idx = len(parameters) + 1
             where_clauses.append(f"EXTRACT(YEAR FROM h.death_date) <= ${idx}")
             parameters.append(death_year_to)
+
+        if award_filter:
+            idx = len(parameters) + 1
 
         where_sql = " WHERE " + " AND ".join(where_clauses)
 
