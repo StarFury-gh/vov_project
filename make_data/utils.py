@@ -1,5 +1,6 @@
 from config import config_obj
 
+from glob import glob
 import json
 
 def get_all_names():
@@ -20,7 +21,17 @@ def get_all_names_from_json():
 
     return list(names)
 
+def get_number_of_heroes():
+    all_heroes = get_all_names_from_json()
+    return len(all_heroes)
+
 def read_data_from_json():
     with open(config_obj.JSON_FILE, "r") as file:
         data = json.load(file)
         return data
+    
+def get_image_path(hero_name: str):
+    try:
+        return glob(f"./heroes_photos/{hero_name}.*")[0]
+    except IndexError:
+        return None
