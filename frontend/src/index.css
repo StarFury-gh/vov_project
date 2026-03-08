@@ -45,4 +45,12 @@ a {
 
 button {
   font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+button img {
+  width: 16px;
+  height: 16px;
 }

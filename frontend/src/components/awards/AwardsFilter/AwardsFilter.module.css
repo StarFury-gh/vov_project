@@ -1,6 +1,6 @@
 .filterContainer {
     height: 100%;
-    padding: 0.1rem 2rem;
+    padding: 1rem 2rem;
     background-color: var(--color-card-bg);
     border: 1px solid var(--color-card-accent-light);
     border-radius: 8px;
@@ -15,10 +15,29 @@
     cursor: pointer;
     user-select: none;
     transition: color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .filterTitle:hover {
     color: var(--color-accent-strong);
+}
+
+.hidden {
+    display: none;
+}
+
+.button {
+    padding: 0.2rem 1rem;
+    border: none;
+    background-color: var(--color-card-accent-light);
+    border-radius: 4px;
+}
+
+.button:hover {
+    background-color: var(--color-accent-strong);
+    color: white;
 }
 
 .radioGroup {

@@ -40,10 +40,27 @@ const RanksFilter = ({ onFilterChange }: RanksFilterProps) => {
         setIsExpanded(prev => !prev); // Переключение состояния
     }
 
+    const handleRemoveFilter = () => {
+        onFilterChange("")
+        setSelectedFilter("")
+    }
+
     return (
         <div className={styles.filterContainer}>
             <h4 className={styles.filterTitle} onClick={toggleAccordion} style={{ cursor: 'pointer' }}>
-                Фильтр рангов: {isExpanded ? '▲' : '▼'}
+                Фильтр рангов:
+                <img
+                    src="/down.svg"
+                    alt="Развернуть"
+                    className={`${isExpanded ? styles.hidden : ''} ${styles.icon}`}
+                    style={{ width: '24px', height: '24px' }}
+                />
+                <img
+                    src="/up.svg"
+                    alt="Свернуть"
+                    className={`${!isExpanded ? styles.hidden : ''} ${styles.icon}`}
+                    style={{ width: '24px', height: '24px' }}
+                />
             </h4>
             <div className={`${styles.radioGroup} ${isExpanded ? styles.expanded : ''}`}>
                 {options?.map((option) => (
@@ -59,7 +76,8 @@ const RanksFilter = ({ onFilterChange }: RanksFilterProps) => {
                     </label>
                 ))}
             </div>
-            <button className={styles.button}>
+            <button className={styles.button} onClick={handleRemoveFilter}>
+                <img src="/delete.svg" alt="Удалить" />
                 Очистить фиильтр по рангу
             </button>
         </div>
