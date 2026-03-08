@@ -232,7 +232,7 @@ class HeroPhotosDownloader:
         
         return False
     
-    def download_hero_photos(self, hero_name, max_attempts=2):
+    def download_hero_photos(self, hero_name, max_attempts=5):
         """
         Загрузка фотографий для конкретного героя
         
