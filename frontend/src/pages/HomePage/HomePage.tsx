@@ -61,11 +61,9 @@ const HomePage = () => {
             let nextHasMore = true
 
             if (Array.isArray(data)) {
-                // API вернул просто массив героев
                 newHeroes = data
                 nextHasMore = data.length === PAGE_LIMIT
             } else if (data && Array.isArray(data.heroes)) {
-                // API вернул объект с полем heroes и метаданными пагинации
                 const { heroes: heroesList, total, skip, limit } = data
                 newHeroes = heroesList
 
@@ -95,11 +93,11 @@ const HomePage = () => {
             setIsLoading(false)
             isLoadingRef.current = false
         }
-    }, [page, hasMore, requestsBlocked]) // Убраны лишние зависимости
+    }, [page, hasMore, requestsBlocked])
 
     // Загрузка при изменении page
     useEffect(() => {
-        if (page > 0) { // Не загружаем при первом рендере (page=1)
+        if (page > 0) {
             loadHeroes()
         }
     }, [page, loadHeroes])
@@ -135,7 +133,7 @@ const HomePage = () => {
                 observerRef.current.disconnect()
             }
         }
-    }, [hasMore, requestsBlocked, searchResults]) // Убираем isLoading из зависимостей, используем ref
+    }, [hasMore, requestsBlocked, searchResults])
 
     const handleReload = () => {
         window.location.reload()
@@ -157,24 +155,14 @@ const HomePage = () => {
 
         const normalized = query.toLowerCase()
 
-        // Сначала ищем среди уже загруженных героев (в стейте)
-        const localMatches = heroes.filter((hero) =>
-            hero.full_name.toLowerCase().includes(normalized)
-        )
-
-        if (localMatches.length > 0) {
-            setSearchResults(localMatches)
-            setSearchError(null)
-            return
-        }
-
-        // Если в стейте не нашли — обращаемся к заглушке на "бэкенде"
         try {
             setIsSearching(true)
             setSearchError(null)
 
-            const remoteMatches = (await searchHeroesByName(query)) as HeroFromApi[]
+            const remoteMatches = (await searchHeroesByName(normalized)) as HeroFromApi[]
             setSearchResults(remoteMatches)
+
+            console.log(remoteMatches)
 
             if (remoteMatches.length === 0) {
                 setSearchError('Герои с таким именем не найдены')

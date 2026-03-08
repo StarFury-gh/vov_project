@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { FormEvent } from 'react'
+import type { ChangeEvent, FormEvent } from 'react'
 import styles from './AddHeroForm.module.css'
 
 // @ts-expect-error JS module without types
@@ -23,6 +23,7 @@ const AddHeroForm = () => {
     const [rank, setRank] = useState('')
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState<string | null>(null)
+    const [file, setFile] = useState<File>()
 
     const handleAddAward = () => {
         const trimmed = awardInput.trim()
@@ -34,6 +35,12 @@ const AddHeroForm = () => {
 
     const handleRemoveAward = (index: number) => {
         setAwards((prev) => prev.filter((_, i) => i !== index))
+    }
+
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setFile(e.target.files[0])
+        }
     }
 
     const handleSubmit = async (e: FormEvent) => {
@@ -58,28 +65,42 @@ const AddHeroForm = () => {
 
         try {
             const { data } = await axios.post(url, form_data)
-            console.log(data)
+
             const hero_id = data.id
             const title = (data && typeof data.full_name === 'string' && data.full_name.trim()) || fullName.trim()
             setSuccess(`${title || 'Герой'} успешно добавлен(о)`)
 
-            const assign_rank_body = {
-                hero_id,
-                rank_name: rank
+            if (rank.trim()) {
+                const assign_rank_body = {
+                    hero_id,
+                    rank_name: rank
+                }
+
+                const assign_rank_url = API_URL + "/ranks/assign_by_name"
+                await axios.post(assign_rank_url, assign_rank_body)
             }
 
-            const assign_awards_body = {
-                hero_id,
-                awards: awards
+            if (awards.length !== 0) {
+                const assign_awards_body = {
+                    hero_id,
+                    awards: awards
+                }
+
+                const assign_awards_url = API_URL + "/awards/m_assign"
+                await axios.post(assign_awards_url, assign_awards_body)
             }
 
-            console.log(assign_rank_body)
+            if (file) {
+                const file_form_data = new FormData()
+                file_form_data.append('image', file, file.name)
 
-            const assign_rank_url = API_URL + "/ranks/assign_by_name"
-            await axios.post(assign_rank_url, assign_rank_body)
-
-            const assign_awards_url = API_URL + "/awards/m_assign"
-            await axios.post(assign_awards_url, assign_awards_body)
+                const file_url = API_URL + `/heroes/image?hero_id=${hero_id}`
+                await axios.post(file_url, file_form_data, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    }
+                })
+            }
 
         } catch (err) {
             console.error(err)
@@ -134,6 +155,18 @@ const AddHeroForm = () => {
                     value={biography}
                     onChange={(e) => setBiography(e.target.value)}
                 />
+            </label>
+
+            <label>
+                Фотография
+                <input
+                    type="file"
+                    className={styles.file_input}
+                    alt=""
+                    accept='.jpg, .png, .jpeg, .webp'
+                    onChange={handleFileChange}
+                />
+                {file && <p>Выбран файл: {file.name}</p>}
             </label>
 
             <div className={styles.label}>

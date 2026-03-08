@@ -2,23 +2,24 @@
 
 import { API_URL } from "./constants"
 
-/**
- * Заглушка для поиска героев по имени на бэкенде.
- * Работает только с локальным массивом _MOCK_HEROES и имитирует сетевой запрос.
- */
-export async function searchHeroesByName(query) {
+export async function searchHeroesByName(query, page = 1, limit = 10) {
     const normalized = (query ?? '').trim().toLowerCase()
+    const skip = (page - 1) * limit
 
     if (!normalized) {
         return []
     }
 
-    // Имитируем небольшую задержку сети
-    await new Promise((resolve) => setTimeout(resolve, 300))
+    const params = new URLSearchParams({ limit: String(limit), skip: String(skip), search: normalized })
+    const url = API_URL + "/heroes/" + `?${params.toString()}`
+    const response = await fetch(url)
 
-    return _MOCK_HEROES.filter((hero) =>
-        hero.full_name.toLowerCase().includes(normalized)
-    )
+
+    if (response.ok) {
+        const result = await response.json()
+        return result.items
+    }
+
 }
 
 /**
