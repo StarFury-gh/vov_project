@@ -1,4 +1,5 @@
 from repositories.awards import AwardsRepository
+from typing import List
 
 from asyncpg.exceptions import (
     UniqueViolationError,
@@ -60,6 +61,15 @@ class AwardService:
 
         raise AwardNotFound    
     
+    async def multiple_assign(self, hero_id: int, awards_names: List[str]):
+        for award in awards_names:
+            award_id = await self.repo.get_by_name(award)
+            award_id = award_id.get("id")
+            if award_id:
+                await self.assign_award(hero_id, award_id)
+            else:
+                raise AwardNotFound
+
     async def assign_award(
             self, 
             hero_id: int, 

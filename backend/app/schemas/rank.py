@@ -7,3 +7,7 @@ class RankCreate(BaseModel):
 class RankAssign(BaseModel):
     hero_id: int
     rank_id: int
+
+class RankAssignByName(BaseModel):
+    hero_id: int
+    rank_name: str

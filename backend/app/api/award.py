@@ -5,7 +5,11 @@ from repositories.awards import AwardsRepository
 from dependencies.postgres import get_pg
 from core.award_exceptions import BaseAwardExcpetion
 from core.hero_exceptions import HeroNotFound
-from schemas.award import AwardCreate, AssignAward
+from schemas.award import (
+    AwardCreate, 
+    AssignAward, 
+    MultipleAssignAward
+)
 
 a_router = APIRouter(
     prefix="/awards",
@@ -116,10 +120,6 @@ async def add_award(
             detail="Internal server error"
         )
 
-@a_router.patch("/")
-async def patch_awards():
-    return {"message": "Award updated"}
-
 @a_router.delete("/")
 async def delete_award(
     award_id: int,
@@ -180,6 +180,36 @@ async def assign_award(
             status_code=500,
             detail="Internal server error"
         )
+
+@a_router.post("/m_assign")
+async def multiple_assign(
+    body: MultipleAssignAward,
+    pg = Depends(get_pg)
+):
+    try:
+        repository = AwardsRepository(pg)
+        service = AwardService(repository)
+
+        result = await service.multiple_assign(
+            hero_id=body.hero_id, 
+            awards_names=body.awards
+        )
+
+        return result
+    
+    except BaseAwardExcpetion as e:
+        raise HTTPException(
+            status_code=e.code,
+            detail=e.message
+        )
+
+    except Exception as e:
+        print(e, f"Type: {type(e).__name__}")
+        raise HTTPException(
+            status_code=500,
+            detail="Internal server error"
+        )
+    
 
 @a_router.get("/hero/{hero_id}")
 async def get_hero_awards(

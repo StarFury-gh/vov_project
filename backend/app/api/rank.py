@@ -6,7 +6,8 @@ from fastapi import (
 
 from schemas.rank import (
     RankCreate,
-    RankAssign
+    RankAssign,
+    RankAssignByName
 )
 from repositories.ranks import RanksRepository
 from services.rank_service import RanksService
@@ -104,14 +105,6 @@ async def create_rank(
             detail=str(e)
         )
 
-@r_router.patch("/")
-async def change_rank():
-    return {"message": "Rank changed"}
-
-@r_router.delete("/")
-async def delete_rank():
-    return {"message": "Rank deleted"}
-
 @r_router.post("/assign")
 async def assign_rank(
     body: RankAssign,
@@ -124,6 +117,35 @@ async def assign_rank(
         result = await service.assgin_rank(
             rank_id=body.rank_id,
             hero_id=body.hero_id
+        )
+
+        return result
+    
+    except BaseRankException as e:
+        raise HTTPException(
+            status_code=e.code,
+            detail=e.message
+        )
+    
+    except Exception as e:
+        print(e, f"Type: {type(e).__name__}")
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
+    
+@r_router.post("/assign_by_name")
+async def assign_by_name(
+    body: RankAssignByName,
+    pg = Depends(get_pg)
+):
+    try:
+        repository = RanksRepository(pg)
+        service = RanksService(repository)
+
+        result = await service.assign_by_name(
+            hero_id=body.hero_id,
+            rank_name=body.rank_name,
         )
 
         return result

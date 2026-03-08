@@ -100,22 +100,30 @@ class HeroRepository:
         
         # Преобразуем строковые даты в объекты date, если они строки
         birth_date = hero_data.get('birth_date')
-        if birth_date and isinstance(birth_date, str):
-            from datetime import datetime
-            birth_date = datetime.strptime(birth_date, '%Y-%m-%d').date()
-        
+        if birth_date:
+            print(f"{bool(birth_date)}=")
+            if birth_date and isinstance(birth_date, str):
+                from datetime import datetime
+                birth_date = datetime.strptime(birth_date, '%Y-%m-%d').date()
+        else:
+            birth_date = None
+
         death_date = hero_data.get('death_date')
-        if death_date and isinstance(death_date, str):
-            from datetime import datetime
-            death_date = datetime.strptime(death_date, '%Y-%m-%d').date()
-        
+        if death_date:
+            print(f"{bool(death_date)}=")
+            if death_date and isinstance(death_date, str):
+                from datetime import datetime
+                death_date = datetime.strptime(death_date, '%Y-%m-%d').date()
+        else:
+            death_date = None
+
         result = await self.db.fetchrow(
             query,
             hero_data['full_name'],
             birth_date,
             death_date,
             hero_data.get('biography'),
-            # photo_url - default.webp - если картинка не будет загружена
+            # photo_url = default.webp - если картинка не будет загружена
             "default.webp"
         )
         
