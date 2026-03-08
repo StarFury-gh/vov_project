@@ -75,7 +75,7 @@ const HomePage = () => {
         setError(null)
 
         try {
-            const data = (await fetchHeroes(page, PAGE_LIMIT)) as HeroesApiResponse
+            const data = (await fetchHeroes(page, PAGE_LIMIT, awardFilter, rankFilter)) as HeroesApiResponse
 
             let newHeroes: HeroFromApi[] = []
             let nextHasMore = true
@@ -110,7 +110,7 @@ const HomePage = () => {
             setIsLoading(false)
             isLoadingRef.current = false
         }
-    }, [page, hasMore, requestsBlocked, isSearchMode])
+    }, [page, hasMore, requestsBlocked, isSearchMode, awardFilter, rankFilter])
 
     // Загрузка результатов поиска с пагинацией
     const loadSearchResults = useCallback(async () => {

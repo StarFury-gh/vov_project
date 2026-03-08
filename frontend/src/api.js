@@ -31,10 +31,10 @@ export async function fetchHeroes(page = 1, limit = 10, award_filter = null, ran
     const skip = (page - 1) * limit
     const params = new URLSearchParams({ limit: String(limit), skip: String(skip) })
 
-    if (award_filter) {
+    if (award_filter && award_filter !== "" && award_filter !== null) {
         params.append('award_filter', award_filter)
     }
-    if (rank_filter) {
+    if (rank_filter && rank_filter !== "" && rank_filter !== null) {
         params.append('rank_filter', rank_filter)
     }
 
