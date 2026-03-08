@@ -85,6 +85,12 @@
     color: var(--color-error-text);
 }
 
+.filtersContainer {
+    margin: 1rem auto;
+    display: flex;
+    gap: 1rem;
+}
+
 .listContainer {
     width: 100%;
     max-width: 1400px;

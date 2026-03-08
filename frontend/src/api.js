@@ -27,9 +27,17 @@ export async function searchHeroesByName(query, page = 1, limit = 10) {
  * GET-запрос к API_URL с query-параметрами limit и skip.
  * Возвращает: { heroes: [...], total, skip, limit }.
  */
-export async function fetchHeroes(page = 1, limit = 10) {
+export async function fetchHeroes(page = 1, limit = 10, award_filter = null, rank_filter = null) {
     const skip = (page - 1) * limit
     const params = new URLSearchParams({ limit: String(limit), skip: String(skip) })
+
+    if (award_filter) {
+        params.append('award_filter', award_filter)
+    }
+    if (rank_filter) {
+        params.append('rank_filter', rank_filter)
+    }
+
     const url = `${API_URL}/heroes/?${params.toString()}`
 
     const response = await fetch(url)

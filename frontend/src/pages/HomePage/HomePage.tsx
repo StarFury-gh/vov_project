@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './HomePage.module.css'
+
 import HeroCard from '../../components/heroes/HeroCard'
+import AwardsFilter from '../../components/awards/AwardsFilter'
+import RanksFilter from '../../components/ranks/RanksFilter'
+
 // @ts-expect-error JS module without types
 import { fetchHeroes, searchHeroesByName } from '../../api'
 
@@ -40,6 +44,9 @@ const HomePage = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [requestsBlocked, setRequestsBlocked] = useState(false)
+
+    const [awardFilter, setAwardFilter] = useState<string>("")
+    const [rankFilter, setRankFilter] = useState<string>("")
 
     // Состояния для поиска
     const [searchQuery, setSearchQuery] = useState('')
@@ -267,6 +274,16 @@ const HomePage = () => {
         resetSearch()
     }
 
+    const handleAwardFilterChange = (value: string) => {
+        console.log("New filter:", value)
+        setAwardFilter(value)
+    }
+
+    const handleRankFilterChange = (value: string) => {
+        console.log("New rank filter:", value)
+        setRankFilter(value)
+    }
+
     // Определяем, что отображать
     const heroesToRender = isSearchMode ? searchResults : heroes
     const currentHasMore = isSearchMode ? searchHasMore : hasMore
@@ -307,6 +324,10 @@ const HomePage = () => {
                         </button>
                     )}
                 </form>
+                <div className={styles.filtersContainer}>
+                    <AwardsFilter onFilterChange={handleAwardFilterChange} />
+                    <RanksFilter onFilterChange={handleRankFilterChange} />
+                </div>
                 {searchError && isSearchMode && (
                     <p className={styles.searchError}>{searchError}</p>
                 )}

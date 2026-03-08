@@ -1,0 +1,58 @@
+.filterContainer {
+    height: 100%;
+    padding: 0.1rem 2rem;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-card-accent-light);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filterTitle {
+    margin-bottom: 0.75rem;
+    color: var(--color-text-main);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s ease;
+}
+
+.filterTitle:hover {
+    color: var(--color-accent-strong);
+}
+
+.radioGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.radioGroup.expanded {
+    max-height: 100%;
+    opacity: 1;
+    padding-bottom: 1rem;
+}
+
+.radioLabel {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.radioLabel:hover {
+    background-color: var(--color-card-accent-light);
+}
+
+.radioLabel input[type="radio"] {
+    margin-right: 0.5rem;
+    accent-color: var(--color-accent-strong);
+}
