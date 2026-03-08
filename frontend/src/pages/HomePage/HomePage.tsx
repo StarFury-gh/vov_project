@@ -162,6 +162,57 @@ const HomePage = () => {
         }
     }, [searchPage, loadSearchResults, isSearchMode])
 
+    // Эффект для перезагрузки героев при изменении фильтров
+    useEffect(() => {
+        if (!isSearchMode) {
+            // Сбрасываем состояние при изменении фильтров
+            setHeroes([])
+            setPage(0)
+            setHasMore(true)
+            setRequestsBlocked(false)
+            setError(null)
+
+            // Загружаем первую страницу с новыми фильтрами
+            const loadFirstPage = async () => {
+                if (isLoadingRef.current) return
+
+                isLoadingRef.current = true
+                setIsLoading(true)
+
+                try {
+                    const data = await fetchHeroes(1, PAGE_LIMIT, awardFilter, rankFilter) as HeroesApiResponse
+
+                    let newHeroes: HeroFromApi[] = []
+                    let nextHasMore = true
+
+                    if (Array.isArray(data)) {
+                        newHeroes = data
+                        nextHasMore = data.length === PAGE_LIMIT
+                    } else if (data && Array.isArray(data.heroes)) {
+                        const { heroes: heroesList, total, skip } = data
+                        newHeroes = heroesList
+                        nextHasMore = skip + heroesList.length < total
+                    }
+
+                    setHeroes(newHeroes)
+                    setHasMore(nextHasMore)
+                    setPage(1) // Устанавливаем текущую страницу как 1 (следующая загрузка будет на страницу 2)
+                } catch (e) {
+                    const message = e instanceof Error ? e.message : 'Ошибка при загрузке героев'
+                    console.log(message)
+                    setError("Ошибка при загрузке героев")
+                    setRequestsBlocked(true)
+                    setHasMore(false)
+                } finally {
+                    setIsLoading(false)
+                    isLoadingRef.current = false
+                }
+            }
+
+            loadFirstPage()
+        }
+    }, [awardFilter, rankFilter, isSearchMode])
+
     // Настройка Intersection Observer для бесконечной прокрутки
     useEffect(() => {
         if (requestsBlocked || isLoadingRef.current) return

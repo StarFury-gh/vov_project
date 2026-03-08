@@ -59,6 +59,9 @@ const AwardsFilter = ({ onFilterChange }: AwardsFilterProps) => {
                     </label>
                 ))}
             </div>
+            <button className={styles.button}>
+                Очистить фильтр по награде
+            </button>
         </div>
     )
 }

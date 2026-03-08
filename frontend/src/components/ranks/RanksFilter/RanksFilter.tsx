@@ -59,6 +59,9 @@ const RanksFilter = ({ onFilterChange }: RanksFilterProps) => {
                     </label>
                 ))}
             </div>
+            <button className={styles.button}>
+                Очистить фиильтр по рангу
+            </button>
         </div>
     )
 }
