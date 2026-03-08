@@ -104,7 +104,8 @@ const HomePage = () => {
 
     // Настройка Intersection Observer для бесконечной прокрутки
     useEffect(() => {
-        if (requestsBlocked || !hasMore || isLoadingRef.current || searchResults !== null) return
+        // Отключаем бесконечный скролл, если есть результаты поиска
+        if (searchResults !== null || requestsBlocked || !hasMore || isLoadingRef.current) return
 
         const node = sentinelRef.current
         if (!node) return
@@ -115,15 +116,15 @@ const HomePage = () => {
 
         observerRef.current = new IntersectionObserver((entries) => {
             const firstEntry = entries[0]
-            // Добавляем дополнительные проверки перед увеличением page
             if (firstEntry.isIntersecting &&
                 hasMore &&
                 !isLoadingRef.current &&
-                !requestsBlocked) {
+                !requestsBlocked &&
+                searchResults === null) { // Добавлена проверка
                 setPage((prev) => prev + 1)
             }
         }, {
-            threshold: 0.1, // Добавляем порог видимости
+            threshold: 0.1,
         })
 
         observerRef.current.observe(node)
@@ -159,10 +160,16 @@ const HomePage = () => {
             setIsSearching(true)
             setSearchError(null)
 
-            const remoteMatches = (await searchHeroesByName(normalized)) as HeroFromApi[]
-            setSearchResults(remoteMatches)
+            // Сбрасываем пагинацию при поиске
+            setPage(0)
+            setHeroes([])
+            setHasMore(true)
 
-            console.log(remoteMatches)
+            // Изменено: правильно обрабатываем ответ от searchHeroesByName
+            const response = await searchHeroesByName(normalized)
+            // API возвращает объект с полем items, а не массив напрямую
+            const remoteMatches = response.items ?? response.heroes ?? []
+            setSearchResults(remoteMatches)
 
             if (remoteMatches.length === 0) {
                 setSearchError('Герои с таким именем не найдены')
@@ -181,6 +188,11 @@ const HomePage = () => {
         setSearchQuery('')
         setSearchResults(null)
         setSearchError(null)
+        // Сбрасываем пагинацию при возврате к основному списку
+        setPage(0)
+        setHeroes([])
+        setHasMore(true)
+        setRequestsBlocked(false)
     }
 
     const heroesToRender = searchResults ?? heroes

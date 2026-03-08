@@ -7,19 +7,19 @@ export async function searchHeroesByName(query, page = 1, limit = 10) {
     const skip = (page - 1) * limit
 
     if (!normalized) {
-        return []
+        return { items: [], total: 0, skip: 0, limit: limit }
     }
 
     const params = new URLSearchParams({ limit: String(limit), skip: String(skip), search: normalized })
     const url = API_URL + "/heroes/" + `?${params.toString()}`
     const response = await fetch(url)
 
-
-    if (response.ok) {
-        const result = await response.json()
-        return result.items
+    if (!response.ok) {
+        throw new Error('Не удалось выполнить поиск героев')
     }
 
+    const result = await response.json()
+    return result
 }
 
 /**
