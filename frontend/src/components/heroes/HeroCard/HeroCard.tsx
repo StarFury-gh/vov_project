@@ -1,4 +1,5 @@
 import styles from './HeroCard.module.css'
+// @ts-expect-error JS module without types
 import { STATIC_URL } from '../../../constants'
 
 interface HeroCardProps {

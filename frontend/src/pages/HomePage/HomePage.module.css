@@ -26,6 +26,65 @@
   color: var(--color-text-muted);
 }
 
+.search {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.searchInput {
+  flex: 1 1 220px;
+  min-width: 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-subtle);
+  background-color: var(--color-card-bg);
+  color: var(--color-text-main);
+  font-size: 0.95rem;
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+.searchButton,
+.resetButton {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.searchButton {
+  background-color: var(--color-accent, #2e7d32);
+  color: #fff;
+}
+
+.searchButton:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.resetButton {
+  background-color: var(--color-card-bg);
+  color: var(--color-text-main);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.resetButton:hover {
+  background-color: var(--color-bg-page);
+}
+
+.searchError {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: var(--color-error-text);
+}
+
 .listContainer {
   width: 100%;
   max-width: 1160px;

@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './HomePage.module.css'
 import HeroCard from '../../components/heroes/HeroCard'
 // @ts-expect-error JS module without types
-import { fetchHeroes } from '../../api'
+import { fetchHeroes, searchHeroesByName } from '../../api'
 
 // Тип героя, который возвращает API
 export interface HeroFromApi {
@@ -32,6 +32,11 @@ const HomePage = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [requestsBlocked, setRequestsBlocked] = useState(false)
+
+    const [searchQuery, setSearchQuery] = useState('')
+    const [searchResults, setSearchResults] = useState<HeroFromApi[] | null>(null)
+    const [isSearching, setIsSearching] = useState(false)
+    const [searchError, setSearchError] = useState<string | null>(null)
 
     const observerRef = useRef<IntersectionObserver | null>(null)
     const sentinelRef = useRef<HTMLDivElement | null>(null)
@@ -101,7 +106,7 @@ const HomePage = () => {
 
     // Настройка Intersection Observer для бесконечной прокрутки
     useEffect(() => {
-        if (requestsBlocked || !hasMore || isLoadingRef.current) return
+        if (requestsBlocked || !hasMore || isLoadingRef.current || searchResults !== null) return
 
         const node = sentinelRef.current
         if (!node) return
@@ -130,7 +135,7 @@ const HomePage = () => {
                 observerRef.current.disconnect()
             }
         }
-    }, [hasMore, requestsBlocked]) // Убираем isLoading из зависимостей, используем ref
+    }, [hasMore, requestsBlocked, searchResults]) // Убираем isLoading из зависимостей, используем ref
 
     const handleReload = () => {
         window.location.reload()
@@ -140,6 +145,58 @@ const HomePage = () => {
         navigate(`/heroes/${id}`)
     }
 
+    const handleSearchSubmit = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+
+        const query = searchQuery.trim()
+        if (!query) {
+            setSearchResults(null)
+            setSearchError(null)
+            return
+        }
+
+        const normalized = query.toLowerCase()
+
+        // Сначала ищем среди уже загруженных героев (в стейте)
+        const localMatches = heroes.filter((hero) =>
+            hero.full_name.toLowerCase().includes(normalized)
+        )
+
+        if (localMatches.length > 0) {
+            setSearchResults(localMatches)
+            setSearchError(null)
+            return
+        }
+
+        // Если в стейте не нашли — обращаемся к заглушке на "бэкенде"
+        try {
+            setIsSearching(true)
+            setSearchError(null)
+
+            const remoteMatches = (await searchHeroesByName(query)) as HeroFromApi[]
+            setSearchResults(remoteMatches)
+
+            if (remoteMatches.length === 0) {
+                setSearchError('Герои с таким именем не найдены')
+            }
+        } catch (e) {
+            const message =
+                e instanceof Error ? e.message : 'Ошибка при поиске героя'
+            console.log(message)
+            setSearchError('Ошибка при поиске героя')
+        } finally {
+            setIsSearching(false)
+        }
+    }
+
+    const handleSearchReset = () => {
+        setSearchQuery('')
+        setSearchResults(null)
+        setSearchError(null)
+    }
+
+    const heroesToRender = searchResults ?? heroes
+
     return (
         <main className={styles.page}>
             <header className={styles.header}>
@@ -148,11 +205,39 @@ const HomePage = () => {
                     Памяти тех, кто защищал Родину. Пролистывайте список, чтобы увидеть
                     больше героев.
                 </p>
+                <form className={styles.search} onSubmit={handleSearchSubmit}>
+                    <input
+                        type="text"
+                        className={styles.searchInput}
+                        placeholder="Найдите героя по имени"
+                        value={searchQuery}
+                        onChange={(event) => setSearchQuery(event.target.value)}
+                    />
+                    <button
+                        type="submit"
+                        className={styles.searchButton}
+                        disabled={isSearching}
+                    >
+                        {isSearching ? 'Поиск...' : 'Найти'}
+                    </button>
+                    {searchResults !== null && (
+                        <button
+                            type="button"
+                            className={styles.resetButton}
+                            onClick={handleSearchReset}
+                        >
+                            Сбросить
+                        </button>
+                    )}
+                </form>
+                {searchError && (
+                    <p className={styles.searchError}>{searchError}</p>
+                )}
             </header>
 
             <section className={styles.listContainer}>
                 <div className={styles.heroList}>
-                    {heroes.map((hero) => (
+                    {heroesToRender.map((hero) => (
                         <HeroCard
                             key={hero.id}
                             id={hero.id}
