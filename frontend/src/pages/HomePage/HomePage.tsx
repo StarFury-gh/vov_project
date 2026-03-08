@@ -14,6 +14,14 @@ export interface HeroFromApi {
     photo_url: string
 }
 
+// Тип ответа от API для поиска
+interface SearchResponse {
+    items: HeroFromApi[]
+    total: number
+    skip: number
+    limit: number
+}
+
 type HeroesApiResponse =
     | HeroFromApi[]
     | {
@@ -33,22 +41,27 @@ const HomePage = () => {
     const [error, setError] = useState<string | null>(null)
     const [requestsBlocked, setRequestsBlocked] = useState(false)
 
+    // Состояния для поиска
     const [searchQuery, setSearchQuery] = useState('')
-    const [searchResults, setSearchResults] = useState<HeroFromApi[] | null>(null)
+    const [isSearchMode, setIsSearchMode] = useState(false)
+    const [searchResults, setSearchResults] = useState<HeroFromApi[]>([])
+    const [searchPage, setSearchPage] = useState(0)
+    const [searchHasMore, setSearchHasMore] = useState(true)
+    const [searchTotal, setSearchTotal] = useState(0)
     const [isSearching, setIsSearching] = useState(false)
     const [searchError, setSearchError] = useState<string | null>(null)
 
     const observerRef = useRef<IntersectionObserver | null>(null)
     const sentinelRef = useRef<HTMLDivElement | null>(null)
 
-    // Флаг для предотвращения множественных запросов при изменении page
+    // Флаг для предотвращения множественных запросов
     const isLoadingRef = useRef(false)
 
     const navigate = useNavigate()
 
+    // Загрузка обычных героев
     const loadHeroes = useCallback(async () => {
-        // Проверяем requestsBlocked и hasMore через ref для актуальности
-        if (requestsBlocked || isLoadingRef.current || !hasMore) return
+        if (requestsBlocked || isLoadingRef.current || !hasMore || isSearchMode) return
 
         isLoadingRef.current = true
         setIsLoading(true)
@@ -72,7 +85,6 @@ const HomePage = () => {
                     typeof skip === 'number' &&
                     typeof limit === 'number'
                 ) {
-                    // hasMore на основе total/skip/limit
                     nextHasMore = skip + heroesList.length < total
                 } else {
                     nextHasMore = heroesList.length === PAGE_LIMIT
@@ -82,30 +94,70 @@ const HomePage = () => {
             setHeroes((prev) => [...prev, ...newHeroes])
             setHasMore(nextHasMore)
         } catch (e) {
-            const message =
-                e instanceof Error ? e.message : 'Ошибка при загрузке героев'
+            const message = e instanceof Error ? e.message : 'Ошибка при загрузке героев'
             console.log(message)
             setError("Ошибка при загрузке героев")
-            // Если сервер недоступен/ошибка запроса — блокируем дальнейшие запросы.
             setRequestsBlocked(true)
             setHasMore(false)
         } finally {
             setIsLoading(false)
             isLoadingRef.current = false
         }
-    }, [page, hasMore, requestsBlocked])
+    }, [page, hasMore, requestsBlocked, isSearchMode])
 
-    // Загрузка при изменении page
+    // Загрузка результатов поиска с пагинацией
+    const loadSearchResults = useCallback(async () => {
+        if (!isSearchMode || isLoadingRef.current || !searchHasMore || !searchQuery.trim()) return
+
+        isLoadingRef.current = true
+        setIsLoading(true)
+        setSearchError(null)
+
+        try {
+            // Для поиска используем следующую страницу (searchPage + 1, так как searchPage начинается с 0)
+            const currentPage = searchPage + 1
+            const response = await searchHeroesByName(searchQuery, currentPage, PAGE_LIMIT) as SearchResponse
+
+            const newItems = response.items ?? []
+
+            setSearchResults((prev) => [...prev, ...newItems])
+            setSearchTotal(response.total)
+
+            // Проверяем, есть ли еще элементы для загрузки
+            const nextHasMore = response.skip + newItems.length < response.total
+            setSearchHasMore(nextHasMore)
+
+            // Если это первая страница и нет результатов, показываем сообщение
+            if (currentPage === 1 && newItems.length === 0) {
+                setSearchError('Герои с таким именем не найдены')
+            }
+        } catch (e) {
+            const message = e instanceof Error ? e.message : 'Ошибка при поиске героя'
+            console.log(message)
+            setSearchError('Ошибка при поиске героя')
+        } finally {
+            setIsLoading(false)
+            isLoadingRef.current = false
+        }
+    }, [isSearchMode, searchPage, searchHasMore, searchQuery])
+
+    // Эффект для загрузки обычных героев
     useEffect(() => {
-        if (page > 0) {
+        if (page > 0 && !isSearchMode) {
             loadHeroes()
         }
-    }, [page, loadHeroes])
+    }, [page, loadHeroes, isSearchMode])
+
+    // Эффект для загрузки результатов поиска
+    useEffect(() => {
+        if (searchPage > 0 && isSearchMode) {
+            loadSearchResults()
+        }
+    }, [searchPage, loadSearchResults, isSearchMode])
 
     // Настройка Intersection Observer для бесконечной прокрутки
     useEffect(() => {
-        // Отключаем бесконечный скролл, если есть результаты поиска
-        if (searchResults !== null || requestsBlocked || !hasMore || isLoadingRef.current) return
+        if (requestsBlocked || isLoadingRef.current) return
 
         const node = sentinelRef.current
         if (!node) return
@@ -116,12 +168,18 @@ const HomePage = () => {
 
         observerRef.current = new IntersectionObserver((entries) => {
             const firstEntry = entries[0]
-            if (firstEntry.isIntersecting &&
-                hasMore &&
-                !isLoadingRef.current &&
-                !requestsBlocked &&
-                searchResults === null) { // Добавлена проверка
-                setPage((prev) => prev + 1)
+            if (firstEntry.isIntersecting) {
+                if (isSearchMode) {
+                    // В режиме поиска используем searchHasMore
+                    if (searchHasMore && !isLoadingRef.current) {
+                        setSearchPage((prev) => prev + 1)
+                    }
+                } else {
+                    // В обычном режиме используем hasMore
+                    if (hasMore && !isLoadingRef.current) {
+                        setPage((prev) => prev + 1)
+                    }
+                }
             }
         }, {
             threshold: 0.1,
@@ -134,7 +192,7 @@ const HomePage = () => {
                 observerRef.current.disconnect()
             }
         }
-    }, [hasMore, requestsBlocked, searchResults])
+    }, [hasMore, searchHasMore, requestsBlocked, isSearchMode])
 
     const handleReload = () => {
         window.location.reload()
@@ -149,53 +207,72 @@ const HomePage = () => {
 
         const query = searchQuery.trim()
         if (!query) {
-            setSearchResults(null)
-            setSearchError(null)
+            resetSearch()
             return
         }
-
-        const normalized = query.toLowerCase()
 
         try {
             setIsSearching(true)
             setSearchError(null)
 
-            // Сбрасываем пагинацию при поиске
-            setPage(0)
-            setHeroes([])
-            setHasMore(true)
+            // Переключаемся в режим поиска и сбрасываем результаты
+            setIsSearchMode(true)
+            setSearchResults([])
+            setSearchPage(0)
+            setSearchHasMore(true)
 
-            // Изменено: правильно обрабатываем ответ от searchHeroesByName
-            const response = await searchHeroesByName(normalized)
-            // API возвращает объект с полем items, а не массив напрямую
-            const remoteMatches = response.items ?? response.heroes ?? []
-            setSearchResults(remoteMatches)
+            // Загружаем первую страницу поиска
+            const response = await searchHeroesByName(query, 1, PAGE_LIMIT) as SearchResponse
+            const items = response.items ?? []
 
-            if (remoteMatches.length === 0) {
+            setSearchResults(items)
+            setSearchTotal(response.total)
+            setSearchHasMore(response.skip + items.length < response.total)
+
+            if (items.length === 0) {
                 setSearchError('Герои с таким именем не найдены')
             }
+
+            // Сбрасываем обычный список
+            setHeroes([])
+            setPage(0)
+            setHasMore(true)
+
         } catch (e) {
-            const message =
-                e instanceof Error ? e.message : 'Ошибка при поиске героя'
+            const message = e instanceof Error ? e.message : 'Ошибка при поиске героя'
             console.log(message)
             setSearchError('Ошибка при поиске героя')
+            setIsSearchMode(false)
         } finally {
             setIsSearching(false)
         }
     }
 
-    const handleSearchReset = () => {
+    const resetSearch = () => {
         setSearchQuery('')
-        setSearchResults(null)
+        setIsSearchMode(false)
+        setSearchResults([])
+        setSearchPage(0)
+        setSearchHasMore(true)
+        setSearchTotal(0)
         setSearchError(null)
-        // Сбрасываем пагинацию при возврате к основному списку
+        // Сбрасываем основной список
         setPage(0)
         setHeroes([])
         setHasMore(true)
         setRequestsBlocked(false)
     }
 
-    const heroesToRender = searchResults ?? heroes
+    const handleSearchReset = () => {
+        resetSearch()
+    }
+
+    // Определяем, что отображать
+    const heroesToRender = isSearchMode ? searchResults : heroes
+    const currentHasMore = isSearchMode ? searchHasMore : hasMore
+    const currentLoading = isLoading
+    // const currentError = isSearchMode ? searchError : error
+    const showEndMessage = !currentHasMore && !currentLoading && heroesToRender.length > 0
 
     return (
         <main className={styles.page}>
@@ -220,7 +297,7 @@ const HomePage = () => {
                     >
                         {isSearching ? 'Поиск...' : 'Найти'}
                     </button>
-                    {searchResults !== null && (
+                    {isSearchMode && (
                         <button
                             type="button"
                             className={styles.resetButton}
@@ -230,8 +307,13 @@ const HomePage = () => {
                         </button>
                     )}
                 </form>
-                {searchError && (
+                {searchError && isSearchMode && (
                     <p className={styles.searchError}>{searchError}</p>
+                )}
+                {isSearchMode && searchTotal > 0 && (
+                    <p className={styles.searchInfo}>
+                        Найдено героев: {searchTotal}
+                    </p>
                 )}
             </header>
 
@@ -252,14 +334,14 @@ const HomePage = () => {
 
                 <div ref={sentinelRef} className={styles.sentinel} />
 
-                {isLoading && (
+                {currentLoading && (
                     <div className={styles.loader}>
                         <div className={styles.spinner} />
                         <span>Загрузка героев...</span>
                     </div>
                 )}
 
-                {error && (
+                {error && !isSearchMode && (
                     <div className={styles.errorBox}>
                         <p className={styles.errorText}>
                             {error}
@@ -271,8 +353,10 @@ const HomePage = () => {
                     </div>
                 )}
 
-                {!hasMore && !isLoading && heroes.length > 0 && (
-                    <p className={styles.endMessage}>Больше героев нет.</p>
+                {showEndMessage && (
+                    <p className={styles.endMessage}>
+                        {isSearchMode ? 'Больше результатов поиска нет.' : 'Больше героев нет.'}
+                    </p>
                 )}
             </section>
         </main>
