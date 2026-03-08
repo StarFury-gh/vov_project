@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { fetchHero } from "../../api"
 // @ts-expect-error JS module without types
 import { STATIC_URL } from "../../constants"
+import AppMap from '../../components/common/Map'
 
 interface HeroFromApi {
     id: number,
@@ -64,6 +65,8 @@ const HeroPage = () => {
                 }
 
                 <p className={styles.text}>Ранг: {heroData?.rank}</p>
+
+                <AppMap />
 
                 <Link to="/" className={styles.backLink}>
                     ← Вернуться к списку героев

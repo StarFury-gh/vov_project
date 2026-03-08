@@ -33,6 +33,7 @@
 }
 
 .backLink {
+    margin-top: 2rem;
     font-size: 0.95rem;
     font-weight: 500;
     color: var(--color-text-main);
