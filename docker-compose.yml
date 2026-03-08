@@ -3,3 +3,48 @@ services:
     build: ./postgres
     ports:
       - 5432:5432
+
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 10s
+    volumes:
+      - pg_volume:/var/lib/postgresql
+
+  backend:
+    build: ./backend
+    ports:
+      - 8000:8000
+
+    volumes:
+      - backend_volume:/app/src/images
+
+    healthcheck:
+      test: [ "CMD", "http://localhost:8000/" ]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    ports:
+      - 80:80
+
+    depends_on:
+      backend:
+        condition: service_healthy
+
+networks:
+  service_network:
+
+
+volumes:
+  pg_volume:
+  backend_volume:
