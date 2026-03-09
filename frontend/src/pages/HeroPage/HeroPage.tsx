@@ -39,38 +39,41 @@ const HeroPage = () => {
             <div className={styles.card}>
                 <h1 className={styles.title}>{heroData?.full_name}</h1>
                 <img className={styles.portrait} src={`${STATIC_URL}/${heroData?.photo_url}`} alt="" />
-                <p className={styles.text}>
-                    {heroData?.biography}
-                </p>
+                <div className={styles.info}>
 
-                {
-                    !isArrayEmpty(heroData?.awards) ?
-                        <>
-                            <p>Награды:</p>
-                            <ul>
-                                {
-                                    heroData?.awards.map((award) => {
-                                        return (
-                                            <li>
-                                                <p className={styles.text}>
-                                                    {award}
-                                                </p>
-                                            </li>
-                                        )
-                                    })
-                                }
-                            </ul>
-                        </>
-                        : null
-                }
+                    <p className={styles.text}>
+                        {heroData?.biography}
+                    </p>
 
-                <p className={styles.text}>Ранг: {heroData?.rank}</p>
+                    {
+                        !isArrayEmpty(heroData?.awards) ?
+                            <>
+                                <p>Награды:</p>
+                                <ul>
+                                    {
+                                        heroData?.awards.map((award) => {
+                                            return (
+                                                <li>
+                                                    <p className={styles.text}>
+                                                        {award}
+                                                    </p>
+                                                </li>
+                                            )
+                                        })
+                                    }
+                                </ul>
+                            </>
+                            : null
+                    }
 
-                <AppMap />
+                    <p className={styles.text}>Ранг: {heroData?.rank}</p>
 
-                <Link to="/" className={styles.backLink}>
-                    ← Вернуться к списку героев
-                </Link>
+                    <AppMap />
+
+                    <Link to="/" className={styles.backLink}>
+                        ← Вернуться к списку героев
+                    </Link>
+                </div>
             </div>
         </main>
     )

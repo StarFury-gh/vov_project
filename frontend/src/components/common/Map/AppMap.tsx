@@ -7,9 +7,9 @@ interface AppMapProps {
 }
 
 function AppMap(props: AppMapProps) {
-    const longitude = props.longitude ?? 37.64
-    const latitude = props.longitude ?? 55.76
-    const address = props.address ?? "Москва, Красная площадь"
+    const longitude = props.longitude ?? 37.3315
+    const latitude = props.longitude ?? 55.4329
+    const address = props.address ?? "Новодевечье Кладбище (Москва)"
 
     const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${longitude - 0.01},${latitude - 0.01},${longitude + 0.01},${latitude + 0.01}&layer=mapnik&marker=${latitude},${longitude}`;
 
@@ -22,7 +22,6 @@ function AppMap(props: AppMapProps) {
                 title="map"
                 src={mapUrl}
             />
-            <div>Координаты: {latitude.toFixed(4)}, {longitude.toFixed(4)}</div>
         </div>
     );
 };
