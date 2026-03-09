@@ -6,6 +6,7 @@ from uvicorn import run
 from api.hero import h_router
 from api.award import a_router
 from api.rank import r_router
+from api.location import l_router
 
 from os import path, makedirs
 
@@ -14,6 +15,7 @@ app = FastAPI()
 app.include_router(h_router)
 app.include_router(a_router)
 app.include_router(r_router)
+app.include_router(l_router)
 
 app.add_middleware(
     CORSMiddleware,
