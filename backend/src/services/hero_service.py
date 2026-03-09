@@ -5,6 +5,7 @@ from fastapi import HTTPException
 from core.hero_exceptions import HeroNotFound
 
 from services.award_service import AwardService
+from services.locations_service import LocationService
 from services.rank_service import RanksService
 
 class HeroService:
@@ -19,11 +20,15 @@ class HeroService:
             self, 
             hero_id: int, 
             award_service: AwardService, 
-            rank_service: RanksService
+            rank_service: RanksService,
+            location_service: LocationService
         ):
         try:
             awards = await award_service.get_hero_awards(hero_id)
             rank = await rank_service.get_hero_rank(hero_id)
+            place = await location_service.get_hero_location(hero_id)
+
+            print(f"{place=}")
 
             hero = await self.get_hero(hero_id)
 

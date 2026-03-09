@@ -6,7 +6,7 @@ from fastapi import (
 
 from schemas.locations import AddLocation
 from core.location_exceptions import BaseLocationException
-from services.locations import LocationService
+from services.locations_service import LocationService
 from repositories.locations import LocationRepository
 
 from dependencies.postgres import get_pg

@@ -63,6 +63,7 @@ async def get_hero_by_id(
 
         from services.award_service import AwardService, AwardsRepository
         from services.rank_service import RanksService, RanksRepository
+        from services.locations_service import LocationService, LocationRepository
 
         award_repo = AwardsRepository(pg)
         award_service = AwardService(award_repo)
@@ -70,13 +71,17 @@ async def get_hero_by_id(
         rank_repo = RanksRepository(pg)
         rank_service = RanksService(rank_repo)
 
+        location_repo = LocationRepository(pg)
+        location_service = LocationService(location_repo)
+
         repository = HeroRepository(pg)
         service = HeroService(repository)
 
         result = await service.get_full_hero_info(
             hero_id=hero_id,
             award_service=award_service,
-            rank_service=rank_service
+            rank_service=rank_service,
+            location_service=location_service
         )
 
         return result
