@@ -7,6 +7,12 @@ import { fetchHero } from "../../api"
 import { STATIC_URL } from "../../constants"
 import AppMap from '../../components/common/Map'
 
+interface HeroPlace {
+    name: string,
+    latitude: number,
+    longtitude: number
+}
+
 interface HeroFromApi {
     id: number,
     full_name: string,
@@ -16,6 +22,7 @@ interface HeroFromApi {
     biography: string,
     awards: string[],
     rank: string,
+    place: HeroPlace
 }
 
 const isArrayEmpty = (arr: string[] | undefined) => arr?.length === 0
@@ -68,7 +75,11 @@ const HeroPage = () => {
 
                     <p className={styles.text}>Ранг: {heroData?.rank}</p>
 
-                    <AppMap />
+                    <AppMap
+                        address={heroData?.place.name}
+                        lattitude={heroData?.place.latitude}
+                        longitude={heroData?.place.longtitude}
+                    />
 
                     <Link to="/vov" className={styles.backLink}>
                         ← Вернуться к списку героев
