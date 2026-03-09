@@ -70,7 +70,7 @@ const HeroPage = () => {
 
                     <AppMap />
 
-                    <Link to="/" className={styles.backLink}>
+                    <Link to="/vov" className={styles.backLink}>
                         ← Вернуться к списку героев
                     </Link>
                 </div>

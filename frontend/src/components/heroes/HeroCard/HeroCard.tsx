@@ -37,7 +37,7 @@ const HeroCard = ({
 
     const lifeDates =
         birthDate || deathDate
-            ? `${birthDate || '—'} — ${deathDate || 'н/д'}`
+            ? `${birthDate || '—'} — ${deathDate || '????-??-??'}`
             : undefined
 
     return (

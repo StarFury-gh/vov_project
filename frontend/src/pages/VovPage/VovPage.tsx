@@ -37,7 +37,7 @@ type HeroesApiResponse =
 
 const PAGE_LIMIT = 10
 
-const HomePage = () => {
+const VovPage = () => {
     const [heroes, setHeroes] = useState<HeroFromApi[]>([])
     const [page, setPage] = useState(0)
     const [hasMore, setHasMore] = useState(true)
@@ -435,4 +435,4 @@ const HomePage = () => {
     )
 }
 
-export default HomePage
+export default VovPage
