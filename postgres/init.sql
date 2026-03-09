@@ -30,10 +30,10 @@ CREATE INDEX idx_users_username ON users(username);
 -- Основная таблица героев
 CREATE TABLE heroes (
     id SERIAL PRIMARY KEY,
-    full_name VARCHAR(200) NOT NULL,
+    full_name VARCHAR(200) NOT NULL UNIQUE,
     birth_date DATE,
     death_date DATE,
-    biography TEXT UNIQUE,
+    biography TEXT,
     photo_url VARCHAR(500),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
