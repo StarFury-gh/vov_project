@@ -7,7 +7,7 @@ class LocationRepository:
         return result
     
     async def get_by_id(self, hero_id: int) -> dict:
-        result = await self.db.fetchrow("SELECT * FROM hero_places WHERE hero_id = $1", hero_id)
+        result = await self.db.fetchrow("SELECT name, latitude, longtitude FROM hero_places WHERE hero_id = $1", hero_id)
         return result
     
     async def create(
@@ -17,7 +17,7 @@ class LocationRepository:
             lattitude: float, 
             longitude: float
         ) -> None:
-        query = "INSER INTO hero_places (hero_id, name, lattitude, longitude) VALUES ($1, $2, $3, $4)"
+        query = "INSERT INTO hero_places (hero_id, name, latitude, longtitude) VALUES ($1, $2, $3, $4)"
         await self.db.execute(
             query, 
             hero_id, 

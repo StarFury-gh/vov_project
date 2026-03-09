@@ -40,6 +40,7 @@ class HeroService:
                 hero["awards"] = []
 
             hero["rank"] = rank
+            hero["place"] = place["location"]
 
             return hero
 

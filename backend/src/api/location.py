@@ -29,13 +29,13 @@ async def get_locations(
         return result
     
     except BaseLocationException as e:
-        HTTPException(
+        raise HTTPException(
             status_code=e.code,
             detail=e.message
         )
 
     except Exception as e:
-        HTTPException(
+        raise HTTPException(
             status_code=500,
             detail="Internal server error"
         )
@@ -54,13 +54,13 @@ async def get_hero_location(
         return result
     
     except BaseLocationException as e:
-        HTTPException(
+        raise HTTPException(
             status_code=e.code,
             detail=e.message
         )
 
     except Exception as e:
-        HTTPException(
+        raise HTTPException(
             status_code=500,
             detail="Internal server error"
         )
@@ -79,13 +79,13 @@ async def create_location(
         return result
     
     except BaseLocationException as e:
-        HTTPException(
+        raise HTTPException(
             status_code=e.code,
             detail=e.message
         )
 
     except Exception as e:
-        HTTPException(
+        raise HTTPException(
             status_code=500,
             detail="Internal server error"
         )

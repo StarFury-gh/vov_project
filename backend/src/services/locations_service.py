@@ -3,7 +3,9 @@ from schemas.locations import (
     AddLocation
 )
 
-from core.location_exceptions import BaseLocationException
+from asyncpg.exceptions import ForeignKeyViolationError
+
+from core.location_exceptions import BaseLocationException, HeroNotFound
 
 class LocationService:
     def __init__(self, repo: LocationRepository) -> None:
@@ -21,6 +23,9 @@ class LocationService:
                 "status": True
             }
         
+        except ForeignKeyViolationError:
+            raise HeroNotFound
+
         except Exception as e:
             print(e, f"Type: {type(e).__name__}")
             raise BaseLocationException
@@ -29,6 +34,7 @@ class LocationService:
         try:
             result = await self.repo.get_by_id(hero_id)
             if result:
+                result = dict(result)
                 return {
                     "status": True,
                     "location": result
