@@ -28,5 +28,18 @@ async def main():
                     r_id = await reqs.add_rank(hero["rank"], 1)
                     await reqs.assign_rank(hero_id, r_id)
 
+            if hero.get("place"):
+                place_info = hero.get("place")
+                name = place_info.get("name")
+                latitude = place_info.get("latitude")
+                longtitude = place_info.get("longtitude")
+                await reqs.add_place(
+                    hero_id=hero_id,
+                    name=name,
+                    longtitude=longtitude,
+                    latitude=latitude
+                )
+
+
 if __name__ == "__main__":
     asyncio.run(main())

@@ -157,3 +157,22 @@ async def save_image(hero_name: str, hero_id: int):
                     return None
     else:
         logger.warning(f"{hero_name} не имеет фотографии в каталоге.")
+
+async def add_place(hero_id: int, name: str, latitude:float, longtitude:float):
+    logger.info(f"add_place input: {name}, {latitude}, {longtitude}")
+    async with ClientSession() as session:
+        payload = {
+            "hero_id": hero_id,
+            "name": name,
+            "longitude": longtitude,
+            "lattitude": latitude
+        }
+        url = config_obj.API_URL + "/locations"
+        async with session.post(url, json=payload) as resp:
+            if resp.status == 200:
+                result = await resp.json()
+                logger.info(f"add_place: {result}")
+            else:
+                result = await resp.json()
+                logger.error(f"add_place error: {result}")
+            
