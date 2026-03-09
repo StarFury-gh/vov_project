@@ -33,7 +33,7 @@ CREATE TABLE heroes (
     full_name VARCHAR(200) NOT NULL,
     birth_date DATE,
     death_date DATE,
-    biography TEXT,
+    biography TEXT UNIQUE,
     photo_url VARCHAR(500),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -63,13 +63,12 @@ CREATE TABLE hero_ranks (
 CREATE INDEX idx_hero_ranks_hero_id ON hero_ranks(hero_id);
 CREATE INDEX idx_hero_ranks_award_id ON hero_ranks(rank_id);
 
--- Таблица дополнительных фотографий
--- CREATE TABLE photos (
---     id SERIAL PRIMARY KEY,
---     hero_id INTEGER NOT NULL REFERENCES heroes(id) ON DELETE CASCADE,
---     url VARCHAR(500) NOT NULL,
---     caption VARCHAR(255),
---     sort_order INTEGER DEFAULT 0
--- );
+-- Таблица связанных мест
+CREATE TABLE hero_places (
+    hero_id INTEGER REFERENCES heroes(id) ON DELETE CASCADE,
+    longtitude FLOAT,
+    latitude FLOAT,
+    name VARCHAR(200)
+);
 
--- CREATE INDEX idx_photos_hero_id ON photos(hero_id);
+CREATE INDEX idx_hero_places_hero_id ON hero_places(hero_id);
