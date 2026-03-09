@@ -10,7 +10,10 @@ function HomePage() {
             <section>
                 <div className={styles['home-page__content-block']}>
                     {/* Подгрузим позже */}
-                    <img src="" alt="" className={styles['home-page__content-block-img']} />
+                    <img
+                        alt=""
+                        className={styles['home-page__content-block-img']}
+                    />
                     <div className={styles['home-page__content-block-text']}>
                         <h2 className={styles['home-page__content-block-title']}>Цель проекта</h2>
                         <p className={styles['home-page__content-block-description']}>«Никто не забыт, ничто не забыто» — для нас это не просто строка из стихотворения, а ежедневный труд.</p>
