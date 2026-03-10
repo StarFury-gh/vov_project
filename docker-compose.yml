@@ -15,6 +15,21 @@ services:
     volumes:
       - pg_volume:/var/lib/postgresql
 
+  redis:
+    build: ./redis
+    ports:
+      - "6379:6379"
+    networks:
+      - app_network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "admin_password", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    volumes:
+      - redis_data:/data
+
   backend:
     build: ./backend
     ports:
@@ -34,6 +49,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
 
   frontend:
     build: ./frontend
@@ -52,3 +69,4 @@ networks:
 volumes:
   pg_volume:
   backend_volume:
+  redis_data:
