@@ -1,10 +1,8 @@
+import HeroesScroller from "../../components/heroes/HeroesScroller/HeroesScroller"
+
 function SvoPage() {
     return (
-        <div className="">
-            <h1>
-                Информация о героях СВО
-            </h1>
-        </div>
+        <HeroesScroller type="svo" />
     )
 }
 
