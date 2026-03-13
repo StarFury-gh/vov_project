@@ -4,11 +4,11 @@ class LocationRepository:
 
     async def get_all(self):
         result = await self.db.fetch("SELECT * FROM hero_places")
-        return result
+        return [dict(record) for record in result]
     
     async def get_by_id(self, hero_id: int) -> dict:
         result = await self.db.fetchrow("SELECT name, latitude, longtitude FROM hero_places WHERE hero_id = $1", hero_id)
-        return result
+        return dict(result) if result else None
     
     async def create(
             self, 

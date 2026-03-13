@@ -3,22 +3,27 @@ class RanksRepository:
         self.db = db
 
     async def get_all(self):
-        return await self.db.fetch("SELECT * FROM ranks")
+        return [dict(record) for record in await self.db.fetch("SELECT * FROM ranks")]
     
     async def get(self, id):
-        return await self.db.fetchrow("SELECT * FROM ranks WHERE id = $1", id)
+        result = await self.db.fetchrow("SELECT * FROM ranks WHERE id = $1", id)
+        return dict(result) if result else None
 
     async def get_by_name(self, rank_name: str):
-        return await self.db.fetchrow("SELECT id FROM ranks WHERE name ILIKE $1", rank_name)
+        result = await self.db.fetchrow("SELECT id FROM ranks WHERE name ILIKE $1", rank_name)
+        return dict(result) if result else None
 
     async def get_hero_rank(self, hero_id):
-        rank_id = await self.db.fetchrow("SELECT rank_id FROM hero_ranks WHERE hero_id = $1", hero_id)
-        if not rank_id:
+        rank_id_record = await self.db.fetchrow("SELECT rank_id FROM hero_ranks WHERE hero_id = $1", hero_id)
+        if not rank_id_record:
             return "Мы не нашли информацию о звании этого героя..."
-        rank_id = dict(rank_id).get("rank_id")
-        rank = await self.db.fetchrow("SELECT name FROM ranks WHERE id=$1", rank_id)
-        rank_name = dict(rank).get("name")
-        return rank_name
+        rank_id = dict(rank_id_record).get("rank_id")
+        
+
+        rank_record = await self.db.fetchrow("SELECT name FROM ranks WHERE id=$1", rank_id)
+        if rank_record:
+            return dict(rank_record).get("name")
+        return "Мы не нашли информацию о звании этого героя..."
 
     async def add(self, name: str, sort_order: int):
         return await self.db.fetchval("INSERT INTO ranks (name, sort_order) VALUES ($1, $2) RETURNING id", name, sort_order)

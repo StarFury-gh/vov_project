@@ -4,15 +4,15 @@ class AwardsRepository:
 
     async def get(self, award_id: int):
         res = await self.db.fetchrow("SELECT * FROM awards WHERE id = $1", award_id)
-        return res
+        return [dict(record) for record in res]
     
     async def get_all(self):
         res = await self.db.fetch("SELECT * FROM awards")
-        return res
+        return [dict(record) for record in res]
 
     async def get_by_name(self, name: str):
         res = await self.db.fetchrow("SELECT id FROM awards WHERE name = $1", name)
-        return res
+        return [dict(record) for record in res]
 
     async def add(self, award_name: str, desciption: str):
         award_id = await self.db.fetchval(

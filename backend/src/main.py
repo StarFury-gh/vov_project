@@ -3,6 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles 
 from uvicorn import run
 
+from contextlib import asynccontextmanager
+
+from cache.client import init_redis, close_redis
+
 from api.hero import h_router
 from api.award import a_router
 from api.rank import r_router
@@ -10,7 +14,16 @@ from api.location import l_router
 
 from os import path, makedirs
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await init_redis()
+    yield
+    await close_redis()
+
+app = FastAPI(
+    lifespan=lifespan
+)
 
 app.include_router(h_router)
 app.include_router(a_router)

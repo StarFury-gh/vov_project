@@ -88,7 +88,7 @@ class HeroRepository:
         )
         items_params = parameters + [limit, skip]
 
-        result = await self.db.fetch(items_query, *items_params)
+        result = [dict(record) for record in await self.db.fetch(items_query, *items_params)]
 
         # Запрос для подсчёта общего количества без пагинации
         count_query = (
@@ -99,7 +99,7 @@ class HeroRepository:
             + ") AS count_subquery"
         )
         count_result = await self.db.fetchrow(count_query, *parameters)
-        total = count_result["count"] if count_result else 0
+        total = dict(count_result)["count"] if count_result else 0
 
         return {
             "items": result,
@@ -110,7 +110,7 @@ class HeroRepository:
 
     async def get_by_id(self, id):
         result = await self.db.fetchrow("SELECT * FROM heroes WHERE id = $1", id)
-        return result
+        return dict(result) if result else None
 
     async def create(self, hero_data: dict):
         query = """
@@ -148,7 +148,7 @@ class HeroRepository:
             "default.webp"
         )
         
-        return result
+        return dict(result)
     
     async def set_hero_image(self, hero_id: int, image_url: str):
         existance = await self.check_hero_existance_by_id(hero_id)
