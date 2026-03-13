@@ -86,7 +86,6 @@ def redis_cache(
                 
             except RedisError as exc:
                 # Redis недоступен
-                logger.warning("Redis GET failed (key=%s): %s", key, exc)
                 return await func(*args, **kwargs)
 
             # выполнение функции
@@ -95,7 +94,6 @@ def redis_cache(
             # запись в кеш
             try:
                 await client.set(key, serialize(result), ex=ttl)
-                logger.debug("cache set  key=%s ttl=%ds", key, ttl)
             except RedisError as exc:
                 logger.warning("Redis SET failed (key=%s): %s", key, exc)
 
