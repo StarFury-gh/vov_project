@@ -10,4 +10,10 @@ class Config:
         self.DB_PASSWORD = getenv("DB_PASSWORD")
         self.DB_NAME = getenv("DB_NAME")
 
+        self.REDIS_HOST = getenv("REDIS_HOST")
+        self.REDIS_PORT = getenv("REDIS_PORT")
+        self.REDIS_USER = getenv("REDIS_USER")
+        self.REDIS_PASSWORD = getenv("REDIS_PASSWORD")
+        self.REDIS_URL = f"redis://{self.REDIS_USER}:{self.REDIS_PASSWORD}@{self.REDIS_HOST}:{self.REDIS_PORT}/0"
+
 config_obj = Config()
