@@ -7,6 +7,8 @@ from asyncpg.exceptions import ForeignKeyViolationError
 
 from core.location_exceptions import BaseLocationException, HeroNotFound
 
+from cache.decorator import redis_cache
+
 class LocationService:
     def __init__(self, repo: LocationRepository) -> None:
         self.repo = repo
@@ -29,7 +31,8 @@ class LocationService:
         except Exception as e:
             print(e, f"Type: {type(e).__name__}")
             raise BaseLocationException
-        
+    
+    @redis_cache(60)
     async def get_hero_location(self, hero_id: int):
         try:
             result = await self.repo.get_by_id(hero_id)
@@ -48,6 +51,7 @@ class LocationService:
             print(e, f"Type: {type(e).__name__}")
             raise BaseLocationException
         
+    @redis_cache(60)
     async def get_all_locations(self):
         try:
             result = await self.repo.get_all()

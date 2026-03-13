@@ -8,6 +8,8 @@ from services.award_service import AwardService
 from services.locations_service import LocationService
 from services.rank_service import RanksService
 
+from cache.decorator import redis_cache
+
 class HeroService:
     def __init__(
             self, 
@@ -16,6 +18,7 @@ class HeroService:
         self.name = "HeroService"
         self.repo = repository
 
+    @redis_cache(60)
     async def get_full_hero_info(
             self, 
             hero_id: int, 
@@ -27,8 +30,6 @@ class HeroService:
             awards = await award_service.get_hero_awards(hero_id)
             rank = await rank_service.get_hero_rank(hero_id)
             place = await location_service.get_hero_location(hero_id)
-
-            print(f"{place=}")
 
             hero = await self.get_hero(hero_id)
 
@@ -47,6 +48,7 @@ class HeroService:
         except Exception as e:
             print(f"{e}\tType: {type(e).__name__}")
 
+    @redis_cache(60)
     async def get_heroes(
             self,
             skip: int,
@@ -72,6 +74,7 @@ class HeroService:
         )
         return result
 
+    @redis_cache(60)
     async def get_hero(self, hero_id):
         existance = await self.repo.check_hero_existance_by_id(hero_id)
         if existance:

@@ -12,7 +12,8 @@ class AwardsRepository:
 
     async def get_by_name(self, name: str):
         res = await self.db.fetchrow("SELECT id FROM awards WHERE name = $1", name)
-        return [dict(record) for record in res]
+        print(f"get_by_name: {res=}")
+        return dict(res).get("id")
 
     async def add(self, award_name: str, desciption: str):
         award_id = await self.db.fetchval(

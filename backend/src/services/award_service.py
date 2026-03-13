@@ -39,8 +39,11 @@ class AwardService:
     
     @redis_cache(60)
     async def get_by_name(self, name: str):
-        return await self.repo.get_by_name(name)
-
+        award_id = await self.repo.get_by_name(name)
+        result = {
+            "id": award_id
+        }
+        return result
     async def add_award(self, award: AwardCreate):
         try:
             result = await self.repo.add(
