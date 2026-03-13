@@ -31,6 +31,7 @@ async def get_heroes(
     death_year_to: int = Query(None, ge=1),
     award_filter: str = Query(None),
     rank_filter: str = Query(None),
+    w_type: str = Query(None),
     pg = Depends(get_pg)
 ):
     try:
@@ -45,7 +46,8 @@ async def get_heroes(
             death_year_to=death_year_to,
             death_year_from=death_year_from,
             award_filter=award_filter,
-            rank_filter=rank_filter
+            rank_filter=rank_filter,
+            w_type=w_type
         )
     except Exception as e:
         print("Error:", e)
@@ -108,6 +110,13 @@ async def add_hero(
         service = HeroService(repository)
         result = await service.add_hero(hero_data)
         return result
+    
+    except BaseHeroException as e:
+        raise HTTPException(
+            status_code=e.code,
+            detail=e.message
+        )
+    
     except Exception as e:
         print("Error:", e)
         raise HTTPException(

@@ -25,6 +25,7 @@ class HeroFull(BaseModel):
 
 class HeroCreate(BaseModel):
     full_name: str
+    w_type: str
     birth_date: Optional[str] = None
     death_date: Optional[str] = None
     biography: Optional[str] = None

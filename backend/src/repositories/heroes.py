@@ -12,7 +12,8 @@ class HeroRepository:
         death_year_from: int = None,
         death_year_to: int = None,
         award_filter: str = None,
-        rank_filter: str = None
+        rank_filter: str = None,
+        w_type: str = "vov"
     ):
         # Базовая часть запроса без фильтров, группировки и пагинации
         base_query = """
@@ -24,10 +25,16 @@ class HeroRepository:
                 h.photo_url
             FROM heroes h
         """
-        # COALESCE(h.biography, '') AS summary_info
 
         where_clauses = ["1=1"]
         parameters = []
+
+        if w_type:
+            idx = len(parameters) + 1
+            where_clauses.append(
+                f"h.w_type=${idx}"
+            )
+            parameters.append(f"%{w_type}%")
 
         if award_filter:
             idx = len(parameters) + 1
@@ -114,15 +121,14 @@ class HeroRepository:
 
     async def create(self, hero_data: dict):
         query = """
-        INSERT INTO heroes (full_name, birth_date, death_date, biography, photo_url)
-        VALUES ($1, $2::date, $3::date, $4, $5)
-        RETURNING id, full_name, birth_date, death_date, biography, photo_url
+        INSERT INTO heroes (full_name, birth_date, death_date, biography, photo_url, w_type)
+        VALUES ($1, $2::date, $3::date, $4, $5, $6)
+        RETURNING id, full_name, birth_date, death_date, photo_url
         """
         
         # Преобразуем строковые даты в объекты date, если они строки
         birth_date = hero_data.get('birth_date')
         if birth_date:
-            print(f"{bool(birth_date)}=")
             if birth_date and isinstance(birth_date, str):
                 from datetime import datetime
                 birth_date = datetime.strptime(birth_date, '%Y-%m-%d').date()
@@ -131,7 +137,6 @@ class HeroRepository:
 
         death_date = hero_data.get('death_date')
         if death_date:
-            print(f"{bool(death_date)}=")
             if death_date and isinstance(death_date, str):
                 from datetime import datetime
                 death_date = datetime.strptime(death_date, '%Y-%m-%d').date()
@@ -145,7 +150,8 @@ class HeroRepository:
             death_date,
             hero_data.get('biography'),
             # photo_url = default.webp - если картинка не будет загружена
-            "default.webp"
+            "default.webp",
+            hero_data.get('w_type')
         )
         
         return dict(result)

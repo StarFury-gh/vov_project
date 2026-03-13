@@ -9,3 +9,9 @@ class HeroNotFound(BaseHeroException):
     def __init__(self, code) -> None:
         message = "Герой не найден."
         super().__init__(message, code)
+
+
+class HeroAlreadyExists(BaseHeroException):
+    def __init__(self, code) -> None:
+        message = "Герой уже существует."
+        super().__init__(message, code)

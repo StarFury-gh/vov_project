@@ -4,9 +4,16 @@ from schemas.hero import HeroCreate
 from fastapi import HTTPException
 from core.hero_exceptions import HeroNotFound
 
+from asyncpg.exceptions import UniqueViolationError
+
 from services.award_service import AwardService
 from services.locations_service import LocationService
 from services.rank_service import RanksService
+
+from core.hero_exceptions import (
+    BaseHeroException,
+    HeroAlreadyExists
+)
 
 from cache.decorator import redis_cache
 
@@ -59,7 +66,8 @@ class HeroService:
             death_year_from: int,
             death_year_to: int,
             award_filter: str,
-            rank_filter: str
+            rank_filter: str,
+            w_type: str
         ):
         result = await self.repo.get(
             skip=skip,
@@ -70,7 +78,8 @@ class HeroService:
             death_year_to=death_year_to,
             death_year_from=death_year_from,
             award_filter=award_filter,
-            rank_filter=rank_filter
+            rank_filter=rank_filter,
+            w_type=w_type
         )
         return result
 
@@ -84,15 +93,21 @@ class HeroService:
             raise HeroNotFound(404)
 
     async def add_hero(self, hero_data: HeroCreate):
-        hero_dict = hero_data.model_dump(exclude_unset=True)
-        # Преобразуем строковые даты в формат, подходящий для PostgreSQL
-        if 'birth_date' in hero_dict and hero_dict['birth_date']:
-            hero_dict['birth_date'] = hero_dict['birth_date']
-        if 'death_date' in hero_dict and hero_dict['death_date']:
-            hero_dict['death_date'] = hero_dict['death_date']
-        result = await self.repo.create(hero_dict)
-        return result
-    
+        try:
+            hero_dict = hero_data.model_dump(exclude_unset=True)
+            # Преобразуем строковые даты в формат, подходящий для PostgreSQL
+            if 'birth_date' in hero_dict and hero_dict['birth_date']:
+                hero_dict['birth_date'] = hero_dict['birth_date']
+            if 'death_date' in hero_dict and hero_dict['death_date']:
+                hero_dict['death_date'] = hero_dict['death_date']
+            result = await self.repo.create(hero_dict)
+            return result
+        except UniqueViolationError:
+            raise HeroAlreadyExists(409)
+        
+        except Exception:
+            raise BaseHeroException("Внутренняя ошибка сервера", 500)
+
     async def save_image(self, hero_id: int, filename: str):
         status, file = await self.repo.set_hero_image(hero_id, filename)
         if status:
