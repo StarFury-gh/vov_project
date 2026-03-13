@@ -34,7 +34,7 @@ class HeroRepository:
             where_clauses.append(
                 f"h.w_type=${idx}"
             )
-            parameters.append(f"%{w_type}%")
+            parameters.append(f"{w_type}")
 
         if award_filter:
             idx = len(parameters) + 1
