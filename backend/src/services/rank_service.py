@@ -15,7 +15,7 @@ class RanksService:
     def __init__(self, repo: RanksRepository):
         self.repo = repo
 
-    @redis_cache(60)
+    @redis_cache(800)
     async def get_ranks(self):
         try:
             result = await self.repo.get_all()
@@ -24,14 +24,14 @@ class RanksService:
             print(e)
             return None
 
-    @redis_cache(60)
+    @redis_cache(800)
     async def get_by_name(self, rank_name: str):
         result = await self.repo.get_by_name(rank_name)
         if result is None:
             raise RankNotFound
         return result
 
-    @redis_cache(60)
+    @redis_cache(800)
     async def get_rank_by_id(self, rank_id: int):
         result = await self.repo.get(rank_id)
         return result
@@ -86,7 +86,7 @@ class RanksService:
             print(e, f"Type: {type(e).__name__}")
             raise BaseRankException()
     
-    @redis_cache(60)
+    @redis_cache(800)
     async def get_hero_rank(self, hero_id: int):
         try:
             result = await self.repo.get_hero_rank(hero_id)

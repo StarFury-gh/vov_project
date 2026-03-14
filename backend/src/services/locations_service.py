@@ -32,7 +32,7 @@ class LocationService:
             print(e, f"Type: {type(e).__name__}")
             raise BaseLocationException
     
-    @redis_cache(60)
+    @redis_cache(800)
     async def get_hero_location(self, hero_id: int):
         try:
             result = await self.repo.get_by_id(hero_id)
@@ -51,7 +51,7 @@ class LocationService:
             print(e, f"Type: {type(e).__name__}")
             raise BaseLocationException
         
-    @redis_cache(60)
+    @redis_cache(800)
     async def get_all_locations(self):
         try:
             result = await self.repo.get_all()

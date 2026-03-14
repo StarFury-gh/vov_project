@@ -4,7 +4,10 @@ from schemas.hero import HeroCreate
 from fastapi import HTTPException
 from core.hero_exceptions import HeroNotFound
 
-from asyncpg.exceptions import UniqueViolationError
+from asyncpg.exceptions import (
+    UniqueViolationError, 
+    InvalidTextRepresentationError
+)
 
 from services.award_service import AwardService
 from services.locations_service import LocationService
@@ -12,7 +15,9 @@ from services.rank_service import RanksService
 
 from core.hero_exceptions import (
     BaseHeroException,
-    HeroAlreadyExists
+    HeroAlreadyExists,
+    InvalidDate,
+    InvalidWarType
 )
 
 from cache.decorator import redis_cache
@@ -55,7 +60,7 @@ class HeroService:
         except Exception as e:
             print(f"{e}\tType: {type(e).__name__}")
 
-    @redis_cache(60)
+    @redis_cache(800)
     async def get_heroes(
             self,
             skip: int,
@@ -83,7 +88,7 @@ class HeroService:
         )
         return result
 
-    @redis_cache(60)
+    @redis_cache(800)
     async def get_hero(self, hero_id):
         existance = await self.repo.check_hero_existance_by_id(hero_id)
         if existance:
@@ -92,20 +97,35 @@ class HeroService:
         else:
             raise HeroNotFound(404)
 
-    async def add_hero(self, hero_data: HeroCreate):
+    async def add_hero(
+            self, 
+            hero_data: HeroCreate,
+        ):
         try:
             hero_dict = hero_data.model_dump(exclude_unset=True)
-            # Преобразуем строковые даты в формат, подходящий для PostgreSQL
+            # строковые даты в формат, подходящий для PostgreSQL
             if 'birth_date' in hero_dict and hero_dict['birth_date']:
                 hero_dict['birth_date'] = hero_dict['birth_date']
             if 'death_date' in hero_dict and hero_dict['death_date']:
                 hero_dict['death_date'] = hero_dict['death_date']
+            
             result = await self.repo.create(hero_dict)
+
             return result
+        
         except UniqueViolationError:
             raise HeroAlreadyExists(409)
         
-        except Exception:
+        # неизвестное значение для ENUM в psql
+        except InvalidTextRepresentationError as e:
+            raise InvalidWarType
+
+        # неверный формат даты
+        except ValueError as e:
+            raise InvalidDate
+        
+        except Exception as e:
+            print(e, "Type:", type(e).__name__)
             raise BaseHeroException("Внутренняя ошибка сервера", 500)
 
     async def save_image(self, hero_id: int, filename: str):
