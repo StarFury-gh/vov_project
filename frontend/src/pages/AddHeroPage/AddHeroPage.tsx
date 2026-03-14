@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import styles from './AdminPage.module.css'
+import styles from './AddHeroPage.module.css'
 import AddHeroForm from '../../components/admin/AddHeroForm'
 import AddRankForm from '../../components/admin/AddRankForm'
 import AddAwardForm from '../../components/admin/AddAwardForm'
@@ -11,7 +11,7 @@ const AdminPage = () => {
     return (
         <main className={styles.page}>
             <header className={styles.header}>
-                <h1 className={styles.title}>Панель администратора</h1>
+                <h1 className={styles.title}>Добавление героя</h1>
                 <Link to="/" className={styles.backLink}>
                     ← На главную
                 </Link>

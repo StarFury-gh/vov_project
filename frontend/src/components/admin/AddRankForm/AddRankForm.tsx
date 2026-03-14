@@ -14,13 +14,11 @@ export interface RankFormData {
 
 const AddRankForm = () => {
     const [name, setName] = useState('')
-    const [sortOrder, setSortOrder] = useState<number | ''>(0)
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState<string | null>(null)
 
     const clearForm = () => {
         setName("")
-        setSortOrder(0)
     }
 
     const handleSubmit = async (e: FormEvent) => {
@@ -35,7 +33,7 @@ const AddRankForm = () => {
 
         const form_data: RankFormData = {
             name,
-            sort_order: typeof sortOrder === 'number' ? sortOrder : Number(sortOrder) || 0,
+            sort_order: 1
         }
 
         const url = API_URL + "/ranks/"
@@ -68,19 +66,6 @@ const AddRankForm = () => {
                     className={styles.input}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                />
-            </label>
-
-            <label className={styles.label}>
-                Очередность сортировки
-                <input
-                    type="number"
-                    className={styles.input}
-                    value={sortOrder}
-                    onChange={(e) => {
-                        const val = e.target.value
-                        setSortOrder(val === '' ? '' : Number(val))
-                    }}
                 />
             </label>
 

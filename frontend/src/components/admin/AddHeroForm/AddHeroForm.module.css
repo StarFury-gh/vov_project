@@ -156,3 +156,23 @@
 .submitButton:hover {
     background-color: var(--color-accent-strong);
 }
+
+.radioLabel {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.radioLabel:hover {
+    background-color: var(--color-card-accent-light);
+}
+
+.radioLabel input[type="radio"] {
+    margin-right: 0.5rem;
+    accent-color: var(--color-accent-strong);
+}

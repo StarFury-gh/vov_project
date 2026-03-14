@@ -13,6 +13,8 @@ export interface HeroFormData {
     biography: string
 }
 
+type wType = 'vov' | 'svo'
+
 const AddHeroForm = () => {
     const [fullName, setFullName] = useState('')
     const [birthDate, setBirthDate] = useState('')
@@ -20,6 +22,7 @@ const AddHeroForm = () => {
     const [biography, setBiography] = useState('')
     const [awards, setAwards] = useState<string[]>([])
     const [awardInput, setAwardInput] = useState('')
+    const [wType, setWtype] = useState<wType>('vov')
     const [rank, setRank] = useState('')
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState<string | null>(null)
@@ -116,6 +119,27 @@ const AddHeroForm = () => {
                     {error || success}
                 </div>
             )}
+
+            <label className={styles.radioLabel}>
+                <input
+                    type="radio"
+                    name="awardsFilter"
+                    value={"Вов"}
+                    checked={wType === "vov"}
+                    onChange={() => setWtype("vov")}
+                />
+                ВОВ
+            </label>
+            <label className={styles.radioLabel}>
+                <input
+                    type="radio"
+                    name="awardsFilter"
+                    value={"Сво"}
+                    checked={wType === "svo"}
+                    onChange={() => setWtype("svo")}
+                />
+                СВО
+            </label>
 
             <label className={styles.label}>
                 ФИО

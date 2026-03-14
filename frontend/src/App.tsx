@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import VovPage from './pages/VovPage'
 import HeroPage from './pages/HeroPage'
 import SvoPage from './pages/SvoPage'
-import AdminPage from './pages/AdminPage'
+import AddHeroPage from './pages/AddHeroPage'
 import HomePage from './pages/HomePage'
 import AboutPage from './pages/AboutPage'
 
@@ -19,7 +19,7 @@ function App() {
                 <Route path="/svo" element={<SvoPage />}></Route>
                 <Route path="/vov" element={<VovPage />} />
                 <Route path="/heroes/:id" element={<HeroPage />} />
-                <Route path="/admin" element={<AdminPage />} />
+                <Route path="/admin" element={<AddHeroPage />} />
             </Routes>
         </div>
     )
