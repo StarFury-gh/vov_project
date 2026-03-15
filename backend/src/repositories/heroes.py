@@ -149,8 +149,8 @@ class HeroRepository:
             birth_date,
             death_date,
             hero_data.get('biography'),
-            # photo_url = default.webp - если картинка не будет загружена
-            "default.webp",
+            # photo_url = default.png - если картинка не будет загружена
+            "default.png",
             hero_data.get('w_type')
         )
         

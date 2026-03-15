@@ -4,3 +4,4 @@ api_docs.md
 Dockerfile
 .env_example
 images
+*.webp
