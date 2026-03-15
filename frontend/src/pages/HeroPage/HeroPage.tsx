@@ -36,10 +36,14 @@ const HeroPage = () => {
         const fetchData = async () => {
             const data = await fetchHero(id)
             setHeroData(data)
-            console.log(data)
         }
         fetchData()
     }, [id])
+
+    useEffect(() => {
+        console.log('HeroPage', id)
+        console.log('HeroData', heroData)
+    }, [id, heroData])
 
     return (
         <main className={styles.page}>
@@ -75,11 +79,14 @@ const HeroPage = () => {
 
                     <p className={styles.text}>Ранг: {heroData?.rank}</p>
 
-                    <AppMap
-                        address={heroData?.place.name}
-                        lattitude={heroData?.place.latitude}
-                        longitude={heroData?.place.longtitude}
-                    />
+                    {
+                        heroData?.place ?
+                            <AppMap
+                                address={heroData?.place.name}
+                                lattitude={heroData?.place.latitude}
+                                longitude={heroData?.place.longtitude}
+                            /> : null
+                    }
 
                     <Link to="/vov" className={styles.backLink}>
                         ← Вернуться к списку героев
