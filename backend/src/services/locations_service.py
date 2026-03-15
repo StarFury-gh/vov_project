@@ -47,6 +47,10 @@ class LocationService:
                 "status": False
             }
         
+        except KeyError as e:
+            print("KeyError:", e)
+            raise BaseLocationException
+
         except Exception as e:
             print(e, f"Type: {type(e).__name__}")
             raise BaseLocationException

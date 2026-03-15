@@ -30,7 +30,7 @@ class HeroService:
         self.name = "HeroService"
         self.repo = repository
 
-    @redis_cache(60)
+    @redis_cache(800)
     async def get_full_hero_info(
             self, 
             hero_id: int, 
@@ -53,7 +53,8 @@ class HeroService:
                 hero["awards"] = []
 
             hero["rank"] = rank
-            hero["place"] = place["location"]
+            if place.get("location") is not None:
+                hero["place"] = place["location"]
 
             return hero
 
