@@ -32,16 +32,24 @@
     color: var(--color-text-muted);
 }
 
-.backLink {
+.backBtn {
     margin-top: 2rem;
+    padding: 0.25rem 1rem;
     font-size: 0.95rem;
     font-weight: 500;
-    color: var(--color-text-main);
+    background-color: var(--color-bg-page);
+    color: var(--color-text-muted);
     text-decoration: none;
+    border: none;
+    border-radius: 2px;
+    transition: border-radius .3s, color .3s, text-decoration .3s;
 }
 
-.backLink:hover {
+.backBtn:hover {
     text-decoration: underline;
+    color: var(--color-text-main);
+    background-color: var(--color-card-accent-light);
+    border-radius: 16px;
 }
 
 .portrait {

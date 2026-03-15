@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import styles from './HeroPage.module.css'
 import { useEffect, useState } from 'react'
 // @ts-expect-error JS module without types
@@ -45,6 +45,8 @@ const HeroPage = () => {
         console.log('HeroData', heroData)
     }, [id, heroData])
 
+    const navigate = useNavigate()
+
     return (
         <main className={styles.page}>
             <div className={styles.card}>
@@ -88,9 +90,9 @@ const HeroPage = () => {
                             /> : null
                     }
 
-                    <Link to="/vov" className={styles.backLink}>
+                    <button className={styles.backBtn} onClick={() => navigate(-1)}>
                         ← Вернуться к списку героев
-                    </Link>
+                    </button>
                 </div>
             </div>
         </main>

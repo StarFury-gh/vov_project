@@ -62,6 +62,15 @@ function HeroesScroller(props: ScrollerProps) {
     const [searchTotal, setSearchTotal] = useState(0)
     const [isSearching, setIsSearching] = useState(false)
     const [searchError, setSearchError] = useState<string | null>(null)
+    const [title, setTitle] = useState<string>("Великой Отечественной Войны")
+
+    useEffect(() => {
+        if (props.type === 'vov') {
+            setTitle("Великой Отечественной Войны")
+        } else {
+            setTitle("Специальной Военной Операции")
+        }
+    }, [props.type])
 
     const observerRef = useRef<IntersectionObserver | null>(null)
     const sentinelRef = useRef<HTMLDivElement | null>(null)
@@ -417,7 +426,7 @@ function HeroesScroller(props: ScrollerProps) {
     return (
         <main className={styles.page}>
             <header className={styles.header}>
-                <h1 className={styles.title}>Герои Великой Отечественной войны</h1>
+                <h2 className={styles.title}>Герои {title}</h2>
                 <p className={styles.subtitle}>
                     Памяти тех, кто защищал Родину. Пролистывайте список, чтобы увидеть
                     больше героев.
