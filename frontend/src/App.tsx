@@ -19,7 +19,7 @@ function App() {
                 <Route path="/svo" element={<SvoPage />}></Route>
                 <Route path="/vov" element={<VovPage />} />
                 <Route path="/heroes/:id" element={<HeroPage />} />
-                <Route path="/admin" element={<AddHeroPage />} />
+                <Route path="/add" element={<AddHeroPage />} />
             </Routes>
         </div>
     )

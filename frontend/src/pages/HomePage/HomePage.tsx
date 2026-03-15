@@ -52,8 +52,7 @@ function HomePage() {
                     <img src="" alt="" className={styles['home-page__content-block-img']} />
                     <div className={styles['home-page__content-block-text']}>
                         <h2 className={styles['home-page__content-block-title']}>Вы можете добавить информацию о герое, которого нет на нашем сайте</h2>
-                        <p className={styles['home-page__content-block-description']}>Добавить</p>
-                        <Link to={"/about"}>Читать</Link>
+                        <Link to={"/add"}>Добавить</Link>
                     </div>
                 </div>
             </section>
