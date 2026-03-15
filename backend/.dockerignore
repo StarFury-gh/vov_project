@@ -3,3 +3,4 @@ __pycache__
 api_docs.md
 Dockerfile
 .env_example
+images

@@ -14,7 +14,6 @@ COPY --from=build /opt/venv /opt/venv
 ENV PATH "/opt/venv/bin:$PATH"
 
 WORKDIR /app
-COPY images images
 COPY src src
 COPY .env .env
 CMD ["python3", "src/main.py"]

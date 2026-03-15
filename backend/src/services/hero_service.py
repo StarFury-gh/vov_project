@@ -33,7 +33,7 @@ class HeroService:
     @redis_cache(800)
     async def get_full_hero_info(
             self, 
-            hero_id: int, 
+            hero_id: int,
             award_service: AwardService, 
             rank_service: RanksService,
             location_service: LocationService
