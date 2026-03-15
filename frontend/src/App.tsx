@@ -6,6 +6,7 @@ import SvoPage from './pages/SvoPage'
 import AddHeroPage from './pages/AddHeroPage'
 import HomePage from './pages/HomePage'
 import AboutPage from './pages/AboutPage'
+import PageNotFound from './pages/PageNotFound'
 
 import Header from './components/common/Header/Header'
 
@@ -20,6 +21,7 @@ function App() {
                 <Route path="/vov" element={<VovPage />} />
                 <Route path="/heroes/:id" element={<HeroPage />} />
                 <Route path="/add" element={<AddHeroPage />} />
+                <Route path="*" element={<PageNotFound />}></Route>
             </Routes>
         </div>
     )
