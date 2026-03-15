@@ -1,3 +1,5 @@
+CREATE TYPE wType AS ENUM ('vov', 'svo');
+
 -- Таблица званий (справочник)
 CREATE TABLE ranks (
     id SERIAL PRIMARY KEY,
@@ -36,7 +38,8 @@ CREATE TABLE heroes (
     biography TEXT,
     photo_url VARCHAR(500),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    w_type wType
 );
 
 CREATE INDEX idx_heroes_full_name ON heroes(full_name);
