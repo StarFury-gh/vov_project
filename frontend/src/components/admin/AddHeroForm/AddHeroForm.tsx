@@ -6,14 +6,15 @@ import styles from './AddHeroForm.module.css'
 import { API_URL } from "../../../constants"
 import axios from 'axios'
 
+type wType = 'vov' | 'svo'
+
 export interface HeroFormData {
     full_name: string
     birth_date: string
     death_date: string
     biography: string
+    w_type: wType
 }
-
-type wType = 'vov' | 'svo'
 
 const AddHeroForm = () => {
     const [fullName, setFullName] = useState('')
@@ -61,6 +62,7 @@ const AddHeroForm = () => {
             birth_date: birthDate,
             death_date: deathDate,
             biography,
+            w_type: wType
         }
         console.log('AddHeroForm submitted:', form_data)
 
