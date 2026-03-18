@@ -27,13 +27,15 @@ class RanksService:
     @redis_cache(800)
     async def get_by_name(self, rank_name: str):
         result = await self.repo.get_by_name(rank_name)
-        if result is None:
+        if result is not None:
             raise RankNotFound
         return result
 
     @redis_cache(800)
     async def get_rank_by_id(self, rank_id: int):
         result = await self.repo.get(rank_id)
+        if result is None:
+            raise RankNotFound
         return result
 
     async def create_rank(self, rank):

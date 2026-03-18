@@ -48,6 +48,12 @@ async def get_rank_by_id(
         result = await service.get_rank_by_id(rank_id)
         return result
     
+    except BaseRankException as e:
+        raise HTTPException(
+            detail=e.message,
+            status_code=e.code
+        )
+
     except Exception as e:
         print(e)
         raise HTTPException(
