@@ -14,6 +14,7 @@ from api.location import l_router
 
 from os import path, makedirs
 
+from prometheus_fastapi_instrumentator import Instrumentator
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -39,6 +40,8 @@ app.add_middleware(
     allow_headers=["*"],
     allow_methods=["*"]
 )
+
+Instrumentator().instrument(app).expose(app)
 
 if not path.exists("images"):
     makedirs("images")
