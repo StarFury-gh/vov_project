@@ -1,9 +1,16 @@
 import asyncio
 import reqs
-from utils import read_data_from_json
+from utils import (
+    read_data_from_json_vov, 
+    read_data_from_json_svo
+)
 
 async def main():
-    data = read_data_from_json()
+    vov_data = read_data_from_json_vov()
+    svo_data = read_data_from_json_svo()
+
+    data = vov_data + svo_data
+
     for hero in data:
         hero_id = await reqs.add_hero(hero)
         if hero_id:
