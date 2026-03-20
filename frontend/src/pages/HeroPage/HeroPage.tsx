@@ -35,15 +35,11 @@ const HeroPage = () => {
     useEffect(() => {
         const fetchData = async () => {
             const data = await fetchHero(id)
+            console.log("heroData", data)
             setHeroData(data)
         }
         fetchData()
     }, [id])
-
-    useEffect(() => {
-        console.log('HeroPage', id)
-        console.log('HeroData', heroData)
-    }, [id, heroData])
 
     const navigate = useNavigate()
 
@@ -85,7 +81,7 @@ const HeroPage = () => {
                         heroData?.place ?
                             <AppMap
                                 address={heroData?.place.name}
-                                lattitude={heroData?.place.latitude}
+                                latitude={heroData?.place.latitude}
                                 longitude={heroData?.place.longtitude}
                             /> : null
                     }
