@@ -4,17 +4,22 @@ class AwardsRepository:
 
     async def get(self, award_id: int):
         res = await self.db.fetchrow("SELECT * FROM awards WHERE id = $1", award_id)
-        return [dict(record) for record in res]
-    
+        if res is not None:
+            return dict(res)
+        return None
+
     async def get_all(self):
         res = await self.db.fetch("SELECT * FROM awards")
-        return [dict(record) for record in res]
+        if res is not None:
+            return [dict(record) for record in res]
+        return []
 
     async def get_by_name(self, name: str):
         res = await self.db.fetchrow("SELECT id FROM awards WHERE name = $1", name)
-        print(f"get_by_name: {res=}")
-        return dict(res).get("id")
-
+        if res is not None:
+            return dict(res).get("id")
+        return None
+    
     async def add(self, award_name: str, desciption: str):
         award_id = await self.db.fetchval(
             "INSERT INTO awards (name, description) VALUES ($1, $2) RETURNING id",

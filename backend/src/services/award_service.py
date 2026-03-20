@@ -23,27 +23,30 @@ class AwardService:
     def __init__(self, repo: AwardsRepository) -> None:
         self.repo = repo
     
-    @redis_cache(60)
+    @redis_cache(800)
     async def get_awards(self):
         result = await self.repo.get_all()
         if result is not None:
             return result
         raise AwardNotFound
     
-    @redis_cache(60)
+    @redis_cache(800)
     async def get_award(self, award_id):
         result = await self.repo.get(award_id)
         if result is not None:
             return result
         raise AwardNotFound
     
-    @redis_cache(60)
+    @redis_cache(800)
     async def get_by_name(self, name: str):
         award_id = await self.repo.get_by_name(name)
+        if award_id is None:
+            raise AwardNotFound
         result = {
             "id": award_id
         }
         return result
+    
     async def add_award(self, award: AwardCreate):
         try:
             result = await self.repo.add(
@@ -97,7 +100,7 @@ class AwardService:
 
         raise AwardNotFound
     
-    @redis_cache(60)
+    @redis_cache(800)
     async def get_hero_awards(self, hero_id: int):
         try:
             awards = await self.repo.get_hero_awards(hero_id)
