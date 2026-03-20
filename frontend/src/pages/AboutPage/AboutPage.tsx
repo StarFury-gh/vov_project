@@ -53,7 +53,6 @@ function AboutPage() {
                     </ul>
                 </div>
             </section>
-            <p className={styles['about-page__footer-text']}>Вы можете добавить информацию о герое...</p>
         </div >
     )
 }
