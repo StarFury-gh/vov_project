@@ -18,9 +18,12 @@ from prometheus_fastapi_instrumentator import Instrumentator
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await init_redis()
-    yield
-    await close_redis()
+    try:
+        await init_redis()
+        yield
+        await close_redis()
+    except:
+        pass
 
 app = FastAPI(
     lifespan=lifespan

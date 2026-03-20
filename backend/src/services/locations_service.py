@@ -18,7 +18,7 @@ class LocationService:
             await self.repo.create(
                 place_name=location.name,
                 hero_id=location.hero_id,
-                longitude=location.longitude,
+                longtitude=location.longtitude,
                 lattitude=location.lattitude
             )
             return {

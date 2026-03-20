@@ -28,7 +28,7 @@ class RanksService:
     async def get_by_name(self, rank_name: str):
         result = await self.repo.get_by_name(rank_name)
         print(f"get_by_name, {result=}")
-        if result is not None:
+        if result is None:
             raise RankNotFound
         return result
 

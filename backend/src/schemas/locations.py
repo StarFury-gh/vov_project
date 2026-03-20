@@ -4,5 +4,5 @@ class AddLocation(BaseModel):
     name: str
     hero_id: int
     lattitude: float
-    longitude: float
+    longtitude: float
     
