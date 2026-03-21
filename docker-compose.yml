@@ -15,6 +15,18 @@ services:
     volumes:
       - pg_volume:/var/lib/postgresql
 
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter
+    environment:
+      DATA_SOURCE_NAME: "postgresql://monitoring:01766@postgres:5432/vov_project?sslmode=disable"
+    ports:
+      - "9187:9187"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app_network
+
   redis:
     build: ./redis
     ports:
