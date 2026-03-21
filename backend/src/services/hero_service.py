@@ -20,7 +20,9 @@ from core.hero_exceptions import (
     InvalidWarType
 )
 
-from cache.decorator import redis_cache
+from cache.decorator import redis_cache, invalidate_cache
+
+CACHE_TTL = 300
 
 class HeroService:
     def __init__(
@@ -30,7 +32,7 @@ class HeroService:
         self.name = "HeroService"
         self.repo = repository
 
-    @redis_cache(800)
+    @redis_cache(CACHE_TTL)
     async def get_full_hero_info(
             self, 
             hero_id: int,
@@ -61,7 +63,7 @@ class HeroService:
         except Exception as e:
             print(f"{e}\tType: {type(e).__name__}")
 
-    @redis_cache(800)
+    @redis_cache(CACHE_TTL)
     async def get_heroes(
             self,
             skip: int,
@@ -89,7 +91,7 @@ class HeroService:
         )
         return result
 
-    @redis_cache(800)
+    @redis_cache(CACHE_TTL)
     async def get_hero(self, hero_id):
         existance = await self.repo.check_hero_existance_by_id(hero_id)
         if existance:
@@ -98,6 +100,7 @@ class HeroService:
         else:
             raise HeroNotFound(404)
 
+    @invalidate_cache()
     async def add_hero(
             self, 
             hero_data: HeroCreate,
@@ -129,6 +132,7 @@ class HeroService:
             print(e, "Type:", type(e).__name__)
             raise BaseHeroException("Внутренняя ошибка сервера", 500)
 
+    @invalidate_cache()
     async def save_image(self, hero_id: int, filename: str):
         status, file = await self.repo.set_hero_image(hero_id, filename)
         if status:
