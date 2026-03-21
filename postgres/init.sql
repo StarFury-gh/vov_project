@@ -1,3 +1,18 @@
+CREATE USER monitoring WITH PASSWORD '01766';
+
+-- доступ к базе
+GRANT CONNECT ON DATABASE vov_project TO monitoring;
+
+-- доступ к схемам
+GRANT USAGE ON SCHEMA public TO monitoring;
+
+-- доступ к таблицам (чтение)
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO monitoring;
+
+-- автоматически для будущих таблиц
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT SELECT ON TABLES TO monitoring;
+
 CREATE TYPE wType AS ENUM ('vov', 'svo');
 
 -- Таблица званий (справочник)
