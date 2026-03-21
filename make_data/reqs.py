@@ -164,7 +164,7 @@ async def add_place(hero_id: int, name: str, latitude:float, longtitude:float):
         payload = {
             "hero_id": hero_id,
             "name": name,
-            "longtitude": longtitude,
+            "longitude": longtitude,
             "lattitude": latitude
         }
         url = config_obj.API_URL + "/locations"
