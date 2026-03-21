@@ -30,6 +30,17 @@ services:
     volumes:
       - redis_data:/data
 
+  redis-exporter:
+    image: oliver006/redis_exporter
+    environment:
+      - REDIS_ADDR=redis://monitoring:01766@redis:6379
+    ports:
+      - "9121:9121"
+    depends_on:
+      - redis
+    networks:
+      - app_network
+
   backend:
     build: ./backend
     ports:
