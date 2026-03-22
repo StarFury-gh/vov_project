@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 function AboutPage() {
     return (
         <div className={styles['about-page']}>
-            <h1 className={styles['about-page__title']}>Страница "О нас"</h1>
+            <h1 className={styles['about-page__title']}>О нас</h1>
             <section className={styles['about-page__section']}>
                 <h2>
                     Цель проекта
