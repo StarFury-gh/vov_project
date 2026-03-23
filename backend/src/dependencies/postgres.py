@@ -1,14 +1,10 @@
-from asyncpg import connect
+from fastapi import Request
 
-from core.config import config_obj
+async def get_pg(request: Request):
+    pool = getattr(request.app.state, "pg_pool", None)
 
-async def get_pg():
-    connection = await connect(
-        host=config_obj.DB_HOST,
-        port=config_obj.DB_PORT,
-        user=config_obj.DB_USER,
-        password=config_obj.DB_PASSWORD,
-        database=config_obj.DB_NAME
-    )
-    yield connection
-    await connection.close()
+    if pool is None:
+        raise RuntimeError("Postgres pool is not initialized")
+
+    async with pool.acquire() as connection:
+        yield connection
