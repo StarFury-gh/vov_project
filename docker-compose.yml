@@ -1,8 +1,6 @@
 services:
   postgres:
     build: ./postgres
-    ports:
-      - 5432:5432
     networks:
       - app_network
     healthcheck:
@@ -19,8 +17,6 @@ services:
     image: quay.io/prometheuscommunity/postgres-exporter
     environment:
       DATA_SOURCE_NAME: "postgresql://monitoring:01766@postgres:5432/vov_project?sslmode=disable"
-    ports:
-      - "9187:9187"
     depends_on:
       postgres:
         condition: service_healthy
@@ -29,8 +25,6 @@ services:
 
   redis:
     build: ./redis
-    ports:
-      - "6379:6379"
     networks:
       - app_network
     healthcheck:
@@ -46,8 +40,6 @@ services:
     image: oliver006/redis_exporter
     environment:
       - REDIS_ADDR=redis://monitoring:01766@redis:6379
-    ports:
-      - "9121:9121"
     depends_on:
       - redis
     networks:
@@ -55,8 +47,6 @@ services:
 
   backend:
     build: ./backend
-    ports:
-      - 8000:8000
     networks:
       - app_network
     volumes:
@@ -78,7 +68,7 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - 80:80
+      - 8080:80
     networks:
       - app_network
     depends_on:
@@ -89,8 +79,6 @@ services:
     networks:
       - app_network
     build: ./prometheus
-    ports:
-      - 9090:9090
     depends_on:
       backend:
         condition: service_healthy
