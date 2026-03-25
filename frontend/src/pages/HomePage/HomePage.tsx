@@ -5,7 +5,7 @@ import styles from './HomePage.module.css';
 function HomePage() {
     return (
         <div className={styles['home-page']}>
-            <h1 className={styles['home-page__title']}>Название сайта</h1>
+            <h1 className={styles['home-page__title']}>Справочник героев СВО и ВОВ</h1>
             {/* Основной контент */}
             <section>
                 <div className={styles['home-page__content-block']}>
