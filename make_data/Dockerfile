@@ -1,21 +1,24 @@
 FROM python:3.12-slim AS builder
 
-ENV VIRTUAL_ENV="/opt/venv"
+ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
-ENV PATH "$VIRTUAL_ENV/bin:$PATH"
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+WORKDIR /app
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -Ur requirements.txt
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
 
 
 FROM python:3.12-slim AS runner
 
-COPY --from=builder /opt/venv /opt/venv
-ENV PATH "/opt/venv/bin:$PATH"
+ENV VIRTUAL_ENV=/opt/venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+COPY --from=builder $VIRTUAL_ENV $VIRTUAL_ENV
 
 WORKDIR /app
 COPY . .
 
-RUN python3 images.py
-
-CMD ["python3", "src/main.py"]
+CMD ["sh", "-c", "python3 images.py && python3 main.py"]

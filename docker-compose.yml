@@ -45,6 +45,14 @@ services:
     networks:
       - app_network
 
+  make_data:
+    build: ./make_data
+    networks:
+      - app_network
+    depends_on:
+      backend:
+        condition: service_healthy
+
   backend:
     ports:
       - 8000:8000

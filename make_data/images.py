@@ -331,10 +331,10 @@ def main():
     print("\n" + "=" * 60)
     
     # Запрос подтверждения
-    response = input("\nПродолжить? (y/n): ").lower()
-    if response not in ['y', 'yes', 'да', 'д']:
-        print("Завершение работы.")
-        return
+    # response = input("\nПродолжить? (y/n): ").lower()
+    # if response not in ['y', 'yes', 'да', 'д']:
+    #     print("Завершение работы.")
+    #     return
     
     # Запуск загрузки
     downloader = HeroPhotosDownloader()
