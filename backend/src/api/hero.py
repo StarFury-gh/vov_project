@@ -31,7 +31,7 @@ async def get_heroes(
     death_year_to: int = Query(None, ge=1),
     award_filter: str = Query(None),
     rank_filter: str = Query(None),
-    w_type: str = Query("vov"),
+    w_type: str = Query(...),
     pg = Depends(get_pg)
 ):
     try:

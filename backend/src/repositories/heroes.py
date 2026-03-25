@@ -4,6 +4,7 @@ class HeroRepository:
 
     async def get(
         self,
+        w_type: str,
         skip: int = 0,
         limit: int = 20,
         search: str = None,
@@ -13,7 +14,6 @@ class HeroRepository:
         death_year_to: int = None,
         award_filter: str = None,
         rank_filter: str = None,
-        w_type: str = "vov"
     ):
         # Базовая часть запроса без фильтров, группировки и пагинации
         base_query = """
