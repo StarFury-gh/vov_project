@@ -75,7 +75,7 @@ class HeroService:
             death_year_to: int,
             award_filter: str,
             rank_filter: str,
-            w_type: str
+            w_type: str = "vov"
         ):
         result = await self.repo.get(
             skip=skip,
