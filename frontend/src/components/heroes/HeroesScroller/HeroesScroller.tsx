@@ -109,7 +109,12 @@ function HeroesScroller(props: ScrollerProps) {
             // API ожидает страницу начиная с 1
             const apiPage = page + 1
 
-            const data = await fetchHeroes(apiPage, PAGE_LIMIT, awardFilter, rankFilter, props.type) as HeroesApiResponse
+            const data = await fetchHeroes(
+                apiPage,
+                PAGE_LIMIT,
+                awardFilter,
+                rankFilter,
+            ) as HeroesApiResponse
 
             let newHeroes: HeroFromApi[] = []
             let nextHasMore = true
@@ -169,7 +174,7 @@ function HeroesScroller(props: ScrollerProps) {
             // Для поиска используем следующую страницу (searchPage + 1, так как searchPage начинается с 0)
             const currentPage = searchPage + 1
 
-            const response = await searchHeroesByName(searchQuery, currentPage, PAGE_LIMIT) as SearchResponse
+            const response = await searchHeroesByName(searchQuery, currentPage, PAGE_LIMIT, props.type) as SearchResponse
 
             const newItems = response.items ?? []
 
@@ -233,7 +238,13 @@ function HeroesScroller(props: ScrollerProps) {
                 setIsLoading(true)
 
                 try {
-                    const data = await fetchHeroes(1, PAGE_LIMIT, awardFilter, rankFilter, props.type) as HeroesApiResponse
+                    const data = await fetchHeroes(
+                        1,
+                        PAGE_LIMIT,
+                        awardFilter,
+                        rankFilter,
+                        props.type
+                    ) as HeroesApiResponse
 
                     let newHeroes: HeroFromApi[] = []
                     let nextHasMore = true
@@ -351,7 +362,12 @@ function HeroesScroller(props: ScrollerProps) {
             lastLoadedSearchPageRef.current = 0
 
             // Загружаем первую страницу поиска
-            const response = await searchHeroesByName(query, 1, PAGE_LIMIT) as SearchResponse
+            const response = await searchHeroesByName(
+                query,
+                1,
+                PAGE_LIMIT,
+                props.type
+            ) as SearchResponse
             const items = response.items ?? []
 
             console.log('🔍 Результаты поиска:', {
