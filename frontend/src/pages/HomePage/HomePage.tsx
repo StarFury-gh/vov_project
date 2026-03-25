@@ -39,7 +39,7 @@ function HomePage() {
                 </div>
                 <div className={styles['home-page__content-block']}>
                     {/* Подгрузим позже */}
-                    <img src="/lenta.jpg" alt="" className={styles['home-page__content-block-img']} />
+                    <img src="/lenta.jpeg" alt="" className={styles['home-page__content-block-img']} />
                     <div className={styles['home-page__content-block-text']}>
                         <h2 className={styles['home-page__content-block-title']}>О нас</h2>
                         <p className={styles['home-page__content-block-description']}>Читайте подробнее</p>
@@ -48,7 +48,7 @@ function HomePage() {
                 </div>
                 <div className={styles['home-page__content-block']}>
                     {/* Подгрузим позже */}
-                    <img src="/lenta.jpg" alt="" className={styles['home-page__content-block-img']} />
+                    <img src="/lenta.jpeg" alt="" className={styles['home-page__content-block-img']} />
                     <div className={styles['home-page__content-block-text']}>
                         <h2 className={styles['home-page__content-block-title']}>Вы можете добавить информацию о герое, которого нет на нашем сайте</h2>
                         <Link to={"/add"}>Добавить</Link>
