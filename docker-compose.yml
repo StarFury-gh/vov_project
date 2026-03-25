@@ -46,6 +46,8 @@ services:
       - app_network
 
   backend:
+    ports:
+      - 8000:8000
     build: ./backend
     networks:
       - app_network
