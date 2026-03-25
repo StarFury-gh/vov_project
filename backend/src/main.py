@@ -15,13 +15,25 @@ from api.location import l_router
 from os import path, makedirs
 
 from prometheus_fastapi_instrumentator import Instrumentator
+from asyncpg import create_pool
+from core.config import config_obj
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
         await init_redis()
+        app.state.pg_pool = await create_pool(
+            host=config_obj.DB_HOST,
+            port=config_obj.DB_PORT,
+            user=config_obj.DB_USER,
+            password=config_obj.DB_PASSWORD,
+            database=config_obj.DB_NAME,
+            min_size=1,
+            max_size=10,
+        )
         yield
         await close_redis()
+        await app.state.pool.close()
     except:
         pass
 
