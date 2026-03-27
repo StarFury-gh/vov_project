@@ -1,5 +1,7 @@
 services:
   postgres:
+    ports:
+      - 5432:5432
     build: ./postgres
     networks:
       - app_network
@@ -24,6 +26,8 @@ services:
       - app_network
 
   redis:
+    ports:
+      - 6379:6379
     build: ./redis
     networks:
       - app_network

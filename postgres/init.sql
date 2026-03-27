@@ -80,3 +80,13 @@ CREATE TABLE hero_places (
 );
 
 CREATE INDEX idx_hero_places_hero_id ON hero_places(hero_id);
+
+-- Таблица администраторов
+CREATE TABLE admins (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(200) NOT NULL UNIQUE,
+    password VARCHAR(200) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_admins_email ON admins(email);
