@@ -16,4 +16,6 @@ class Config:
         self.REDIS_PASSWORD = getenv("REDIS_PASSWORD")
         self.REDIS_URL = f"redis://{self.REDIS_USER}:{self.REDIS_PASSWORD}@{self.REDIS_HOST}:{self.REDIS_PORT}/0"
 
+        self.JWT_SECRET_KEY = getenv("JWT_SECRET_KEY")
+
 config_obj = Config()
