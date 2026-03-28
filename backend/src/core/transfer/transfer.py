@@ -48,16 +48,12 @@ async def transfer(
             )
 
         try:
-            print("Adding rank")
-            print(f"{data.rank=}")
             addition = await ranks_service.create_rank(
                 RankCreate(name=data.rank, sort_order=1)
             )
-            print(f"{addition=}")
             if addition.get("id"):
                 await ranks_service.assgin_rank(status.get("id"), addition.get("id"))
         except Exception as e:
-            print("58:", e)
             rank_id = await ranks_service.get_by_name(data.rank)
             if rank_id:
                 await ranks_service.assgin_rank(status.get("id"), rank_id.get("id"))

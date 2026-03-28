@@ -106,7 +106,6 @@ async def get_hero_by_id(
 @h_router.post("/")
 async def add_hero(
     hero_data: HeroCreate,
-    # _ = Depends(require_admin),
     pg = Depends(get_pg),
 ):
     try:
@@ -132,7 +131,6 @@ async def add_hero(
 async def add_hero_image(
     image: UploadFile,
     hero_id: int,
-    _ = Depends(require_admin),
     pg = Depends(get_pg),
 ):
     try:
@@ -141,6 +139,30 @@ async def add_hero_image(
             repository = HeroRepository(pg)
             service = HeroService(repository)
             res = await service.save_image(hero_id, filename)
+            return res
+        raise HTTPException(
+            status_code=500,
+            detail="Ошибка при загрузке изображения"
+        )
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=500,
+            detail="Ошибка при загрузке изображения"
+        )
+    
+@h_router.post("/req_image")
+async def add_hero_request_image(
+    image: UploadFile,
+    hero_id: int,
+    pg = Depends(get_pg),
+):
+    try:
+        status, filename = await save_file(image)
+        if status:
+            repository = HeroRepository(pg)
+            service = HeroService(repository)
+            res = await service.save_request_image(hero_id, filename)
             return res
         raise HTTPException(
             status_code=500,

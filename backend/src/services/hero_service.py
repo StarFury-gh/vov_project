@@ -161,3 +161,14 @@ class HeroService:
             status_code=404,
             detail="Герой не найден."
         )
+    
+    async def save_request_image(self, hero_id: int, filename: str):
+        status, file = await self.repo.set_hero_request_image(hero_id, filename)
+        if status:
+            return {
+                "image_url": file
+            }
+        return HTTPException(
+            status_code=404,
+            detail="Герой не найден."
+        )

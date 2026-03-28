@@ -124,7 +124,7 @@ class HeroRepository:
     async def create(self, hero_data: dict):
         query = """
         INSERT INTO hero_requests (full_name, birth_date, death_date, biography, photo_url, w_type, rank, awards, status)
-        VALUES ($1, $2::date, $3::date, $4, $5, $6, $7, $8, $9)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         RETURNING id, full_name, birth_date, death_date, photo_url
         """
         
@@ -170,15 +170,15 @@ class HeroRepository:
         
         # Преобразуем строковые даты в объекты date, если они строки
         birth_date = hero_data.get('birth_date')
-        if birth_date:
-            if birth_date and isinstance(birth_date, str):
+        if birth_date and birth_date != "None":
+            if birth_date and isinstance(birth_date, str) :
                 from datetime import datetime
                 birth_date = datetime.strptime(birth_date, '%Y-%m-%d').date()
         else:
             birth_date = None
 
         death_date = hero_data.get('death_date')
-        if death_date:
+        if death_date and death_date != "None": 
             if death_date and isinstance(death_date, str):
                 from datetime import datetime
                 death_date = datetime.strptime(death_date, '%Y-%m-%d').date()
@@ -205,6 +205,10 @@ class HeroRepository:
             return True, "images/" + image_url
         else:
             return False, None
+
+    async def set_hero_request_image(self, hero_id: int, image_url: str):
+        await self.db.execute("UPDATE hero_requests SET photo_url = $1 WHERE id = $2", image_url, hero_id)
+        return True, "images/" + image_url
 
     async def check_hero_existance_by_id(self, hero_id: int):
         hero = await self.db.fetchrow("SELECT id FROM heroes WHERE id = $1", hero_id)
