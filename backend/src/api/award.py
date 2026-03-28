@@ -3,8 +3,8 @@ from fastapi import APIRouter, HTTPException, Depends
 from services.award_service import AwardService
 from repositories.awards import AwardsRepository
 from dependencies.postgres import get_pg
-from core.award_exceptions import BaseAwardExcpetion
-from core.hero_exceptions import HeroNotFound
+from core.exceptions.award_exceptions import BaseAwardExcpetion
+from core.exceptions.hero_exceptions import HeroNotFound
 from schemas.award import (
     AwardCreate, 
     AssignAward, 

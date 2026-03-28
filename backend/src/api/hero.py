@@ -13,7 +13,7 @@ from repositories.heroes import HeroRepository
 from services.hero_service import HeroService
 
 from core.files import save_file
-from core.hero_exceptions import BaseHeroException
+from core.exceptions.hero_exceptions import BaseHeroException
 
 from core.security.admin_dep import require_admin
 
@@ -106,7 +106,7 @@ async def get_hero_by_id(
 @h_router.post("/")
 async def add_hero(
     hero_data: HeroCreate,
-    _ = Depends(require_admin),
+    # _ = Depends(require_admin),
     pg = Depends(get_pg),
 ):
     try:

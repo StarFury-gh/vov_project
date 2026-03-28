@@ -9,7 +9,7 @@ from schemas.admin import (
     AdminCreate,
     AdminLogin
 )
-from core.admin_exceptions import BaseAdminException
+from core.exceptions.admin_exceptions import BaseAdminException
 from repositories.admins import AdminsRepository
 from services.admin_service import AdminsService
 from dependencies.postgres import get_pg 

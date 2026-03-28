@@ -13,7 +13,7 @@ from repositories.ranks import RanksRepository
 from services.rank_service import RanksService
 from dependencies.postgres import get_pg
 
-from core.rank_exceptions import BaseRankException
+from core.exceptions.rank_exceptions import BaseRankException
 
 from core.security.admin_dep import require_admin
 

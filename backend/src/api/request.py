@@ -1,33 +1,133 @@
-from fastapi import APIRouter
+from fastapi import (
+    APIRouter, 
+    Depends, 
+    HTTPException
+)
+
+from core.security.admin_dep import (
+    require_admin, 
+    get_current_user
+)
+
+from dependencies.postgres import get_pg
+
+from repositories.requests import RequestsRepository
+from services.requests_service import RequestsService
+from core.exceptions.requests_exceptions import BaseRequestsException
+
+from core.enums.requests_enum import RequestStatus
 
 from dependencies.add_requests import (
     Pagination,
-    
 )
 
 req_router = APIRouter(
-    prefix="/request",
-    tags=["request"]
+    prefix="/requests",
+    tags=["requests"]
 )
 
 @req_router.get("/")
-async def get_all_requests():
-    pass
+async def get_all_requests(
+    pagination = Depends(Pagination),
+    _ = Depends(require_admin),
+    pg = Depends(get_pg),
+):
+    try:
+        req_repo = RequestsRepository(pg)
+        service = RequestsService(req_repo)
+        result = await service.get_all(
+            limit=pagination.limit,
+            offset=pagination.offset
+        )
+        return result
+    except BaseRequestsException as e:
+        raise HTTPException(
+            status_code=e.code,
+            detail=e.message
+        )
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=500,
+            detail="Internal server error"
+        )
 
 @req_router.get("/{request_id}")
-async def get_request(request_id: int):
-    pass
+async def get_request(
+    request_id: int,
+    _ = Depends(require_admin),
+    pg = Depends(get_pg),
+    ):
+    try:
+        req_repo = RequestsRepository(pg)
+        service = RequestsService(req_repo)
+        result = await service.get(id=request_id)
+        return result
+    except BaseRequestsException as e:
+        raise HTTPException(
+            status_code=e.code,
+            detail=e.message
+        )
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=500,
+            detail="Internal server error"
+        )
 
 @req_router.post("/")
 async def create_request():
     pass
 
-@req_router.put("/{request_id}")
-async def update_request(request_id: int):
-    # TODO: approve / reject
-    pass
+@req_router.patch("/{request_id}")
+async def update_request(
+    request_id: int,
+    status: RequestStatus,
+    _=Depends(require_admin),
+    user = Depends(get_current_user),
+    pg=Depends(get_pg),
+):
+    try:
+        req_repo = RequestsRepository(pg)
+        service = RequestsService(req_repo)
+        result = await service.update(
+            id=request_id,
+            status=status,
+            user=user
+        )
+        return result
+    except BaseRequestsException as e:
+        raise HTTPException(
+            status_code=e.code,
+            detail=e.message
+        )
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=500,
+            detail="Internal server error"
+        )
 
 @req_router.delete("/{request_id}")
-async def delete_request(request_id: int):
-    pass
+async def delete_request(
+    request_id: int,
+    _=Depends(require_admin),
+    pg=Depends(get_pg),
+):
+    try:
+        req_repo = RequestsRepository(pg)
+        service = RequestsService(req_repo)
+        result = await service.delete(id=request_id)
+        return result
+    except BaseRequestsException as e:
+        raise HTTPException(
+            status_code=e.code,
+            detail=e.message
+        )
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=500,
+            detail="Internal server error"
+        )
 

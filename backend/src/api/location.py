@@ -5,7 +5,7 @@ from fastapi import (
 )
 
 from schemas.locations import AddLocation
-from core.location_exceptions import BaseLocationException
+from core.exceptions.location_exceptions import BaseLocationException
 from services.locations_service import LocationService
 from repositories.locations import LocationRepository
 
