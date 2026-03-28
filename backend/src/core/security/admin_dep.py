@@ -10,7 +10,6 @@ from repositories.admins import AdminsRepository
 async def get_current_user_email(
     authorization: str | None = Header(None)
 ) -> str:
-    print(f"{authorization=}")
     """
     Извлекает email пользователя из JWT.
     Если заголовок Authorization отсутствует или некорректен — выбрасывает HTTPException.
