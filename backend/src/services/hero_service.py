@@ -139,6 +139,18 @@ class HeroService:
             raise BaseHeroException("Внутренняя ошибка сервера", 500)
 
     @invalidate_cache()
+    async def save(self, hero_data: dict):
+        try:
+            result = await self.repo.save(hero_data=hero_data)
+            result.update({"status": True})
+            return result
+        except Exception as e:
+            return {
+                "status": False,
+                "message": str(e)
+            }
+
+    @invalidate_cache()
     async def save_image(self, hero_id: int, filename: str):
         status, file = await self.repo.set_hero_image(hero_id, filename)
         if status:

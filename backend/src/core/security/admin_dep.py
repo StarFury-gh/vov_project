@@ -65,8 +65,8 @@ async def is_admin(
 ) -> bool:
     admins_repo = AdminsRepository(db)
     admin_service = AdminsService(admins_repo)
-
-    return await admin_service.is_admin(payload.get("email"))
+    result = await admin_service.is_admin(payload.get("email"))
+    return result
 
 
 async def require_admin(

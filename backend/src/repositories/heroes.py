@@ -161,6 +161,43 @@ class HeroRepository:
         
         return dict(result)
     
+    async def save(self, hero_data: dict):
+        query = """
+        INSERT INTO heroes (full_name, birth_date, death_date, biography, photo_url, w_type)
+        VALUES ($1, $2::date, $3::date, $4, $5, $6)
+        RETURNING id, full_name, birth_date, death_date, photo_url
+        """
+        
+        # Преобразуем строковые даты в объекты date, если они строки
+        birth_date = hero_data.get('birth_date')
+        if birth_date:
+            if birth_date and isinstance(birth_date, str):
+                from datetime import datetime
+                birth_date = datetime.strptime(birth_date, '%Y-%m-%d').date()
+        else:
+            birth_date = None
+
+        death_date = hero_data.get('death_date')
+        if death_date:
+            if death_date and isinstance(death_date, str):
+                from datetime import datetime
+                death_date = datetime.strptime(death_date, '%Y-%m-%d').date()
+        else:
+            death_date = None
+
+        result = await self.db.fetchrow(
+            query,
+            hero_data['full_name'],
+            birth_date,
+            death_date,
+            hero_data.get('biography'),
+            # photo_url = default.png - если картинка не будет загружена
+            "default.png",
+            hero_data.get('w_type'),
+        )
+        
+        return dict(result)
+    
     async def set_hero_image(self, hero_id: int, image_url: str):
         existance = await self.check_hero_existance_by_id(hero_id)
         if existance:
