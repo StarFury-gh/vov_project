@@ -106,5 +106,5 @@ CREATE TABLE hero_requests (
     rank VARCHAR(100),
     awards JSONB,
     status reqStatus,
-    approved_by INTEGER REFERENCES admins(id)
+    changed_by INTEGER REFERENCES admins(id)
 );
