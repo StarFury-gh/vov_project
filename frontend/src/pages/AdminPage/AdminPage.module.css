@@ -1,0 +1,40 @@
+/* AdminPage Component Styles */
+
+.container {
+    padding: 40px 20px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 40px;
+    color: var(--color-text-main);
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    justify-items: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 30px 15px;
+    }
+
+    .title {
+        font-size: 2rem;
+        margin-bottom: 30px;
+    }
+
+    .grid-container {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+    }
+}

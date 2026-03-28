@@ -10,6 +10,7 @@ function Header() {
                     <li><Link to="/about">О проекте</Link></li>
                     <li><Link to="/svo">СВО</Link></li>
                     <li><Link to="/vov">ВОВ</Link></li>
+                    <li><Link to="/add">Добавить</Link></li>
                 </ul>
             </nav>
         </header>
