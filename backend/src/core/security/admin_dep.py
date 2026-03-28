@@ -7,9 +7,9 @@ from services.admin_service import AdminsService
 from repositories.admins import AdminsRepository
 
 
-async def get_current_user_email(
+async def get_current_user(
     authorization: str | None = Header(None)
-) -> str:
+) -> dict:
     """
     Извлекает email пользователя из JWT.
     Если заголовок Authorization отсутствует или некорректен — выбрасывает HTTPException.
@@ -35,12 +35,22 @@ async def get_current_user_email(
             algorithms=["HS256"],
         )
         email: str | None = payload.get("email")
+        id: int | None = payload.get("id")
         if not email:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Токен не содержит email",
             )
-        return email
+        if not id:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Токен не содержит id",
+            )
+        
+        return {
+            "email": email,
+            "id": id
+        }
 
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired")
@@ -50,13 +60,13 @@ async def get_current_user_email(
 
 
 async def is_admin(
-    email: str = Depends(get_current_user_email),
+    payload: dict = Depends(get_current_user),
     db=Depends(get_pg),
 ) -> bool:
     admins_repo = AdminsRepository(db)
     admin_service = AdminsService(admins_repo)
 
-    return await admin_service.is_admin(email)
+    return await admin_service.is_admin(payload.get("email"))
 
 
 async def require_admin(
