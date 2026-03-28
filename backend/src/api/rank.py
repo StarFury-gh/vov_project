@@ -15,6 +15,8 @@ from dependencies.postgres import get_pg
 
 from core.rank_exceptions import BaseRankException
 
+from core.security.admin_dep import require_admin
+
 r_router = APIRouter(
     prefix="/ranks",
     tags=["Ranks"]
@@ -88,6 +90,7 @@ async def get_rank_by_name(
 @r_router.post("/")
 async def create_rank(
     rank: RankCreate,
+    _ = Depends(require_admin),
     pg = Depends(get_pg)
 ):
     try:
@@ -114,6 +117,7 @@ async def create_rank(
 @r_router.post("/assign")
 async def assign_rank(
     body: RankAssign,
+    _ = Depends(require_admin),
     pg = Depends(get_pg)
 ):
     try:
@@ -143,6 +147,7 @@ async def assign_rank(
 @r_router.post("/assign_by_name")
 async def assign_by_name(
     body: RankAssignByName,
+    _ = Depends(require_admin),
     pg = Depends(get_pg)
 ):
     try:

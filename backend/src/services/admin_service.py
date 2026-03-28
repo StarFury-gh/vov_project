@@ -113,3 +113,10 @@ class AdminsService:
             raise BaseAdminException(
                 "Внутренняя ошибка сервера", 500
             )
+        
+    async def is_admin(self, email: str) -> bool:
+        user = await self.repo.get_by_email(email)
+        if user is not None:
+            return True
+        return False
+        

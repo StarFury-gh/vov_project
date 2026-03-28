@@ -15,6 +15,8 @@ from services.hero_service import HeroService
 from core.files import save_file
 from core.hero_exceptions import BaseHeroException
 
+from core.security.admin_dep import require_admin
+
 h_router = APIRouter(
     prefix="/heroes",
     tags=["Heroes"]
@@ -59,6 +61,7 @@ async def get_heroes(
 @h_router.get("/{hero_id}")
 async def get_hero_by_id(
     hero_id: int,
+
     pg = Depends(get_pg)
 ):
     try:
@@ -103,6 +106,7 @@ async def get_hero_by_id(
 @h_router.post("/")
 async def add_hero(
     hero_data: HeroCreate,
+    _ = Depends(require_admin),
     pg = Depends(get_pg),
 ):
     try:
@@ -128,6 +132,7 @@ async def add_hero(
 async def add_hero_image(
     image: UploadFile,
     hero_id: int,
+    _ = Depends(require_admin),
     pg = Depends(get_pg),
 ):
     try:

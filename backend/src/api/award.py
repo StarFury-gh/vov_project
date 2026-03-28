@@ -11,6 +11,8 @@ from schemas.award import (
     MultipleAssignAward
 )
 
+from core.security.admin_dep import require_admin
+
 a_router = APIRouter(
     prefix="/awards",
     tags=["Awards"],
@@ -97,7 +99,8 @@ async def get_award_by_id(
 @a_router.post("/")
 async def add_award(
     award: AwardCreate,
-    pg = Depends(get_pg)
+    pg = Depends(get_pg),
+    _ = Depends(require_admin)
 ):
     try:
         repository = AwardsRepository(pg)
@@ -123,6 +126,7 @@ async def add_award(
 @a_router.delete("/")
 async def delete_award(
     award_id: int,
+    _ = Depends(require_admin),
     pg = Depends(get_pg)
 ):
     try:
@@ -149,6 +153,7 @@ async def delete_award(
 @a_router.post("/assign")
 async def assign_award(
     body: AssignAward,
+    _ = Depends(require_admin),
     pg = Depends(get_pg)
 ):
     try:
@@ -184,6 +189,7 @@ async def assign_award(
 @a_router.post("/m_assign")
 async def multiple_assign(
     body: MultipleAssignAward,
+    _ = Depends(require_admin),
     pg = Depends(get_pg)
 ):
     try:

@@ -1,21 +1,25 @@
-from fastapi import (
-    Header, 
-    HTTPException, 
-    status
-)
+from fastapi import Header, HTTPException, status, Depends
 import jwt
 
 from core.config import config_obj
+from dependencies.postgres import get_pg
+from services.admin_service import AdminsService
+from repositories.admins import AdminsRepository
 
-def get_current_user_email(authorization: str | None = Header(None)):
+
+async def get_current_user_email(
+    authorization: str | None = Header(None)
+) -> str:
+    print(f"{authorization=}")
+    """
+    Извлекает email пользователя из JWT.
+    Если заголовок Authorization отсутствует или некорректен — выбрасывает HTTPException.
+    """
     if not authorization:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Это действие может выполнить только администратор.",
+            detail="Необходима авторизация",
         )
-    
-    SECRET_KEY = config_obj.JWT_SECRET_KEY
-    ALGORITHM = "HS256"
 
     if not authorization.startswith("Bearer "):
         raise HTTPException(
@@ -26,21 +30,45 @@ def get_current_user_email(authorization: str | None = Header(None)):
     token = authorization.split(" ")[1]
 
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-
-        email: str = payload.get("email") # type: ignore
-
-        if email is None:
+        payload = jwt.decode(
+            token,
+            config_obj.JWT_SECRET_KEY,
+            algorithms=["HS256"],
+        )
+        email: str | None = payload.get("email")
+        if not email:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Токен не содержит email",
             )
-
         return email
 
     except jwt.ExpiredSignatureError:
-        raise HTTPException(status_code=401, detail="Token expired")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired")
 
     except jwt.InvalidTokenError:
-        raise HTTPException(status_code=401, detail="Invalid token")
-    
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+
+
+async def is_admin(
+    email: str = Depends(get_current_user_email),
+    db=Depends(get_pg),
+) -> bool:
+    admins_repo = AdminsRepository(db)
+    admin_service = AdminsService(admins_repo)
+
+    return await admin_service.is_admin(email)
+
+
+async def require_admin(
+    admin_status: bool = Depends(is_admin)
+):
+    """
+    Проверяет, является ли текущий пользователь администратором.
+    Если нет — выбрасывает 403.
+    """
+    if not admin_status:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Доступ запрещен",
+        )
