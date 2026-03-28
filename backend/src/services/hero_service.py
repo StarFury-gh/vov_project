@@ -2,7 +2,7 @@ from repositories.heroes import HeroRepository
 from schemas.hero import HeroCreate
 
 from fastapi import HTTPException
-from core.hero_exceptions import HeroNotFound
+from core.exceptions.hero_exceptions import HeroNotFound
 
 from asyncpg.exceptions import (
     UniqueViolationError, 
@@ -13,7 +13,7 @@ from services.award_service import AwardService
 from services.locations_service import LocationService
 from services.rank_service import RanksService
 
-from core.hero_exceptions import (
+from core.exceptions.hero_exceptions import (
     BaseHeroException,
     HeroAlreadyExists,
     InvalidDate,
@@ -113,6 +113,12 @@ class HeroService:
             if 'death_date' in hero_dict and hero_dict['death_date']:
                 hero_dict['death_date'] = hero_dict['death_date']
             
+            if hero_dict.get("awards"):
+                from json import dumps
+                json_awards = dumps(hero_dict.pop("awards"))
+                if json_awards:
+                    hero_dict["awards"] = json_awards
+
             result = await self.repo.create(hero_dict)
 
             return result

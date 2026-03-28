@@ -2,7 +2,7 @@ from repositories.ranks import RanksRepository
 
 from asyncpg.exceptions import UniqueViolationError
 
-from core.rank_exceptions import (
+from core.exceptions.rank_exceptions import (
     BaseRankException,
     RankAlreadyExists,
     HeroAlreadyHasRank,

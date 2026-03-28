@@ -1,5 +1,5 @@
 from repositories.admins import AdminsRepository
-from core.admin_exceptions import (
+from core.exceptions.admin_exceptions import (
     BaseAdminException,
     AdminAlreadyExists,
     AdminNotFound,
@@ -92,6 +92,7 @@ class AdminsService:
                     token = jwts.create_access_token(
                         {
                             "email": user.get("email"),
+                            "id": user.get("id")
                         },
                         expires_delta=timedelta(hours=1)
                     )
@@ -114,7 +115,9 @@ class AdminsService:
                 "Внутренняя ошибка сервера", 500
             )
         
-    async def is_admin(self, email: str) -> bool:
+    async def is_admin(self, email: str | None) -> bool:
+        if email is None:
+            return False
         user = await self.repo.get_by_email(email)
         if user is not None:
             return True

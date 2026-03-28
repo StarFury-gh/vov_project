@@ -9,11 +9,11 @@ from asyncpg.exceptions import (
 from schemas.award import (
     AwardCreate
 )
-from core.award_exceptions import (
+from core.exceptions.award_exceptions import (
     AwardNotFound,
     AwardAlreadyExists
 )
-from core.hero_exceptions import (
+from core.exceptions.hero_exceptions import (
     HeroNotFound,
 )
 
