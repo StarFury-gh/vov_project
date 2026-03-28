@@ -29,3 +29,5 @@ class HeroCreate(BaseModel):
     birth_date: Optional[str] = None
     death_date: Optional[str] = None
     biography: Optional[str] = None
+    awards: Optional[List[str]] = None
+    rank: Optional[str] = None
