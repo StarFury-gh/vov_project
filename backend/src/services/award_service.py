@@ -78,7 +78,7 @@ class AwardService:
     async def multiple_assign(self, hero_id: int, awards_names: List[str]):
         for award in awards_names:
             award_id = await self.repo.get_by_name(award)
-            award_id = award_id.get("id")
+            award_id = award_id
             if award_id:
                 await self.assign_award(hero_id, award_id)
             else:

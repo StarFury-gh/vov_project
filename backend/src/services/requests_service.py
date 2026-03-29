@@ -80,7 +80,8 @@ class RequestsService:
                             }
                         else:
                             return {
-                                "status": "failed ;("
+                                "status": "failed",
+                                "reason": "transfer failed: hero already exists"
                             }
                 return {
                     "status": "success",

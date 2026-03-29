@@ -29,7 +29,7 @@ async def transfer(
 
     # добавляем героя
     status = await heroes_service.save(hero_data=hero_data)
-    print(status)
+    print(f"{status=}")
     # если успешно сохранилось, то сохраняем награды
     if status.get("status"):
         import json
@@ -42,10 +42,13 @@ async def transfer(
                     await awards_service.add_award(award)
                 except:
                     print(f"{award} already exists")
-        except:
+            print(f"{status.get("id")=}")
             await awards_service.multiple_assign(
                 status.get("id"), awards_names
             )
+        except Exception as e:
+            print(f"Transfer error:", e)
+            return False
 
         try:
             addition = await ranks_service.create_rank(
