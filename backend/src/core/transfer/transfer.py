@@ -35,7 +35,6 @@ async def transfer(
 
     # добавляем героя
     status = await heroes_service.save(hero_data=hero_data)
-    print(f"{status=}")
     # если успешно сохранилось, то сохраняем награды
     if status.get("status"):
         import json
@@ -47,7 +46,6 @@ async def transfer(
                     await awards_service.add_award(award)
                 except:
                     print(f"{award} already exists")
-            print(f"{status.get("id")=}")
             await awards_service.multiple_assign(
                 status.get("id"), awards_names
             )
@@ -70,7 +68,6 @@ async def transfer(
         # добавляем локацию
         try:
             if data.location:
-                print(f"{data.location=}\t{type(data.location)=}")
                 new_location = AddLocation(
                     name=data.location.get("name"), # type: ignore
                     hero_id=status.get("id"), # type: ignore

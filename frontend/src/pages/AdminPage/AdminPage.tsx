@@ -62,8 +62,13 @@ function AdminPage() {
         setLoading(true)
 
         try {
+            const params = new URLSearchParams(
+                { limit: String(LIMIT), offset: String(currentOffset) }
+            )
+            const url = API_URL + "/requests/?" + params.toString()
+            console.log(url)
             const { data } = await axios.get(
-                `${API_URL}/requests?limit=${LIMIT}&offset=${currentOffset}`,
+                url,
                 {
                     headers: {
                         Authorization: accessToken
