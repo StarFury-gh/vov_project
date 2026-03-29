@@ -1,8 +1,11 @@
 import styles from './HeroCard.module.css'
 // @ts-expect-error JS module without types
-import { STATIC_URL } from '../../../constants'
+import { STATIC_URL, API_URL } from '../../../constants'
+import useAuthCheck from '../../../hooks/useAuth'
+import axios from 'axios'
 
 interface HeroCardProps {
+    is_admin?: boolean
     id: number | string
     fullName: string
     birthDate: string
@@ -27,18 +30,42 @@ function resolvePhotoUrl(photoUrl: string) {
 
 // Карточка героя: крупная фотография, ФИО и даты жизни.
 const HeroCard = ({
+    is_admin,
     fullName,
     birthDate,
     deathDate,
     photoUrl,
+    id,
     onClick,
 }: HeroCardProps) => {
     const firstLetter = fullName.trim().charAt(0).toUpperCase()
+
+    const auth = useAuthCheck()
 
     const lifeDates =
         birthDate || deathDate
             ? `${birthDate || '—'} — ${deathDate || '????-??-??'}`
             : undefined
+
+    const deleteHero = async (e: Event) => {
+        e.stopPropagation()
+        console.log("auth:", auth)
+        if (auth) {
+            const url = API_URL + `/heroes/${id}`
+            const token = sessionStorage.getItem('access_token')
+            try {
+                await axios.delete(url, {
+                    headers: {
+                        Authorization: token
+                    }
+                })
+                alert("Герой удалён")
+            } catch (error) {
+                console.error(error)
+                alert("Герой уже удалён")
+            }
+        }
+    }
 
     return (
         <article className={styles.card} onClick={onClick}>
@@ -59,6 +86,12 @@ const HeroCard = ({
                 <h2 className={styles.name}>{fullName}</h2>
                 {lifeDates && <p className={styles.dates}>{lifeDates}</p>}
             </div>
+            {
+                is_admin &&
+                <div className={styles["admin-btns"]}>
+                    <button onClick={deleteHero} className={styles["delete-btn"]}>Удалить</button>
+                </div>
+            }
         </article>
     )
 }

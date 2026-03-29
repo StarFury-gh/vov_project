@@ -27,7 +27,8 @@ interface SearchResponse {
 }
 
 interface ScrollerProps {
-    type: 'vov' | 'svo'
+    type: 'vov' | 'svo',
+    is_admin?: boolean
 }
 
 type HeroesApiResponse =
@@ -474,6 +475,7 @@ function HeroesScroller(props: ScrollerProps) {
                 <div className={styles.heroList}>
                     {heroesToRender.map((hero) => (
                         <HeroCard
+                            is_admin={props.is_admin}
                             key={hero.id}
                             id={hero.id}
                             fullName={hero.full_name}

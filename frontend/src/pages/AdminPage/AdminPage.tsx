@@ -6,6 +6,8 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import RequestCard from "../../components/admin/RequestCard"
 
+import HeroesScroller from "../../components/heroes/HeroesScroller"
+
 import styles from "./AdminPage.module.css"
 
 type RequestStatus = "new" | "approved" | "rejected"
@@ -48,6 +50,7 @@ function AdminPage() {
 
     return (
         <div className={styles.container}>
+            <h3>Запросы на добавление</h3>
             <div className={styles["grid-container"]}>
                 {
                     requests?.map((request) => {
@@ -67,7 +70,14 @@ function AdminPage() {
                     })
                 }
             </div>
-
+            <h3>Герои ВОВ</h3>
+            <div className="hero-scroller-container">
+                <HeroesScroller type="vov" is_admin={true} />
+            </div>
+            <h3>Герои СВО</h3>
+            <div className="hero-scroller-container">
+                <HeroesScroller type="svo" is_admin={true} />
+            </div>
         </div>
     )
 }
