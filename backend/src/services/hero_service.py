@@ -172,3 +172,16 @@ class HeroService:
             status_code=404,
             detail="Герой не найден."
         )
+    
+    @invalidate_cache()
+    async def delete(self, hero_id: int):
+        try:
+            if await self.repo.delete(hero_id):
+                return {
+                    "status": True,
+                    "deleted": hero_id
+                }
+            else:
+                raise HeroNotFound
+        except Exception as e:
+            raise e

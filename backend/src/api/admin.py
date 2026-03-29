@@ -5,6 +5,7 @@ from fastapi import (
 )
 
 # работа с админами
+from core.security.admin_dep import is_admin
 from schemas.admin import (
     AdminCreate,
     AdminLogin
@@ -18,6 +19,14 @@ ad_router = APIRouter(
     prefix="/admin",
     tags=["admin"]
 )
+
+@ad_router.get("/check")
+async def check_admin(
+    is_admin = Depends(is_admin)
+):
+    return {
+        "status": is_admin
+    }
 
 @ad_router.get("/{id}")
 async def get_admin(

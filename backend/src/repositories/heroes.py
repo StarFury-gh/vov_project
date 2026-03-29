@@ -215,3 +215,9 @@ class HeroRepository:
         if hero:
             return True
         return False
+    
+    async def delete(self, hero_id: int):
+        if await self.check_hero_existance_by_id(hero_id):
+            await self.db.execute("DELETE FROM heroes WHERE id = $1", hero_id)
+            return True
+        return False

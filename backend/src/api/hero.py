@@ -174,3 +174,28 @@ async def add_hero_request_image(
             status_code=500,
             detail="Ошибка при загрузке изображения"
         )
+
+@h_router.delete("/{hero_id}")
+async def delete_hero(
+    hero_id: int,
+    pg = Depends(get_pg),
+    is_admin = Depends(require_admin)
+):
+    try:
+        repository = HeroRepository(pg)
+        service = HeroService(repository)
+        result = await service.delete(hero_id)
+        return result
+    
+    except BaseHeroException as e:
+        raise HTTPException(
+            status_code=e.code,
+            detail=e.message
+        )
+    
+    except Exception as e:
+        print("Error:", e)
+        raise HTTPException(
+            status_code=500,
+            detail="Internal server error"
+        )
