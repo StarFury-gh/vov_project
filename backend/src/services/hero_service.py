@@ -106,18 +106,26 @@ class HeroService:
             hero_data: HeroCreate,
         ):
         try:
+            from json import dumps
             hero_dict = hero_data.model_dump(exclude_unset=True)
             # строковые даты в формат, подходящий для PostgreSQL
             if 'birth_date' in hero_dict and hero_dict['birth_date']:
                 hero_dict['birth_date'] = hero_dict['birth_date']
             if 'death_date' in hero_dict and hero_dict['death_date']:
                 hero_dict['death_date'] = hero_dict['death_date']
-            
-            if hero_dict.get("awards"):
-                from json import dumps
+
+            if hero_dict.get("place"):
+                json_place= dumps(hero_dict.pop("place"))
+                if json_place:
+                    hero_dict["place"] = json_place
+
+            if hero_dict.get("awards") or isinstance(hero_dict.get("awards"), list):
                 json_awards = dumps(hero_dict.pop("awards"))
                 if json_awards:
                     hero_dict["awards"] = json_awards
+
+            hero_dict["rank"] = hero_dict.get("rank", "герой")
+
 
             result = await self.repo.create(hero_dict)
 

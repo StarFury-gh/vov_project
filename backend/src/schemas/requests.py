@@ -7,3 +7,4 @@ class AddRequest(BaseModel):
     hero: HeroCreate
     rank: str
     awards: List[str]
+    location: dict

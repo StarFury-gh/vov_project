@@ -12,3 +12,4 @@ class FullInfo(BaseModel):
     hero: FullHeroInfo
     awards: str
     rank: str
+    location: dict

@@ -23,6 +23,11 @@ class HeroFull(BaseModel):
     awards: List[dict] = []
     photos: List[dict] = []
 
+class PlaceData(BaseModel):
+    name: str
+    latitude: float
+    longtitude: float
+
 class HeroCreate(BaseModel):
     full_name: str
     w_type: str
@@ -31,3 +36,4 @@ class HeroCreate(BaseModel):
     biography: Optional[str] = None
     awards: Optional[List[str]] = None
     rank: Optional[str] = None
+    place: Optional[PlaceData] = None

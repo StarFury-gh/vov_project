@@ -47,7 +47,7 @@ const HeroCard = ({
             ? `${birthDate || '—'} — ${deathDate || '????-??-??'}`
             : undefined
 
-    const deleteHero = async (e: Event) => {
+    const deleteHero = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation()
         console.log("auth:", auth)
         if (auth) {
@@ -89,7 +89,7 @@ const HeroCard = ({
             {
                 is_admin &&
                 <div className={styles["admin-btns"]}>
-                    <button onClick={deleteHero} className={styles["delete-btn"]}>Удалить</button>
+                    <button onClick={e => deleteHero(e)} className={styles["delete-btn"]}>Удалить</button>
                 </div>
             }
         </article>

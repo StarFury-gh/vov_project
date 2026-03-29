@@ -105,6 +105,7 @@ CREATE TABLE hero_requests (
     w_type wType,
     rank VARCHAR(100),
     awards JSONB,
+    place JSONB,
     status reqStatus,
     changed_by INTEGER REFERENCES admins(id)
 );

@@ -123,8 +123,8 @@ class HeroRepository:
 
     async def create(self, hero_data: dict):
         query = """
-        INSERT INTO hero_requests (full_name, birth_date, death_date, biography, photo_url, w_type, rank, awards, status)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        INSERT INTO hero_requests (full_name, birth_date, death_date, biography, photo_url, w_type, rank, awards, status, place)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         RETURNING id, full_name, birth_date, death_date, photo_url
         """
         
@@ -156,7 +156,8 @@ class HeroRepository:
             hero_data.get('w_type'),
             hero_data.get('rank'),
             hero_data.get('awards'),
-            RequestStatus.PENDING.value
+            RequestStatus.PENDING.value,
+            hero_data.get('place'),
         )
         
         return dict(result)

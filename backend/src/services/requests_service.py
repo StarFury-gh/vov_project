@@ -68,10 +68,13 @@ class RequestsService:
                             w_type=current_info["w_type"],
                             photo_url=current_info["photo_url"]
                         )
+                        import json
+                        hero_place = json.loads(current_info.get("place", ""))
                         full_info = FullInfo(
                             hero=hero_info,
                             awards=current_info.get("awards", []),
-                            rank=current_info.get("rank", "")
+                            rank=current_info.get("rank", ""),
+                            location=hero_place,
                         )
                         result = await transfer(full_info, self.repo.db)
                         if result:

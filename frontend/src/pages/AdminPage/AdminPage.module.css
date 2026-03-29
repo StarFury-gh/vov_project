@@ -14,12 +14,12 @@
 }
 
 .grid-container {
+    max-height: 80vh;
+    overflow-y: scroll;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 24px;
     justify-items: stretch;
-    max-height: 80vh;
-    overflow-y: scroll;
 }
 
 .hero-scroller-container {

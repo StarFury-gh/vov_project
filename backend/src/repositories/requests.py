@@ -4,9 +4,9 @@ class RequestsRepository:
     def __init__(self, db) -> None:
         self.db = db
 
-    async def get_all(self, limit: int, offset: int) -> list:
+    async def get_all(self, limit: int, offset: int) -> list | None:
         result = await self.db.fetch(
-            "SELECT * from hero_requests LIMIT $1 OFFSET $2",
+            "SELECT * from hero_requests ORDER BY CASE WHEN status='new' THEN 0 ELSE 1 END, created_at DESC LIMIT $1 OFFSET $2",
             limit, 
             offset
         )

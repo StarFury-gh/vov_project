@@ -30,7 +30,7 @@ function LoginForm() {
                 sessionStorage.setItem('access_token', data.token)
                 setSuccess('Вы успешно вошли в систему!');
                 setTimeout(() => {
-                    navigate('/admin/requests')
+                    navigate('/requests')
                 }, 1500)
             }
         } catch (err) {
