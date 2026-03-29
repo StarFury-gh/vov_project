@@ -14,7 +14,7 @@ class AwardsRepository:
             return [dict(record) for record in res]
         return []
 
-    async def get_by_name(self, name: str):
+    async def get_by_name(self, name: str) -> int | None:
         res = await self.db.fetchrow("SELECT id FROM awards WHERE name = $1", name)
         if res is not None:
             return dict(res).get("id")

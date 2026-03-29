@@ -11,6 +11,8 @@ from api.hero import h_router
 from api.award import a_router
 from api.rank import r_router
 from api.location import l_router
+from api.admin import ad_router
+from api.request import req_router
 
 from os import path, makedirs
 
@@ -34,8 +36,8 @@ async def lifespan(app: FastAPI):
         yield
         await close_redis()
         await app.state.pool.close()
-    except:
-        pass
+    except Exception as e:
+        print("Application startup error:", e, "Type:")
 
 app = FastAPI(
     lifespan=lifespan
@@ -45,6 +47,8 @@ app.include_router(h_router)
 app.include_router(a_router)
 app.include_router(r_router)
 app.include_router(l_router)
+app.include_router(ad_router)
+app.include_router(req_router)
 
 app.add_middleware(
     CORSMiddleware,

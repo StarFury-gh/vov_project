@@ -57,7 +57,7 @@
     margin-bottom: 3rem;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 800px) {
     .page {
         padding: 20px 12px;
     }

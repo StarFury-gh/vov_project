@@ -5,11 +5,13 @@ from fastapi import (
 )
 
 from schemas.locations import AddLocation
-from core.location_exceptions import BaseLocationException
+from core.exceptions.location_exceptions import BaseLocationException
 from services.locations_service import LocationService
 from repositories.locations import LocationRepository
 
 from dependencies.postgres import get_pg
+
+from core.security.admin_dep import require_admin
 
 l_router = APIRouter(
     prefix="/locations",
@@ -68,6 +70,7 @@ async def get_hero_location(
 @l_router.post("/")
 async def create_location(
     body: AddLocation,
+    _ = Depends(require_admin),
     pg = Depends(get_pg)
 ):
     try:

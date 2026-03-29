@@ -1,8 +1,9 @@
 from repositories.ranks import RanksRepository
+from schemas.rank import RankCreate
 
 from asyncpg.exceptions import UniqueViolationError
 
-from core.rank_exceptions import (
+from core.exceptions.rank_exceptions import (
     BaseRankException,
     RankAlreadyExists,
     HeroAlreadyHasRank,
@@ -41,7 +42,7 @@ class RanksService:
         return result
 
     @invalidate_cache()
-    async def create_rank(self, rank):
+    async def create_rank(self, rank: RankCreate):
         try:
             id = await self.repo.add(rank.name, rank.sort_order)
             return {

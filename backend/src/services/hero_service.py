@@ -2,7 +2,7 @@ from repositories.heroes import HeroRepository
 from schemas.hero import HeroCreate
 
 from fastapi import HTTPException
-from core.hero_exceptions import HeroNotFound
+from core.exceptions.hero_exceptions import HeroNotFound
 
 from asyncpg.exceptions import (
     UniqueViolationError, 
@@ -13,7 +13,7 @@ from services.award_service import AwardService
 from services.locations_service import LocationService
 from services.rank_service import RanksService
 
-from core.hero_exceptions import (
+from core.exceptions.hero_exceptions import (
     BaseHeroException,
     HeroAlreadyExists,
     InvalidDate,
@@ -106,13 +106,27 @@ class HeroService:
             hero_data: HeroCreate,
         ):
         try:
+            from json import dumps
             hero_dict = hero_data.model_dump(exclude_unset=True)
             # строковые даты в формат, подходящий для PostgreSQL
             if 'birth_date' in hero_dict and hero_dict['birth_date']:
                 hero_dict['birth_date'] = hero_dict['birth_date']
             if 'death_date' in hero_dict and hero_dict['death_date']:
                 hero_dict['death_date'] = hero_dict['death_date']
-            
+
+            if hero_dict.get("place"):
+                json_place= dumps(hero_dict.pop("place"))
+                if json_place:
+                    hero_dict["place"] = json_place
+
+            if hero_dict.get("awards") or isinstance(hero_dict.get("awards"), list):
+                json_awards = dumps(hero_dict.pop("awards"))
+                if json_awards:
+                    hero_dict["awards"] = json_awards
+
+            hero_dict["rank"] = hero_dict.get("rank", "герой")
+
+
             result = await self.repo.create(hero_dict)
 
             return result
@@ -133,6 +147,18 @@ class HeroService:
             raise BaseHeroException("Внутренняя ошибка сервера", 500)
 
     @invalidate_cache()
+    async def save(self, hero_data: dict):
+        try:
+            result = await self.repo.save(hero_data=hero_data)
+            result.update({"status": True})
+            return result
+        except Exception as e:
+            return {
+                "status": False,
+                "message": str(e)
+            }
+
+    @invalidate_cache()
     async def save_image(self, hero_id: int, filename: str):
         status, file = await self.repo.set_hero_image(hero_id, filename)
         if status:
@@ -143,3 +169,27 @@ class HeroService:
             status_code=404,
             detail="Герой не найден."
         )
+    
+    async def save_request_image(self, hero_id: int, filename: str):
+        status, file = await self.repo.set_hero_request_image(hero_id, filename)
+        if status:
+            return {
+                "image_url": file
+            }
+        return HTTPException(
+            status_code=404,
+            detail="Герой не найден."
+        )
+    
+    @invalidate_cache()
+    async def delete(self, hero_id: int):
+        try:
+            if await self.repo.delete(hero_id):
+                return {
+                    "status": True,
+                    "deleted": hero_id
+                }
+            else:
+                raise HeroNotFound
+        except Exception as e:
+            raise e

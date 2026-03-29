@@ -1,3 +1,5 @@
+from core.enums.requests_enum import RequestStatus
+
 class HeroRepository:
     def __init__(self, db):
         self.db = db
@@ -121,8 +123,8 @@ class HeroRepository:
 
     async def create(self, hero_data: dict):
         query = """
-        INSERT INTO heroes (full_name, birth_date, death_date, biography, photo_url, w_type)
-        VALUES ($1, $2::date, $3::date, $4, $5, $6)
+        INSERT INTO hero_requests (full_name, birth_date, death_date, biography, photo_url, w_type, rank, awards, status, place)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         RETURNING id, full_name, birth_date, death_date, photo_url
         """
         
@@ -151,7 +153,48 @@ class HeroRepository:
             hero_data.get('biography'),
             # photo_url = default.png - если картинка не будет загружена
             "default.png",
-            hero_data.get('w_type')
+            hero_data.get('w_type'),
+            hero_data.get('rank'),
+            hero_data.get('awards'),
+            RequestStatus.PENDING.value,
+            hero_data.get('place'),
+        )
+        
+        return dict(result)
+    
+    async def save(self, hero_data: dict):
+        query = """
+        INSERT INTO heroes (full_name, birth_date, death_date, biography, photo_url, w_type)
+        VALUES ($1, $2::date, $3::date, $4, $5, $6)
+        RETURNING id, full_name, birth_date, death_date, photo_url
+        """
+        
+        # Преобразуем строковые даты в объекты date, если они строки
+        birth_date = hero_data.get('birth_date')
+        if birth_date and birth_date != "None":
+            if birth_date and isinstance(birth_date, str) :
+                from datetime import datetime
+                birth_date = datetime.strptime(birth_date, '%Y-%m-%d').date()
+        else:
+            birth_date = None
+
+        death_date = hero_data.get('death_date')
+        if death_date and death_date != "None": 
+            if death_date and isinstance(death_date, str):
+                from datetime import datetime
+                death_date = datetime.strptime(death_date, '%Y-%m-%d').date()
+        else:
+            death_date = None
+
+        result = await self.db.fetchrow(
+            query,
+            hero_data['full_name'],
+            birth_date,
+            death_date,
+            hero_data.get('biography'),
+            # photo_url = default.png - если картинка не будет загружена
+            "default.png",
+            hero_data.get('w_type'),
         )
         
         return dict(result)
@@ -164,8 +207,18 @@ class HeroRepository:
         else:
             return False, None
 
+    async def set_hero_request_image(self, hero_id: int, image_url: str):
+        await self.db.execute("UPDATE hero_requests SET photo_url = $1 WHERE id = $2", image_url, hero_id)
+        return True, "images/" + image_url
+
     async def check_hero_existance_by_id(self, hero_id: int):
         hero = await self.db.fetchrow("SELECT id FROM heroes WHERE id = $1", hero_id)
         if hero:
+            return True
+        return False
+    
+    async def delete(self, hero_id: int):
+        if await self.check_hero_existance_by_id(hero_id):
+            await self.db.execute("DELETE FROM heroes WHERE id = $1", hero_id)
             return True
         return False
