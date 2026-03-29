@@ -1,5 +1,3 @@
-/* RequestCard Component Styles (based on HeroCard) */
-
 .request-card {
     display: flex;
     flex-direction: column;
@@ -179,7 +177,7 @@
     background: #c82333;
 }
 
-/* Responsive */
+/* Адаптивность */
 @media (max-width: 800px) {
     .request-card {
         padding: 0;

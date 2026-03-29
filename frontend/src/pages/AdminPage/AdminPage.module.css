@@ -28,7 +28,7 @@
 }
 
 /* Адаптивность */
-@media (max-width: 768px) {
+@media (max-width: 800px) {
     .container {
         padding: 30px 15px;
     }
