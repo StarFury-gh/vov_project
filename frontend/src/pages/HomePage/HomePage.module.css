@@ -57,6 +57,17 @@
     align-items: center;
 }
 
+.link {
+    border: 2px solid hsl(0, 0%, 50%);
+    padding: 0.25rem 1rem;
+    border-radius: 30px;
+    transition: opacity .3s;
+}
+
+.link:hover {
+    opacity: 0.9;
+}
+
 @media (min-width: 768px) {
     .home-page__content-block {
         flex-direction: row;
