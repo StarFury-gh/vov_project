@@ -5,7 +5,7 @@ from schemas.locations import (
 
 from asyncpg.exceptions import ForeignKeyViolationError
 
-from core.location_exceptions import BaseLocationException, HeroNotFound
+from core.exceptions.location_exceptions import BaseLocationException, HeroNotFound
 
 from cache.decorator import redis_cache, invalidate_cache
 

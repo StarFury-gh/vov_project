@@ -13,7 +13,9 @@ GRANT SELECT ON ALL TABLES IN SCHEMA public TO monitoring;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public
 GRANT SELECT ON TABLES TO monitoring;
 
+-- Enum типы
 CREATE TYPE wType AS ENUM ('vov', 'svo');
+CREATE TYPE reqStatus AS ENUM ('new', 'approved', 'rejected');
 
 -- Таблица званий (справочник)
 CREATE TABLE ranks (
@@ -80,3 +82,30 @@ CREATE TABLE hero_places (
 );
 
 CREATE INDEX idx_hero_places_hero_id ON hero_places(hero_id);
+
+-- Таблица администраторов
+CREATE TABLE admins (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(200) NOT NULL UNIQUE,
+    password VARCHAR(200) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_admins_email ON admins(email);
+
+-- Таблица запросов на добавление
+CREATE TABLE hero_requests (
+    id SERIAL PRIMARY KEY,
+    full_name VARCHAR(200) NOT NULL UNIQUE,
+    birth_date DATE,
+    death_date DATE,
+    biography TEXT,
+    photo_url VARCHAR(500),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    w_type wType,
+    rank VARCHAR(100),
+    awards JSONB,
+    place JSONB,
+    status reqStatus,
+    changed_by INTEGER REFERENCES admins(id)
+);

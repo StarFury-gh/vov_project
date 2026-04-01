@@ -27,7 +27,8 @@ interface SearchResponse {
 }
 
 interface ScrollerProps {
-    type: 'vov' | 'svo'
+    type: 'vov' | 'svo',
+    is_admin?: boolean
 }
 
 type HeroesApiResponse =
@@ -40,7 +41,6 @@ type HeroesApiResponse =
     }
 
 const PAGE_LIMIT = 10
-
 
 function HeroesScroller(props: ScrollerProps) {
     const [heroes, setHeroes] = useState<HeroFromApi[]>([])
@@ -106,7 +106,7 @@ function HeroesScroller(props: ScrollerProps) {
 
         try {
             // API ожидает страницу начиная с 1
-            const apiPage = page + 1
+            const apiPage = page
 
             const data = await fetchHeroes(
                 apiPage,
@@ -490,6 +490,7 @@ function HeroesScroller(props: ScrollerProps) {
                 <div className={styles.heroList}>
                     {heroesToRender.map((hero) => (
                         <HeroCard
+                            is_admin={props.is_admin}
                             key={hero.id}
                             id={hero.id}
                             fullName={hero.full_name}

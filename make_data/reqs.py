@@ -13,6 +13,43 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+async def get_jwt():
+    async with ClientSession() as session:
+        url = config_obj.API_URL + "/admin/login"
+        password = config_obj.ADMIN_PASSWORD
+        login = config_obj.ADMIN_LOGIN
+        async with session.post(url, json={
+            "email": login,
+            "password": password
+        }) as response:
+            result = await response.json()
+            print(result)
+            return result.get("token")
+
+async def get_requests(auth):
+    async with ClientSession() as session:
+        url = config_obj.API_URL + "/requests"
+        async with session.get(url, headers={
+            "Authorization": auth
+        }) as response:
+            result = await response.json()
+            print(result)
+            return result
+        
+async def approve_request(req_id: int, auth: str):
+    async with ClientSession() as session:
+        url = config_obj.API_URL + f"/requests/{req_id}"
+        async with session.patch(
+            url,
+            params={"status": "approved"},
+            headers={
+                "Authorization": auth
+            }
+        ) as response:
+            print("Status:", response.status)
+            print("Response:", await response.text())
+
+
 async def add_hero(hero: dict):
     logger.info(f"add_hero input: {hero}")
     async with ClientSession() as session:
@@ -120,7 +157,15 @@ async def add_rank(rank_name: str, sort_order: int):
             else:
                 logger.error(f"add_rank error: {result}")
                 return None
-        
+
+async def create_admin(login: str, password: str): 
+    async with ClientSession() as session:
+        url = config_obj.API_URL + "/admin/create"
+        async with session.post(url, json={
+            "email": login,
+            "password": password
+        }) as response:
+            print(response)
 
 import aiohttp
 from aiohttp import FormData
@@ -128,7 +173,7 @@ from aiohttp import FormData
 async def save_image(hero_name: str, hero_id: int):
     logger.info(f"save_image input: hero_name={hero_name}, hero_id={hero_id}")
     # Формируем полный URL
-    url = config_obj.API_URL.rstrip('/') + '/heroes/image'
+    url = config_obj.API_URL.rstrip('/') + '/heroes/req_image'
     
     # Создаем FormData для отправки файла
     data = FormData()
@@ -154,7 +199,7 @@ async def save_image(hero_name: str, hero_id: int):
                 else:
                     error_text = await response.text()
                     logger.error(f"save_image error: {error_text}")
-                    return None
+                    raise Exception(f"Ошибка при загрузке изображения: {error_text}")
     else:
         logger.warning(f"{hero_name} не имеет фотографии в каталоге.")
 
