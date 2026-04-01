@@ -1,0 +1,136 @@
+.loginFormContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    background-color: var(--color-bg-page);
+    padding: 20px;
+}
+
+.loginForm {
+    width: 100%;
+    max-width: 400px;
+    padding: 40px;
+    background: var(--color-card-bg);
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(44, 30, 0, 0.1);
+    text-align: center;
+    border: 1px solid var(--color-card-accent-light);
+}
+
+.title {
+    margin-bottom: 30px;
+    color: var(--color-text-main);
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.formGroup {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--color-text-muted);
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid var(--color-card-accent-light);
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+    color: var(--color-text-main);
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--color-accent-strong);
+}
+
+.loginButton {
+    width: 100%;
+    padding: 14px;
+    background: var(--color-accent-strong);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+    margin: 20px 0;
+}
+
+.loginButton:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background-color: #d35400;
+}
+
+.loginButton:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.error {
+    color: var(--color-error-text);
+    background: var(--color-error-bg);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #f2dede;
+    font-size: 14px;
+}
+
+.success {
+    color: #155724;
+    background: #d4edda;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #c3e6cb;
+    font-size: 14px;
+}
+
+.linksContainer {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.link {
+    color: var(--color-accent-strong);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.link:hover {
+    color: #d35400;
+    text-decoration: underline;
+}
+
+/* Адаптивность */
+@media (max-width: 800px) {
+    .loginForm {
+        padding: 30px 20px;
+    }
+
+    .title {
+        font-size: 24px;
+    }
+
+    .linksContainer {
+        flex-direction: column;
+        align-items: center;
+    }
+}

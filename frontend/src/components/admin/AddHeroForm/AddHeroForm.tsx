@@ -14,6 +14,8 @@ export interface HeroFormData {
     death_date: string
     biography: string
     w_type: wType
+    rank: string
+    awards: string[]
 }
 
 const AddHeroForm = () => {
@@ -62,7 +64,9 @@ const AddHeroForm = () => {
             birth_date: birthDate,
             death_date: deathDate,
             biography,
-            w_type: wType
+            w_type: wType,
+            rank: rank.trim(),
+            awards: awards
         }
         console.log('AddHeroForm submitted:', form_data)
 
@@ -72,34 +76,13 @@ const AddHeroForm = () => {
             const { data } = await axios.post(url, form_data)
 
             const hero_id = data.id
-            const title = (data && typeof data.full_name === 'string' && data.full_name.trim()) || fullName.trim()
-            setSuccess(`${title || 'Герой'} успешно добавлен(о)`)
-
-            if (rank.trim()) {
-                const assign_rank_body = {
-                    hero_id,
-                    rank_name: rank
-                }
-
-                const assign_rank_url = API_URL + "/ranks/assign_by_name"
-                await axios.post(assign_rank_url, assign_rank_body)
-            }
-
-            if (awards.length !== 0) {
-                const assign_awards_body = {
-                    hero_id,
-                    awards: awards
-                }
-
-                const assign_awards_url = API_URL + "/awards/m_assign"
-                await axios.post(assign_awards_url, assign_awards_body)
-            }
+            setSuccess(`Заявка #${hero_id} отправлена`)
 
             if (file) {
                 const file_form_data = new FormData()
                 file_form_data.append('image', file, file.name)
 
-                const file_url = API_URL + `/heroes/image?hero_id=${hero_id}`
+                const file_url = API_URL + `/heroes/req_image?hero_id=${hero_id}`
                 await axios.post(file_url, file_form_data, {
                     headers: {
                         "Content-Type": "multipart/form-data",

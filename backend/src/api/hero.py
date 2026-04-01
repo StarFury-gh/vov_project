@@ -13,7 +13,9 @@ from repositories.heroes import HeroRepository
 from services.hero_service import HeroService
 
 from core.files import save_file
-from core.hero_exceptions import BaseHeroException
+from core.exceptions.hero_exceptions import BaseHeroException
+
+from core.security.admin_dep import require_admin
 
 h_router = APIRouter(
     prefix="/heroes",
@@ -59,6 +61,7 @@ async def get_heroes(
 @h_router.get("/{hero_id}")
 async def get_hero_by_id(
     hero_id: int,
+
     pg = Depends(get_pg)
 ):
     try:
@@ -146,4 +149,53 @@ async def add_hero_image(
         raise HTTPException(
             status_code=500,
             detail="Ошибка при загрузке изображения"
+        )
+    
+@h_router.post("/req_image")
+async def add_hero_request_image(
+    image: UploadFile,
+    hero_id: int,
+    pg = Depends(get_pg),
+):
+    try:
+        status, filename = await save_file(image)
+        if status:
+            repository = HeroRepository(pg)
+            service = HeroService(repository)
+            res = await service.save_request_image(hero_id, filename)
+            return res
+        raise HTTPException(
+            status_code=500,
+            detail="Ошибка при загрузке изображения"
+        )
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=500,
+            detail="Ошибка при загрузке изображения"
+        )
+
+@h_router.delete("/{hero_id}")
+async def delete_hero(
+    hero_id: int,
+    pg = Depends(get_pg),
+    is_admin = Depends(require_admin)
+):
+    try:
+        repository = HeroRepository(pg)
+        service = HeroService(repository)
+        result = await service.delete(hero_id)
+        return result
+    
+    except BaseHeroException as e:
+        raise HTTPException(
+            status_code=e.code,
+            detail=e.message
+        )
+    
+    except Exception as e:
+        print("Error:", e)
+        raise HTTPException(
+            status_code=500,
+            detail="Internal server error"
         )

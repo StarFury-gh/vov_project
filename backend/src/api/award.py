@@ -3,13 +3,15 @@ from fastapi import APIRouter, HTTPException, Depends
 from services.award_service import AwardService
 from repositories.awards import AwardsRepository
 from dependencies.postgres import get_pg
-from core.award_exceptions import BaseAwardExcpetion
-from core.hero_exceptions import HeroNotFound
+from core.exceptions.award_exceptions import BaseAwardExcpetion
+from core.exceptions.hero_exceptions import HeroNotFound
 from schemas.award import (
     AwardCreate, 
     AssignAward, 
     MultipleAssignAward
 )
+
+from core.security.admin_dep import require_admin
 
 a_router = APIRouter(
     prefix="/awards",
@@ -97,7 +99,8 @@ async def get_award_by_id(
 @a_router.post("/")
 async def add_award(
     award: AwardCreate,
-    pg = Depends(get_pg)
+    pg = Depends(get_pg),
+    _ = Depends(require_admin)
 ):
     try:
         repository = AwardsRepository(pg)
@@ -123,6 +126,7 @@ async def add_award(
 @a_router.delete("/")
 async def delete_award(
     award_id: int,
+    _ = Depends(require_admin),
     pg = Depends(get_pg)
 ):
     try:
@@ -149,6 +153,7 @@ async def delete_award(
 @a_router.post("/assign")
 async def assign_award(
     body: AssignAward,
+    _ = Depends(require_admin),
     pg = Depends(get_pg)
 ):
     try:
@@ -184,6 +189,7 @@ async def assign_award(
 @a_router.post("/m_assign")
 async def multiple_assign(
     body: MultipleAssignAward,
+    _ = Depends(require_admin),
     pg = Depends(get_pg)
 ):
     try:

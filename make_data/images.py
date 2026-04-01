@@ -281,7 +281,7 @@ class HeroPhotosDownloader:
             filename = f"{hero_name}"
             if self.download_image(url, filename):
                 success = True
-                time.sleep(1)  # Пауза между загрузками
+                time.sleep(0.1)  # Пауза между загрузками
         
         return success
     
