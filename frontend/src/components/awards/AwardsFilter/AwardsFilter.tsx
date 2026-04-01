@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
+import { AppButton } from "../../common/buttons"
 
 import styles from "./AwardsFilter.module.css"
 
@@ -47,22 +48,27 @@ const AwardsFilter = ({ onFilterChange }: AwardsFilterProps) => {
 
     return (
         <div className={styles.filterContainer}>
-            <h4 className={styles.filterTitle} onClick={toggleAccordion} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <AppButton
+                type="button"
+                variant="secondary"
+                className={styles.filterToggleButton}
+                onClick={toggleAccordion}
+                selected={isExpanded}
+                aria-expanded={isExpanded}
+                aria-controls="awards-filter-options"
+                icon={
+                    <img
+                        src={isExpanded ? "/up.svg" : "/down.svg"}
+                        alt=""
+                        className={styles.icon}
+                        aria-hidden="true"
+                    />
+                }
+            >
                 Фильтр наград:
-                <img
-                    src="/down.svg"
-                    alt="Развернуть"
-                    className={`${isExpanded ? styles.hidden : ''} ${styles.icon}`}
-                    style={{ width: '24px', height: '24px' }}
-                />
-                <img
-                    src="/up.svg"
-                    alt="Свернуть"
-                    className={`${!isExpanded ? styles.hidden : ''} ${styles.icon}`}
-                    style={{ width: '24px', height: '24px' }}
-                />
-            </h4>
-            <div className={`${styles.radioGroup} ${isExpanded ? styles.expanded : ''}`}>
+            </AppButton>
+
+            <div id="awards-filter-options" className={`${styles.radioGroup} ${isExpanded ? styles.expanded : ''}`}>
                 {options?.map((option) => (
                     <label key={option.name} className={styles.radioLabel}>
                         <input
@@ -76,10 +82,17 @@ const AwardsFilter = ({ onFilterChange }: AwardsFilterProps) => {
                     </label>
                 ))}
             </div>
-            <button className={styles.button} onClick={handleRemoveFilter}>
-                <img src="/delete.svg" alt="Удалить" />
+
+            <AppButton
+                type="button"
+                variant="secondary"
+                className={styles.clearButton}
+                onClick={handleRemoveFilter}
+                disabled={!selectedFilter}
+                icon={<img src="/delete.svg" alt="" className={styles.clearIcon} aria-hidden="true" />}
+            >
                 Очистить фильтр по награде
-            </button>
+            </AppButton>
         </div>
     )
 }

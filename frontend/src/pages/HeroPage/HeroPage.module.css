@@ -13,7 +13,7 @@
     align-items: center;
     max-width: 720px;
     width: 100%;
-    background-color: var(--color-card-bg);
+    background-color: #ffff;
     border-radius: 16px;
     padding: 24px 20px;
     box-shadow: 0 4px 12px rgba(46, 125, 50, 0.12);

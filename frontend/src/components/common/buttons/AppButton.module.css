@@ -1,15 +1,18 @@
 .button {
-    --bg: #f7f7f3;
-    --text: #3f4236;
-    --accent: #7d8f1d;
-    --shadow: 0 4px 10px rgba(0, 0, 0, 0.16);
+    --bg: #f7f8f5;
+    --text: #7f9328;
+    --accent: #7f9328;
+    --border: #d9ddd0;
+    --shadow: 0 6px 14px rgba(0, 0, 0, 0.16);
     --hover-bg: #ffffff;
-    --hover-text: #95ad19;
-    --active-bg: #eef2dc;
-    --active-text: #7a9410;
-    --hover-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-    --pressed-shadow: inset 0 2px 8px 1px rgba(0, 0, 0, 0.4);
-    --selected-shadow: 0 -2px 20px rgba(0, 0, 0, 0.3);
+    --hover-border: #cfd5c6;
+    --hover-text: #73881f;
+    --active-bg: #e7edd3;
+    --active-border: #c7d3a7;
+    --active-text: #6f821e;
+    --hover-shadow: 0 6px 12px rgba(0, 0, 0, 0.18);
+    --pressed-shadow: inset 0 2px 6px rgba(38, 49, 15, 0.16);
+    --selected-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
 
     min-height: 40px;
     padding: 0 16px;
@@ -47,7 +50,11 @@
 }
 
 .secondary {
+    --text: #111111;
+    --border: transparent;
     background: var(--bg);
+    border: none;
+    box-shadow: none;
 }
 
 .button:hover:not(.disabled),

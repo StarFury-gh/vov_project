@@ -3,7 +3,7 @@
     flex-direction: column;
     padding: 0;
     border-radius: 14px;
-    background-color: #c4c4c4;
+    background-color: #eeeeee;
     border: 1px solid rgba(0, 0, 0, 0.08);
     box-shadow: none;
     cursor: pointer;
@@ -16,7 +16,7 @@
 .card:hover {
     transform: translateY(-1px);
     box-shadow: 0 8px 14px rgba(0, 0, 0, 0.12);
-    background-color: #cdcdcd;
+    background-color: #f3f3f3;
 }
 
 .photo {
@@ -24,7 +24,7 @@
     height: 220px;
     flex: 0 0 220px;
     overflow: hidden;
-    background-color: #bcbcbc;
+    background-color: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -50,7 +50,7 @@
     align-items: center;
     overflow: hidden;
     text-align: center;
-    background: rgba(255, 255, 255, 0.42);
+    background: transparent;
 }
 
 .name {
@@ -82,21 +82,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1rem 2rem;
+    padding: 14px 16px 18px;
+    background: transparent;
 }
 
-.delete-btn {
-    background-color: var(--color-error-text);
-    color: white;
-    border: none;
-    padding: 0.25rem 1rem;
-    border-radius: 2px;
-    transition: border-radius .3s;
-}
-
-.delete-btn:hover {
-    opacity: 0.9;
-    border-radius: 6px;
+.deleteButton {
+    min-width: 128px;
 }
 
 @media (max-width: 800px) {

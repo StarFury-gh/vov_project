@@ -3,6 +3,7 @@ import styles from './HeroCard.module.css'
 import { STATIC_URL, API_URL } from '../../../constants'
 import useAuthCheck from '../../../hooks/useAuth'
 import axios from 'axios'
+import { AppButton } from '../../common/buttons'
 
 interface HeroCardProps {
     is_admin?: boolean
@@ -89,7 +90,14 @@ const HeroCard = ({
             {
                 is_admin &&
                 <div className={styles["admin-btns"]}>
-                    <button onClick={e => deleteHero(e)} className={styles["delete-btn"]}>Удалить</button>
+                    <AppButton
+                        type="button"
+                        variant="primary"
+                        className={styles.deleteButton}
+                        onClick={(e) => deleteHero(e)}
+                    >
+                        Удалить
+                    </AppButton>
                 </div>
             }
         </article>
@@ -97,4 +105,3 @@ const HeroCard = ({
 }
 
 export default HeroCard
-
