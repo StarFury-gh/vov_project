@@ -88,7 +88,6 @@ const AwardsFilter = ({ onFilterChange }: AwardsFilterProps) => {
                 variant="secondary"
                 className={styles.clearButton}
                 onClick={handleRemoveFilter}
-                disabled={!selectedFilter}
                 icon={<img src="/delete.svg" alt="" className={styles.clearIcon} aria-hidden="true" />}
             >
                 Очистить фильтр по награде

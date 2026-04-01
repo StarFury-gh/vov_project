@@ -42,13 +42,14 @@
     --text: #2f3821;
     --border: #d4dcc0;
     --accent: #6f8522;
-    --hover-bg: #f4f7eb;
+    --hover-bg: #ffffff;
     --hover-border: #c5d1a3;
     --hover-text: #2f3821;
     --active-bg: #e2e9ca;
     --active-border: #b9c999;
     --active-text: #2f3821;
-    box-shadow: none;
+    --hover-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .clearIcon {

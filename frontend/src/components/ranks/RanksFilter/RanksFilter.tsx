@@ -52,6 +52,7 @@ const RanksFilter = ({ onFilterChange }: RanksFilterProps) => {
                 type="button"
                 variant="secondary"
                 onClick={toggleAccordion}
+                selected={isExpanded}
                 aria-expanded={isExpanded}
                 aria-controls="ranks-filter-options"
                 icon={
@@ -86,7 +87,6 @@ const RanksFilter = ({ onFilterChange }: RanksFilterProps) => {
                 variant="secondary"
                 className={styles.clearButton}
                 onClick={handleRemoveFilter}
-                disabled={!selectedFilter}
                 icon={<img src="/delete.svg" alt="" className={styles.clearIcon} aria-hidden="true" />}
             >
                 Очистить фильтр по рангу
