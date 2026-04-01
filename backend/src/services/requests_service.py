@@ -6,16 +6,21 @@ from core.exceptions.requests_exceptions import (
     RequestNotFound,
 )
 
+from cache.decorator import invalidate_cache, redis_cache
+
 from core.transfer import (
     transfer,
     FullHeroInfo,
     FullInfo
 )
 
+CACHE_TTL = 120
+
 class RequestsService:
     def __init__(self, repository: RequestsRepository) -> None:
         self.repo = repository
 
+    @redis_cache(CACHE_TTL)
     async def get(self, id: int):
         try:
             result = await self.repo.get(id)
@@ -25,6 +30,7 @@ class RequestsService:
         except Exception as e:
             raise e
 
+    @redis_cache(CACHE_TTL)
     async def get_all(self, limit: int = 10, offset: int = 0):
         try:
             result = await self.repo.get_all(limit, offset)
@@ -34,6 +40,7 @@ class RequestsService:
         except Exception as e:
             raise e
 
+    @invalidate_cache()
     async def delete(self, id: int):
         try:
             if await self.repo.delete(id):
@@ -45,6 +52,7 @@ class RequestsService:
         except Exception as e:
             raise e
 
+    @invalidate_cache()
     async def update(
             self, 
             id: int, 
@@ -69,7 +77,10 @@ class RequestsService:
                             photo_url=current_info["photo_url"]
                         )
                         import json
-                        hero_place = json.loads(current_info.get("place", ""))
+                        if current_info.get("place") is not None:
+                            hero_place = json.loads(current_info.get("place", ""))
+                        else:
+                            hero_place = None
                         full_info = FullInfo(
                             hero=hero_info,
                             awards=current_info.get("awards", []),

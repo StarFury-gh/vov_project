@@ -67,7 +67,7 @@ async def transfer(
 
         # добавляем локацию
         try:
-            if data.location:
+            if data.location is not None:
                 new_location = AddLocation(
                     name=data.location.get("name"), # type: ignore
                     hero_id=status.get("id"), # type: ignore
