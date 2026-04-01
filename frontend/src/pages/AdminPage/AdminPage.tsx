@@ -37,6 +37,13 @@ function AdminPage() {
     const isAuthorized: boolean | null = useAuthCheck()
     const navigate = useNavigate()
 
+    useEffect(() => {
+        console.log("isAuthorized", isAuthorized)
+        if (!isAuthorized) {
+            navigate('/');
+        }
+    }, [isAuthorized]);
+
     const observer = useRef<IntersectionObserver | null>(null)
 
     const lastElementRef = useCallback((node: HTMLDivElement | null) => {

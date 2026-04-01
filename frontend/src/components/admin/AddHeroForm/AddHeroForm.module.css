@@ -30,9 +30,13 @@
 }
 
 .statusSuccess {
-    background-color: var(--color-card-accent-light);
-    color: var(--color-card-accent-dark);
-    border: 1px solid var(--color-accent-strong);
+    color: #155724;
+    background: #d4edda;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #c3e6cb;
+    font-size: 14px;
 }
 
 .label {

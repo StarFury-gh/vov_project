@@ -49,6 +49,16 @@ const AddHeroForm = () => {
         }
     }
 
+    const clearForm = () => {
+        setFullName('')
+        setBirthDate('')
+        setDeathDate('')
+        setBiography('')
+        setAwards([])
+        setRank('')
+        setFile(undefined)
+    }
+
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
         setError(null)
@@ -77,6 +87,8 @@ const AddHeroForm = () => {
 
             const hero_id = data.id
             setSuccess(`Заявка #${hero_id} отправлена`)
+
+            clearForm()
 
             if (file) {
                 const file_form_data = new FormData()
