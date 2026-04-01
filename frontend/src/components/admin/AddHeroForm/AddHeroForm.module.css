@@ -1,3 +1,7 @@
+body {
+    --btn-width: 300px;
+}
+
 .form {
     display: flex;
     flex-direction: column;
@@ -72,14 +76,20 @@
 
 .awardsRow {
     display: flex;
+    flex-direction: column;
     gap: 8px;
 }
 
 .awardsRow .input {
-    flex: 1;
+    width: 100%;
+}
+
+.labelRow .awardsRow .input {
+    width: 100%;
 }
 
 .addButton {
+    width: 100%;
     padding: 10px 16px;
     border: none;
     border-radius: 8px;
@@ -95,6 +105,7 @@
 }
 
 .file_input {
+    width: 100%;
     padding: 10px 16px;
     border: none;
     border-radius: 8px;
@@ -146,7 +157,8 @@
 }
 
 .submitButton {
-    margin-top: 8px;
+    width: var(--btn-width);
+    margin: 3rem auto;
     padding: 12px 24px;
     border: none;
     border-radius: 8px;
@@ -179,4 +191,37 @@
 .radioLabel input[type="radio"] {
     margin-right: 0.5rem;
     accent-color: var(--color-accent-strong);
+}
+
+.labelRow {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.extra_info {
+    width: 100%;
+    padding: 1rem 4rem;
+}
+
+@media (max-width: 768px) {
+    .submitButton {
+        width: 100%;
+    }
+
+    .labelRow {
+        grid-template-columns: 1fr;
+        width: 100%;
+    }
+
+    .addButton {
+        width: 100%;
+    }
+
+    .extra_info {
+        padding: 0;
+    }
+
+    .file_input {
+        width: 100%;
+    }
 }

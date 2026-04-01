@@ -190,53 +190,55 @@ const AddHeroForm = () => {
                 {file && <p>Выбран файл: {file.name}</p>}
             </label>
 
-            <div className={styles.label}>
-                Награды
-                <div className={styles.awardsRow}>
+            <div className={styles.labelRow}>
+                <div className={styles["extra_info"]}>
+                    <p>Награды</p>
+                    <div className={styles.awardsRow}>
+                        <input
+                            type="text"
+                            className={styles.input}
+                            id='awards_input'
+                            placeholder="Введите награду и нажмите «Добавить»"
+                            value={awardInput}
+                            onChange={(e) => setAwardInput(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddAward())}
+                        />
+                        <button
+                            type="button"
+                            className={styles.addButton}
+                            onClick={handleAddAward}
+                        >
+                            Добавить
+                        </button>
+                    </div>
+                    {awards.length > 0 && (
+                        <ul className={styles.awardsList}>
+                            {awards.map((award, i) => (
+                                <li key={i} className={styles.awardItem}>
+                                    {award}
+                                    <button
+                                        type="button"
+                                        className={styles.removeButton}
+                                        onClick={() => handleRemoveAward(i)}
+                                        aria-label="Удалить"
+                                    >
+                                        ×
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+                <div className={styles["extra_info"]}>
+                    <p>Звание</p>
                     <input
                         type="text"
                         className={styles.input}
-                        placeholder="Введите награду и нажмите «Добавить»"
-                        value={awardInput}
-                        onChange={(e) => setAwardInput(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddAward())}
+                        value={rank}
+                        onChange={(e) => setRank(e.target.value)}
                     />
-                    <button
-                        type="button"
-                        className={styles.addButton}
-                        onClick={handleAddAward}
-                    >
-                        Добавить
-                    </button>
                 </div>
-                {awards.length > 0 && (
-                    <ul className={styles.awardsList}>
-                        {awards.map((award, i) => (
-                            <li key={i} className={styles.awardItem}>
-                                {award}
-                                <button
-                                    type="button"
-                                    className={styles.removeButton}
-                                    onClick={() => handleRemoveAward(i)}
-                                    aria-label="Удалить"
-                                >
-                                    ×
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
-                )}
             </div>
-
-            <label className={styles.label}>
-                Звание героя
-                <input
-                    type="text"
-                    className={styles.input}
-                    value={rank}
-                    onChange={(e) => setRank(e.target.value)}
-                />
-            </label>
 
             <button type="submit" className={styles.submitButton}>
                 Добавить героя
