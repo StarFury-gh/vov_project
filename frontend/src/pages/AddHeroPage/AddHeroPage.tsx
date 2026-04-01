@@ -1,8 +1,6 @@
-import { Link } from 'react-router-dom'
 import styles from './AddHeroPage.module.css'
 import AddHeroForm from '../../components/admin/AddHeroForm'
-import AddRankForm from '../../components/admin/AddRankForm'
-import AddAwardForm from '../../components/admin/AddAwardForm'
+import { AppButton } from '../../components/common/buttons'
 
 import AllAwardsList from '../../components/awards/AllAwards'
 import AllRanksList from '../../components/ranks/AllRanks'
@@ -12,20 +10,14 @@ const AdminPage = () => {
         <main className={styles.page}>
             <header className={styles.header}>
                 <h1 className={styles.title}>Добавление героя</h1>
-                <Link to="/" className={styles.backLink}>
+                <AppButton to="/" variant="secondary" className={styles.backButton}>
                     ← На главную
-                </Link>
+                </AppButton>
             </header>
 
             <section className={styles.formsSection}>
                 <div className={styles.formCard}>
                     <AddHeroForm />
-                </div>
-                <div className={styles.formCard}>
-                    <AddRankForm />
-                </div>
-                <div className={styles.formCard}>
-                    <AddAwardForm />
                 </div>
             </section>
             <section className={styles.formsSection}>

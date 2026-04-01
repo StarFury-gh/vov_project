@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 import styles from './AddHeroForm.module.css'
+import { AppButton } from '../../common/buttons'
 
 // @ts-expect-error JS module without types
 import { API_URL } from "../../../constants"
@@ -30,6 +31,7 @@ const AddHeroForm = () => {
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState<string | null>(null)
     const [file, setFile] = useState<File>()
+    const fileInputRef = useRef<HTMLInputElement | null>(null)
 
     const handleAddAward = () => {
         const trimmed = awardInput.trim()
@@ -98,33 +100,40 @@ const AddHeroForm = () => {
 
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
-            <h3 className={styles.formTitle}>Добавление героя</h3>
+            <h2 className={styles.formTitle}>Добавление героя</h2>
             {(error || success) && (
                 <div className={`${styles.status} ${error ? styles.statusError : styles.statusSuccess}`}>
                     {error || success}
                 </div>
             )}
 
-            <label className={styles.radioLabel}>
-                <input
-                    type="radio"
-                    name="awardsFilter"
-                    value={"Вов"}
-                    checked={wType === "vov"}
-                    onChange={() => setWtype("vov")}
-                />
-                ВОВ
-            </label>
-            <label className={styles.radioLabel}>
-                <input
-                    type="radio"
-                    name="awardsFilter"
-                    value={"Сво"}
-                    checked={wType === "svo"}
-                    onChange={() => setWtype("svo")}
-                />
-                СВО
-            </label>
+            <div className={styles.segmentedBlock}>
+                <p className={styles.segmentedTitle}>Раздел</p>
+                <div className={styles.segmentedControl} role="radiogroup" aria-label="Тип раздела">
+                    <AppButton
+                        type="button"
+                        variant="secondary"
+                        className={styles.segmentAppButton}
+                        selected={wType === 'vov'}
+                        onClick={() => setWtype('vov')}
+                        role="radio"
+                        aria-checked={wType === 'vov'}
+                    >
+                        ВОВ
+                    </AppButton>
+                    <AppButton
+                        type="button"
+                        variant="secondary"
+                        className={styles.segmentAppButton}
+                        selected={wType === 'svo'}
+                        onClick={() => setWtype('svo')}
+                        role="radio"
+                        aria-checked={wType === 'svo'}
+                    >
+                        СВО
+                    </AppButton>
+                </div>
+            </div>
 
             <label className={styles.label}>
                 ФИО
@@ -166,16 +175,27 @@ const AddHeroForm = () => {
                 />
             </label>
 
-            <label>
+            <label className={styles.label}>
                 Фотография
                 <input
+                    ref={fileInputRef}
                     type="file"
-                    className={styles.file_input}
-                    alt=""
-                    accept='.jpg, .png, .jpeg, .webp'
+                    className={styles.hiddenFileInput}
+                    accept=".jpg, .png, .jpeg, .webp"
                     onChange={handleFileChange}
                 />
-                {file && <p>Выбран файл: {file.name}</p>}
+                <div className={styles.filePickerRow}>
+                    <AppButton
+                        type="button"
+                        variant="secondary"
+                        onClick={() => fileInputRef.current?.click()}
+                    >
+                        Выбрать файл
+                    </AppButton>
+                    <span className={`${styles.fileName} ${file ? styles.fileNameSelected : styles.fileNameEmpty}`}>
+                        {file ? `Выбран файл: ${file.name}` : 'Файл не выбран'}
+                    </span>
+                </div>
             </label>
 
             <div className={styles.label}>
@@ -189,13 +209,13 @@ const AddHeroForm = () => {
                         onChange={(e) => setAwardInput(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddAward())}
                     />
-                    <button
+                    <AppButton
                         type="button"
-                        className={styles.addButton}
+                        variant="secondary"
                         onClick={handleAddAward}
                     >
                         Добавить
-                    </button>
+                    </AppButton>
                 </div>
                 {awards.length > 0 && (
                     <ul className={styles.awardsList}>
@@ -226,9 +246,9 @@ const AddHeroForm = () => {
                 />
             </label>
 
-            <button type="submit" className={styles.submitButton}>
+            <AppButton type="submit" variant="primary">
                 Добавить героя
-            </button>
+            </AppButton>
         </form>
     )
 }

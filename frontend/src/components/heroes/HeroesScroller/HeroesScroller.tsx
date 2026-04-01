@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './HeroesScroller.module.css'
 
 import HeroCard from '../HeroCard'
 import AwardsFilter from '../../awards/AwardsFilter'
 import RanksFilter from '../../ranks/RanksFilter'
+import { AppButton } from '../../common/buttons'
 
 // @ts-expect-error JS module without types
 import { fetchHeroes, searchHeroesByName } from '../../../api'
@@ -43,7 +44,7 @@ type HeroesApiResponse =
 const PAGE_LIMIT = 10
 
 
-function HeroesScroller(props: ScrollerProps) {
+function HeroesScroller(props: Readonly<ScrollerProps>) {
     const [heroes, setHeroes] = useState<HeroFromApi[]>([])
     const [page, setPage] = useState(0)
     const [hasMore, setHasMore] = useState(true)
@@ -308,13 +309,11 @@ function HeroesScroller(props: ScrollerProps) {
                             return nextPage
                         })
                     }
-                } else {
-                    if (hasMore && !isLoadingRef.current) {
-                        setPage((prev) => {
-                            const nextPage = prev + 1
-                            return nextPage
-                        })
-                    }
+                } else if (hasMore && !isLoadingRef.current) {
+                    setPage((prev) => {
+                        const nextPage = prev + 1
+                        return nextPage
+                    })
                 }
             }
         }, {
@@ -332,14 +331,14 @@ function HeroesScroller(props: ScrollerProps) {
     }, [hasMore, searchHasMore, requestsBlocked, isSearchMode])
 
     const handleReload = () => {
-        window.location.reload()
+        globalThis.location.reload()
     }
 
     const handleHeroClick = (id: HeroFromApi['id']) => {
         navigate(`/heroes/${id}`)
     }
 
-    const handleSearchSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    const handleSearchSubmit = (event: { preventDefault: () => void }) => {
         event.preventDefault()
 
         const query = searchQuery.trim()
@@ -348,61 +347,63 @@ function HeroesScroller(props: ScrollerProps) {
             return
         }
 
-        try {
-            setIsSearching(true)
-            setSearchError(null)
+        void (async () => {
+            try {
+                setIsSearching(true)
+                setSearchError(null)
 
-            // Переключаемся в режим поиска и сбрасываем результаты
-            setIsSearchMode(true)
-            setSearchResults([])
-            setSearchPage(0)
-            setSearchHasMore(true)
-            setSearchTotal(0)
-            // Сбрасываем ref для поиска
-            lastLoadedSearchPageRef.current = 0
+                // Переключаемся в режим поиска и сбрасываем результаты
+                setIsSearchMode(true)
+                setSearchResults([])
+                setSearchPage(0)
+                setSearchHasMore(true)
+                setSearchTotal(0)
+                // Сбрасываем ref для поиска
+                lastLoadedSearchPageRef.current = 0
 
-            // Загружаем первую страницу поиска
-            const response = await searchHeroesByName(
-                query,
-                1,
-                PAGE_LIMIT,
-                props.type
-            ) as SearchResponse
-            const items = response.items ?? []
+                // Загружаем первую страницу поиска
+                const response = await searchHeroesByName(
+                    query,
+                    1,
+                    PAGE_LIMIT,
+                    props.type
+                ) as SearchResponse
+                const items = response.items ?? []
 
-            console.log('🔍 Результаты поиска:', {
-                itemsCount: items.length,
-                total: response.total,
-                skip: response.skip,
-                limit: response.limit
-            })
+                console.log('🔍 Результаты поиска:', {
+                    itemsCount: items.length,
+                    total: response.total,
+                    skip: response.skip,
+                    limit: response.limit
+                })
 
-            setSearchResults(items)
-            setSearchTotal(response.total)
+                setSearchResults(items)
+                setSearchTotal(response.total)
 
-            const hasMoreResults = response.skip + items.length < response.total
-            setSearchHasMore(hasMoreResults)
+                const hasMoreResults = response.skip + items.length < response.total
+                setSearchHasMore(hasMoreResults)
 
-            // Отмечаем, что первая страница загружена
-            if (items.length > 0) {
-                lastLoadedSearchPageRef.current = 0 // первая страница (searchPage=0)
+                // Отмечаем, что первая страница загружена
+                if (items.length > 0) {
+                    lastLoadedSearchPageRef.current = 0 // первая страница (searchPage=0)
+                }
+
+                if (items.length === 0) {
+                    setSearchError('Герои с таким именем не найдены')
+                }
+
+                // Сбрасываем обычный список
+                setHeroes([])
+                setPage(0)
+                setHasMore(true)
+
+            } catch {
+                setSearchError('Ошибка при поиске героя')
+                setIsSearchMode(false)
+            } finally {
+                setIsSearching(false)
             }
-
-            if (items.length === 0) {
-                setSearchError('Герои с таким именем не найдены')
-            }
-
-            // Сбрасываем обычный список
-            setHeroes([])
-            setPage(0)
-            setHasMore(true)
-
-        } catch {
-            setSearchError('Ошибка при поиске героя')
-            setIsSearchMode(false)
-        } finally {
-            setIsSearching(false)
-        }
+        })()
     }
 
     const resetSearch = () => {
@@ -448,34 +449,39 @@ function HeroesScroller(props: ScrollerProps) {
                     Памяти тех, кто защищал Родину. Пролистывайте список, чтобы увидеть
                     больше героев.
                 </p>
-                <form className={styles.search} onSubmit={handleSearchSubmit}>
-                    <input
-                        type="text"
-                        className={styles.searchInput}
-                        placeholder="Найдите героя по имени"
-                        value={searchQuery}
-                        onChange={(event) => setSearchQuery(event.target.value)}
-                    />
-                    <button
-                        type="submit"
-                        className={styles.searchButton}
-                        disabled={isSearching}
-                    >
-                        {isSearching ? 'Поиск...' : 'Найти'}
-                    </button>
-                    {isSearchMode && (
-                        <button
-                            type="button"
-                            className={styles.resetButton}
-                            onClick={handleSearchReset}
+                <div className={styles.searchBlock}>
+                    <form className={styles.search} onSubmit={handleSearchSubmit}>
+                        <div className={styles.searchInputWrap}>
+                            <span className={styles.searchIcon} aria-hidden="true" />
+                            <input
+                                type="text"
+                                className={styles.searchInput}
+                                placeholder="Введите имя героя"
+                                value={searchQuery}
+                                onChange={(event) => setSearchQuery(event.target.value)}
+                            />
+                        </div>
+                        <AppButton
+                            type="submit"
+                            variant="primary"
+                            disabled={isSearching}
                         >
-                            Сбросить
-                        </button>
-                    )}
-                </form>
-                <div className={styles.filtersContainer}>
-                    <AwardsFilter onFilterChange={handleAwardFilterChange} />
-                    <RanksFilter onFilterChange={handleRankFilterChange} />
+                            {isSearching ? 'Поиск...' : 'Найти'}
+                        </AppButton>
+                        {isSearchMode && (
+                            <AppButton
+                                type="button"
+                                variant="secondary"
+                                onClick={handleSearchReset}
+                            >
+                                Сбросить
+                            </AppButton>
+                        )}
+                    </form>
+                    <div className={styles.filtersContainer}>
+                        <AwardsFilter onFilterChange={handleAwardFilterChange} />
+                        <RanksFilter onFilterChange={handleRankFilterChange} />
+                    </div>
                 </div>
                 {searchError && isSearchMode && (
                     <p className={styles.searchError}>{searchError}</p>

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { AppButton } from '../../components/common/buttons';
 
 import styles from './HomePage.module.css';
 
@@ -18,7 +18,14 @@ function HomePage() {
                     <div className={styles['home-page__content-block-text']}>
                         <h2 className={styles['home-page__content-block-title']}>Цель проекта</h2>
                         <p className={styles['home-page__content-block-description']}>«Никто не забыт, ничто не забыто» — для нас это не просто строка из стихотворения, а ежедневный труд.</p>
-                        <Link to="/about">Подробнее</Link>
+                        <AppButton
+                            to="/about"
+                            variant="primary"
+                            showChevrons={false}
+                            className={styles['home-page__content-link']}
+                        >
+                            Подробнее
+                        </AppButton>
                     </div>
                 </div>
                 <div className={styles['home-page__content-block']}>
@@ -26,7 +33,14 @@ function HomePage() {
                     <img src="/vov.jpeg" alt="" className={styles['home-page__content-block-img']} />
                     <div className={styles['home-page__content-block-text']}>
                         <h2 className={styles['home-page__content-block-title']}>Инфомарция о Героях Великой Отечественной Войны</h2>
-                        <Link to="/vov">Перейти</Link>
+                        <AppButton
+                            to="/vov"
+                            variant="primary"
+                            showChevrons={false}
+                            className={styles['home-page__content-link']}
+                        >
+                            Перейти
+                        </AppButton>
                     </div>
                 </div>
                 <div className={styles['home-page__content-block']}>
@@ -34,7 +48,14 @@ function HomePage() {
                     <img src="/svo.jpeg" alt="" className={styles['home-page__content-block-img']} />
                     <div className={styles['home-page__content-block-text']}>
                         <h2 className={styles['home-page__content-block-title']}>Информация о Героях Специальной Военной Операции</h2>
-                        <Link to="/svo">Перейти</Link>
+                        <AppButton
+                            to="/svo"
+                            variant="primary"
+                            showChevrons={false}
+                            className={styles['home-page__content-link']}
+                        >
+                            Перейти
+                        </AppButton>
                     </div>
                 </div>
                 <div className={styles['home-page__content-block']}>
@@ -43,7 +64,14 @@ function HomePage() {
                     <div className={styles['home-page__content-block-text']}>
                         <h2 className={styles['home-page__content-block-title']}>О нас</h2>
                         <p className={styles['home-page__content-block-description']}>Читайте подробнее</p>
-                        <Link to={"/about"}>Читать</Link>
+                        <AppButton
+                            to="/about"
+                            variant="primary"
+                            showChevrons={false}
+                            className={styles['home-page__content-link']}
+                        >
+                            Читать
+                        </AppButton>
                     </div>
                 </div>
                 <div className={styles['home-page__content-block']}>
@@ -51,7 +79,14 @@ function HomePage() {
                     <img src="/lenta.jpeg" alt="" className={styles['home-page__content-block-img']} />
                     <div className={styles['home-page__content-block-text']}>
                         <h2 className={styles['home-page__content-block-title']}>Вы можете добавить информацию о герое, которого нет на нашем сайте</h2>
-                        <Link to={"/add"}>Добавить</Link>
+                        <AppButton
+                            to="/add"
+                            variant="primary"
+                            showChevrons={false}
+                            className={styles['home-page__content-link']}
+                        >
+                            Добавить
+                        </AppButton>
                     </div>
                 </div>
             </section>

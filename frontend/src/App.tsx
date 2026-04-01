@@ -1,16 +1,16 @@
 import './App.css'
 import { Routes, Route } from 'react-router-dom'
+import Header from './components/common/Header/Header'
 import VovPage from './pages/VovPage'
 import HeroPage from './pages/HeroPage'
 import SvoPage from './pages/SvoPage'
 import AddHeroPage from './pages/AddHeroPage'
 import HomePage from './pages/HomePage'
 import AboutPage from './pages/AboutPage'
+import Footer from './components/common/Footer'
 import PageNotFound from './pages/PageNotFound'
 import LoginForm from './components/auth/LoginForm'
 import AdminPage from './pages/AdminPage'
-
-import Header from './components/common/Header/Header'
 
 function App() {
     return (
@@ -26,8 +26,9 @@ function App() {
                 <Route path='/admin' element={<LoginForm />}></Route>
                 <Route path='/requests' element={<AdminPage />}></Route>
                 <Route path="*" element={<PageNotFound />}></Route>
-            </Routes >
-        </div >
+            </Routes>
+            <Footer />
+        </div>
     )
 }
 
