@@ -27,7 +27,7 @@ export async function searchHeroesByName(query, page = 1, limit = 10) {
  * GET-запрос к API_URL с query-параметрами limit и skip.
  * Возвращает: { heroes: [...], total, skip, limit }.
  */
-export async function fetchHeroes(page = 1, limit = 10, award_filter = null, rank_filter = null, w_type = "vov") {
+export async function fetchHeroes(page, limit = 10, award_filter = null, rank_filter = null, w_type = "vov") {
     const skip = (page - 1) * limit
     const params = new URLSearchParams({ limit: String(limit), skip: String(skip), w_type })
 
@@ -39,6 +39,7 @@ export async function fetchHeroes(page = 1, limit = 10, award_filter = null, ran
     }
 
     const url = `${API_URL}/heroes/?${params.toString()}`
+    console.log("url:", url)
 
     const response = await fetch(url)
     if (!response.ok) {
@@ -46,7 +47,7 @@ export async function fetchHeroes(page = 1, limit = 10, award_filter = null, ran
     }
 
     const data = await response.json()
-    console.log(data)
+    console.log("fectched_data:", data)
     // Бэкенд возвращает items, маппим в heroes для совместимости с фронтом
     const heroes = data.items ?? data.heroes ?? []
     return {

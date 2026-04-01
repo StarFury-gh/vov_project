@@ -53,13 +53,17 @@
 }
 
 .portrait {
-    width: 60%;
     margin-bottom: 3rem;
+    width: 70%;
 }
 
 @media (max-width: 800px) {
     .page {
         padding: 20px 12px;
+    }
+
+    .portrait {
+        width: 100%;
     }
 
     .card {

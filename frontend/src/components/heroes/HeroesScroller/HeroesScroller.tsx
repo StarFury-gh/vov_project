@@ -42,7 +42,6 @@ type HeroesApiResponse =
 
 const PAGE_LIMIT = 10
 
-
 function HeroesScroller(props: ScrollerProps) {
     const [heroes, setHeroes] = useState<HeroFromApi[]>([])
     const [page, setPage] = useState(0)
@@ -107,7 +106,7 @@ function HeroesScroller(props: ScrollerProps) {
 
         try {
             // API ожидает страницу начиная с 1
-            const apiPage = page + 1
+            const apiPage = page
 
             const data = await fetchHeroes(apiPage, PAGE_LIMIT, awardFilter, rankFilter, props.type) as HeroesApiResponse
 
