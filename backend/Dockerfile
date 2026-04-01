@@ -16,5 +16,5 @@ ENV PATH "/opt/venv/bin:$PATH"
 WORKDIR /app
 COPY images images
 COPY src src
-COPY .env .env
+COPY .env_example .env
 CMD ["python3", "src/main.py"]

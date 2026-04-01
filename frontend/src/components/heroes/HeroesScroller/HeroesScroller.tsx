@@ -108,7 +108,7 @@ function HeroesScroller(props: Readonly<ScrollerProps>) {
 
         try {
             // API ожидает страницу начиная с 1
-            const apiPage = page + 1
+            const apiPage = page
 
             const data = await fetchHeroes(
                 apiPage,
