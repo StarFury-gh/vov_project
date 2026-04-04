@@ -1,0 +1,224 @@
+from core.enums.requests_enum import RequestStatus
+
+class HeroRepository:
+    def __init__(self, db):
+        self.db = db
+
+    async def get(
+        self,
+        w_type: str,
+        skip: int = 0,
+        limit: int = 20,
+        search: str = None,
+        birth_year_from: int = None,
+        birth_year_to: int = None,
+        death_year_from: int = None,
+        death_year_to: int = None,
+        award_filter: str = None,
+        rank_filter: str = None,
+    ):
+        # Базовая часть запроса без фильтров, группировки и пагинации
+        base_query = """
+            SELECT
+                h.id,
+                h.full_name,
+                h.birth_date,
+                h.death_date,
+                h.photo_url
+            FROM heroes h
+        """
+
+        where_clauses = ["1=1"]
+        parameters = []
+
+        if w_type:
+            idx = len(parameters) + 1
+            where_clauses.append(
+                f"h.w_type=${idx}"
+            )
+            parameters.append(f"{w_type}")
+
+        if award_filter:
+            idx = len(parameters) + 1
+            where_clauses.append(
+                f"EXISTS (SELECT 1 FROM hero_awards ha JOIN awards a ON ha.award_id = a.id "
+                f"WHERE ha.hero_id = h.id AND a.name ILIKE ${idx})"
+            )
+            parameters.append(f"%{award_filter}%")
+
+        if rank_filter:
+            idx = len(parameters) + 1
+            where_clauses.append(
+                f"EXISTS (SELECT 1 FROM hero_ranks hr JOIN ranks r ON hr.rank_id = r.id "
+                f"WHERE hr.hero_id = h.id AND r.name ILIKE ${idx})"
+            )
+            parameters.append(f"%{rank_filter}%")
+
+        if search:
+            idx = len(parameters) + 1
+            where_clauses.append(f"h.full_name ILIKE ${idx}")
+            parameters.append(f"%{search}%")
+
+        if birth_year_from:
+            idx = len(parameters) + 1
+            where_clauses.append(f"EXTRACT(YEAR FROM h.birth_date) >= ${idx}")
+            parameters.append(birth_year_from)
+
+        if birth_year_to:
+            idx = len(parameters) + 1
+            where_clauses.append(f"EXTRACT(YEAR FROM h.birth_date) <= ${idx}")
+            parameters.append(birth_year_to)
+
+        if death_year_from:
+            idx = len(parameters) + 1
+            where_clauses.append(f"EXTRACT(YEAR FROM h.death_date) >= ${idx}")
+            parameters.append(death_year_from)
+
+        if death_year_to:
+            idx = len(parameters) + 1
+            where_clauses.append(f"EXTRACT(YEAR FROM h.death_date) <= ${idx}")
+            parameters.append(death_year_to)
+
+        if award_filter:
+            idx = len(parameters) + 1
+
+        where_sql = " WHERE " + " AND ".join(where_clauses)
+
+        group_by_sql = " GROUP BY h.id"
+
+        # Запрос для получения элементов с пагинацией
+        limit_idx = len(parameters) + 1
+        offset_idx = len(parameters) + 2
+        items_query = (
+            base_query
+            + where_sql
+            + group_by_sql
+            + f" ORDER BY h.id LIMIT ${limit_idx} OFFSET ${offset_idx}"
+        )
+        items_params = parameters + [limit, skip]
+
+        result = [dict(record) for record in await self.db.fetch(items_query, *items_params)]
+
+        # Запрос для подсчёта общего количества без пагинации
+        count_query = (
+            "SELECT COUNT(*) FROM ("
+            + base_query
+            + where_sql
+            + group_by_sql
+            + ") AS count_subquery"
+        )
+        count_result = await self.db.fetchrow(count_query, *parameters)
+        total = dict(count_result)["count"] if count_result else 0
+
+        return {
+            "items": result,
+            "total": total,
+            "skip": skip,
+            "limit": limit,
+        }
+
+    async def get_by_id(self, id):
+        result = await self.db.fetchrow("SELECT * FROM heroes WHERE id = $1", id)
+        return dict(result) if result else None
+
+    async def create(self, hero_data: dict):
+        query = """
+        INSERT INTO hero_requests (full_name, birth_date, death_date, biography, photo_url, w_type, rank, awards, status, place)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        RETURNING id, full_name, birth_date, death_date, photo_url
+        """
+        
+        # Преобразуем строковые даты в объекты date, если они строки
+        birth_date = hero_data.get('birth_date')
+        if birth_date:
+            if birth_date and isinstance(birth_date, str):
+                from datetime import datetime
+                birth_date = datetime.strptime(birth_date, '%Y-%m-%d').date()
+        else:
+            birth_date = None
+
+        death_date = hero_data.get('death_date')
+        if death_date:
+            if death_date and isinstance(death_date, str):
+                from datetime import datetime
+                death_date = datetime.strptime(death_date, '%Y-%m-%d').date()
+        else:
+            death_date = None
+
+        result = await self.db.fetchrow(
+            query,
+            hero_data['full_name'],
+            birth_date,
+            death_date,
+            hero_data.get('biography'),
+            # photo_url = default.png - если картинка не будет загружена
+            "default.png",
+            hero_data.get('w_type'),
+            hero_data.get('rank'),
+            hero_data.get('awards'),
+            RequestStatus.PENDING.value,
+            hero_data.get('place'),
+        )
+        
+        return dict(result)
+    
+    async def save(self, hero_data: dict):
+        query = """
+        INSERT INTO heroes (full_name, birth_date, death_date, biography, photo_url, w_type)
+        VALUES ($1, $2::date, $3::date, $4, $5, $6)
+        RETURNING id, full_name, birth_date, death_date, photo_url
+        """
+        
+        # Преобразуем строковые даты в объекты date, если они строки
+        birth_date = hero_data.get('birth_date')
+        if birth_date and birth_date != "None":
+            if birth_date and isinstance(birth_date, str) :
+                from datetime import datetime
+                birth_date = datetime.strptime(birth_date, '%Y-%m-%d').date()
+        else:
+            birth_date = None
+
+        death_date = hero_data.get('death_date')
+        if death_date and death_date != "None": 
+            if death_date and isinstance(death_date, str):
+                from datetime import datetime
+                death_date = datetime.strptime(death_date, '%Y-%m-%d').date()
+        else:
+            death_date = None
+
+        result = await self.db.fetchrow(
+            query,
+            hero_data['full_name'],
+            birth_date,
+            death_date,
+            hero_data.get('biography'),
+            # photo_url = default.png - если картинка не будет загружена
+            "default.png",
+            hero_data.get('w_type'),
+        )
+        
+        return dict(result)
+    
+    async def set_hero_image(self, hero_id: int, image_url: str):
+        existance = await self.check_hero_existance_by_id(hero_id)
+        if existance:
+            await self.db.execute("UPDATE heroes SET photo_url = $1 WHERE id = $2", image_url, hero_id)
+            return True, "images/" + image_url
+        else:
+            return False, None
+
+    async def set_hero_request_image(self, hero_id: int, image_url: str):
+        await self.db.execute("UPDATE hero_requests SET photo_url = $1 WHERE id = $2", image_url, hero_id)
+        return True, "images/" + image_url
+
+    async def check_hero_existance_by_id(self, hero_id: int):
+        hero = await self.db.fetchrow("SELECT id FROM heroes WHERE id = $1", hero_id)
+        if hero:
+            return True
+        return False
+    
+    async def delete(self, hero_id: int):
+        if await self.check_hero_existance_by_id(hero_id):
+            await self.db.execute("DELETE FROM heroes WHERE id = $1", hero_id)
+            return True
+        return False

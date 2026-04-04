@@ -1,0 +1,95 @@
+.filterContainer {
+    height: 100%;
+    padding: 1rem 2rem;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-card-accent-light);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.filterToggleButton {
+    width: 100%;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+    padding-inline: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    --bg: transparent;
+    --text: var(--color-text-main);
+    --border: transparent;
+    --hover-bg: var(--color-card-accent-light);
+    --hover-border: var(--color-card-accent-light);
+    --hover-text: var(--color-text-main);
+    --active-bg: var(--color-card-accent-light);
+    --active-border: var(--color-card-accent-light);
+    --active-text: var(--color-text-main);
+    box-shadow: none;
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+.clearButton {
+    width: 100%;
+    justify-content: flex-start;
+    --bg: var(--color-card-accent-light);
+    --text: #2f3821;
+    --border: #d4dcc0;
+    --accent: #6f8522;
+    --hover-bg: #ffffff;
+    --hover-border: #c5d1a3;
+    --hover-text: #2f3821;
+    --active-bg: #e2e9ca;
+    --active-border: #b9c999;
+    --active-text: #2f3821;
+    --hover-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.clearIcon {
+    width: 18px;
+    height: 18px;
+    display: block;
+}
+
+.radioGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.radioGroup.expanded {
+    max-height: 100%;
+    opacity: 1;
+    padding-bottom: 1rem;
+}
+
+.radioLabel {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.radioLabel:hover {
+    background-color: var(--color-card-accent-light);
+}
+
+.radioLabel input[type="radio"] {
+    margin-right: 0.5rem;
+    accent-color: var(--color-accent-strong);
+}
