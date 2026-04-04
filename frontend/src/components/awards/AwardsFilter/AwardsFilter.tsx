@@ -51,7 +51,6 @@ const AwardsFilter = ({ onFilterChange }: AwardsFilterProps) => {
             <AppButton
                 type="button"
                 variant="secondary"
-                className={styles.filterToggleButton}
                 onClick={toggleAccordion}
                 selected={isExpanded}
                 aria-expanded={isExpanded}
