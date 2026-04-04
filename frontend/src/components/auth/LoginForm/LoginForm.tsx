@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styles from './LoginForm.module.css';
+import { AppButton } from '../../common/buttons'
 
 // @ts-expect-error JS module without types
 import { API_URL } from "../../../constants"
@@ -79,13 +80,14 @@ function LoginForm() {
                     />
                 </div>
 
-                <button
+                <AppButton
                     type="submit"
+                    variant="primary"
                     disabled={isLoading}
                     className={styles.loginButton}
                 >
                     {isLoading ? 'Вход...' : 'Войти'}
-                </button>
+                </AppButton>
 
             </form>
         </div>

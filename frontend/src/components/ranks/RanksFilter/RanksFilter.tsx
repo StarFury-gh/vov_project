@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
+import { AppButton } from "../../common/buttons"
 
 import styles from "./RanksFilter.module.css"
 
@@ -47,22 +48,26 @@ const RanksFilter = ({ onFilterChange }: RanksFilterProps) => {
 
     return (
         <div className={styles.filterContainer}>
-            <h4 className={styles.filterTitle} onClick={toggleAccordion} style={{ cursor: 'pointer' }}>
+            <AppButton
+                type="button"
+                variant="secondary"
+                onClick={toggleAccordion}
+                selected={isExpanded}
+                aria-expanded={isExpanded}
+                aria-controls="ranks-filter-options"
+                icon={
+                    <img
+                        src={isExpanded ? "/up.svg" : "/down.svg"}
+                        alt=""
+                        className={styles.icon}
+                        aria-hidden="true"
+                    />
+                }
+            >
                 Фильтр рангов:
-                <img
-                    src="/down.svg"
-                    alt="Развернуть"
-                    className={`${isExpanded ? styles.hidden : ''} ${styles.icon}`}
-                    style={{ width: '24px', height: '24px' }}
-                />
-                <img
-                    src="/up.svg"
-                    alt="Свернуть"
-                    className={`${!isExpanded ? styles.hidden : ''} ${styles.icon}`}
-                    style={{ width: '24px', height: '24px' }}
-                />
-            </h4>
-            <div className={`${styles.radioGroup} ${isExpanded ? styles.expanded : ''}`}>
+            </AppButton>
+
+            <div id="ranks-filter-options" className={`${styles.radioGroup} ${isExpanded ? styles.expanded : ''}`}>
                 {options?.map((option) => (
                     <label key={option.name} className={styles.radioLabel}>
                         <input
@@ -76,10 +81,16 @@ const RanksFilter = ({ onFilterChange }: RanksFilterProps) => {
                     </label>
                 ))}
             </div>
-            <button className={styles.button} onClick={handleRemoveFilter}>
-                <img src="/delete.svg" alt="Удалить" />
-                Очистить фиильтр по рангу
-            </button>
+
+            <AppButton
+                type="button"
+                variant="secondary"
+                className={styles.clearButton}
+                onClick={handleRemoveFilter}
+                icon={<img src="/delete.svg" alt="" className={styles.clearIcon} aria-hidden="true" />}
+            >
+                Очистить фильтр по рангу
+            </AppButton>
         </div>
     )
 }

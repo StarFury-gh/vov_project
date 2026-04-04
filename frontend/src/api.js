@@ -2,7 +2,7 @@
 
 import { API_URL } from "./constants"
 
-export async function searchHeroesByName(query, page = 1, limit = 10) {
+export async function searchHeroesByName(query, page = 1, limit = 10, w_type = "vov") {
     const normalized = (query ?? '').trim().toLowerCase()
     const skip = (page - 1) * limit
 
@@ -10,7 +10,9 @@ export async function searchHeroesByName(query, page = 1, limit = 10) {
         return { items: [], total: 0, skip: 0, limit: limit }
     }
 
-    const params = new URLSearchParams({ limit: String(limit), skip: String(skip), search: normalized })
+    const params = new URLSearchParams(
+        { w_type, limit: String(limit), skip: String(skip), search: normalized }
+    )
     const url = API_URL + "/heroes/" + `?${params.toString()}`
     const response = await fetch(url)
 

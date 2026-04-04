@@ -3,6 +3,8 @@ import styles from './HeroCard.module.css'
 import { STATIC_URL, API_URL } from '../../../constants'
 import useAuthCheck from '../../../hooks/useAuth'
 import axios from 'axios'
+import { AppButton } from '../../common/buttons'
+import { Link } from 'react-router-dom'
 
 interface HeroCardProps {
     is_admin?: boolean
@@ -44,7 +46,7 @@ const HeroCard = ({
 
     const lifeDates =
         birthDate || deathDate
-            ? `${birthDate || '—'} — ${deathDate || '????-??-??'}`
+            ? `${birthDate || '—'} — ${deathDate || '—'}`
             : undefined
 
     const deleteHero = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -85,11 +87,25 @@ const HeroCard = ({
             <div className={styles.content}>
                 <h2 className={styles.name}>{fullName}</h2>
                 {lifeDates && <p className={styles.dates}>{lifeDates}</p>}
+                <Link
+                    to={`/heroes/${id}`}
+                    className={styles.moreLink}
+                    onClick={(event) => event.stopPropagation()}
+                >
+                    Подробнее
+                </Link>
             </div>
             {
                 is_admin &&
                 <div className={styles["admin-btns"]}>
-                    <button onClick={e => deleteHero(e)} className={styles["delete-btn"]}>Удалить</button>
+                    <AppButton
+                        type="button"
+                        variant="primary"
+                        className={styles.deleteButton}
+                        onClick={(e) => deleteHero(e)}
+                    >
+                        Удалить
+                    </AppButton>
                 </div>
             }
         </article>
@@ -97,4 +113,3 @@ const HeroCard = ({
 }
 
 export default HeroCard
-

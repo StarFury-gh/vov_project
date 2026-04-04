@@ -1,67 +1,111 @@
 .page {
     min-height: 100vh;
-    padding: 24px 12px 40px;
-    background-color: var(--color-bg-page);
+    padding: 22px 12px 40px;
+    background: #F6F5F2;
     color: var(--color-text-main);
     display: flex;
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
 }
 
 .header {
-    margin: 0 auto 24px;
-    max-width: 1160px;
-    text-align: left;
+    margin: 0 auto 22px;
+    max-width: 920px;
+    width: 100%;
+    text-align: center;
 }
 
 .title {
-    margin: 0 0 8px;
-    font-size: 2rem;
+    margin: 0 0 6px;
+    font-size: 40px;
     font-weight: 700;
+    color: #111114;
 }
 
 .subtitle {
     margin: 0;
-    font-size: 0.98rem;
-    color: var(--color-text-muted);
+    font-size: 20px;
+    color: #252525;
+}
+
+.searchBlock {
+    margin: 16px auto 0;
+    display: inline-flex;
+    flex-direction: column;
 }
 
 .search {
-    margin-top: 16px;
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 10px;
+    align-items: stretch;
+}
+
+.searchInputWrap {
+    min-width: min(520px, 78vw);
+    height: 52px;
+    display: inline-flex;
     align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(107, 113, 90, 0.5);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.48);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    padding: 0 14px;
+}
+
+.searchIcon {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #69745f;
+    border-radius: 50%;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.searchIcon::after {
+    content: '';
+    position: absolute;
+    width: 7px;
+    height: 2px;
+    background: #69745f;
+    right: -5px;
+    bottom: -1px;
+    transform: rotate(45deg);
+    border-radius: 2px;
 }
 
 .searchInput {
-    flex: 1 1 220px;
+    flex: 1;
+    border: none;
+    outline: none;
     min-width: 0;
-    padding: 8px 10px;
-    border-radius: 6px;
-    border: 1px solid var(--color-border-subtle);
-    background-color: var(--color-card-bg);
-    color: var(--color-text-main);
-    font-size: 0.95rem;
+    padding: 0;
+    border-radius: 0;
+    background-color: transparent;
+    color: #3a3f33;
+    font-size: 16px;
 }
 
 .searchInput::placeholder {
-    color: var(--color-text-muted);
+    color: #6f7568;
 }
 
 .searchButton,
 .resetButton {
-    padding: 8px 14px;
-    border-radius: 6px;
+    min-height: 48px;
+    padding: 0 18px;
+    border-radius: 14px;
     border: none;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 16px;
     font-weight: 500;
 }
 
 .searchButton {
-    background-color: var(--color-accent, #2e7d32);
+    background-color: #8f2323;
     color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.22);
 }
 
 .searchButton:disabled {
@@ -69,38 +113,44 @@
     cursor: default;
 }
 
+.searchButton:hover:not(:disabled) {
+    background-color: #7a1f1e;
+}
+
 .resetButton {
-    background-color: var(--color-card-bg);
-    color: var(--color-text-main);
-    border: 1px solid var(--color-border-subtle);
+    background-color: rgba(255, 255, 255, 0.58);
+    color: #3f4236;
+    border: 1px solid #7f8671;
 }
 
 .resetButton:hover {
-    background-color: var(--color-bg-page);
+    background-color: #f5f6ef;
 }
 
 .searchError {
     margin-top: 8px;
-    font-size: 0.9rem;
+    font-size: 14px;
     color: var(--color-error-text);
 }
 
 .filtersContainer {
-    margin: 1rem auto;
+    margin: 12px 0 0;
     display: flex;
-    gap: 1rem;
+    gap: 12px;
+    flex-wrap: wrap;
+    width: 100%;
 }
 
 .listContainer {
     width: 100%;
-    max-width: 1400px;
+    max-width: 1160px;
     margin: 0 auto;
 }
 
 .heroList {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
 }
 
 .sentinel {
@@ -113,7 +163,7 @@
     align-items: center;
     gap: 8px;
     color: var(--color-text-main);
-    font-size: 0.95rem;
+    font-size: 14px;
 }
 
 .spinner {
@@ -148,7 +198,7 @@
     background-color: var(--color-card-bg);
     color: var(--color-error-text);
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 14px;
 }
 
 .retryButton:hover {
@@ -157,7 +207,7 @@
 
 .endMessage {
     margin-top: 16px;
-    font-size: 0.95rem;
+    font-size: 14px;
     color: var(--color-text-muted);
 }
 
@@ -177,6 +227,31 @@
     }
 
     .title {
-        font-size: 1.6rem;
+        font-size: 25px;
+    }
+
+    .search {
+        justify-content: flex-start;
+    }
+
+    .searchInputWrap {
+        width: 100%;
+        min-width: 0;
+        height: 46px;
+    }
+
+    .searchInput {
+        font-size: 16px;
+    }
+
+    .searchButton,
+    .resetButton {
+        min-height: 40px;
+        font-size: 16px;
+        border-radius: 12px;
+    }
+
+    .heroList {
+        grid-template-columns: 1fr;
     }
 }
