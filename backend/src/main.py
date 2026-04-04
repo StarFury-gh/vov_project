@@ -31,7 +31,7 @@ async def lifespan(app: FastAPI):
             password=config_obj.DB_PASSWORD,
             database=config_obj.DB_NAME,
             min_size=1,
-            max_size=10,
+            max_size=20,
         )
         yield
         await close_redis()
@@ -72,5 +72,7 @@ if __name__ == "__main__":
         "main:app",
         host="0.0.0.0",
         port=8000,
-        reload=True
+        reload=False,
+        workers=5,
+        loop="uvloop",
     )
